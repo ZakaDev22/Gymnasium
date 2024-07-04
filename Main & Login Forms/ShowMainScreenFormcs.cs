@@ -13,6 +13,7 @@ using Gymnasium.Subscription_Peroids.Expired_Subscriptions;
 using Gymnasium.User_Forms;
 using GymnasiumLogicLayer;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 
@@ -312,6 +313,60 @@ namespace Gymnasium
         {
             ShowFindMemberForm showFindMemberForm = new ShowFindMemberForm();
             showFindMemberForm.ShowDialog();
+        }
+
+        private void btnAddNewMember_Click(object sender, EventArgs e)
+        {
+            ShowAddEditeMembersForm showAddEditeMembersForm = new ShowAddEditeMembersForm();
+            showAddEditeMembersForm.ShowDialog();
+
+
+        }
+
+        /*This code handles the MouseLeave event on splitContainer2.
+        * It adjusts the position of btnFindPerson and btnFindUser based on the SplitterDistance of splitContainer2.
+        * If the distance is greater than or equal to 400, it sets their positions to (37, 232) and (37, 285) respectively.
+        * If the distance is less than or equal to 400, it sets their positions to (275, 73) and (275, 124) respectively. Additionally,
+        * it limits the SplitterDistance to 530 if it exceeds that value in the first condition,
+        * and to 317 if it's less than 317 in the second condition. */
+        private void splitContainer2_MouseLeave(object sender, EventArgs e)
+        {
+            if (splitContainer2.SplitterDistance >= 435)
+            {
+
+                chkQueckSearch.Checked = false;
+
+                return;
+            }
+
+            if (splitContainer2.SplitterDistance <= 435)
+            {
+
+                chkQueckSearch.Checked = true;
+            }
+        }
+
+
+        private void chkQueckSearch_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkQueckSearch.Checked)
+            {
+                btnFindPerson.Location = new Point(275, 73);
+                btnFindUser.Location = new Point(275, 124);
+
+                splitContainer2.SplitterDistance = 317;
+
+                chkQueckSearch.Text = "Quick Search Is ON";
+            }
+            else
+            {
+                btnFindPerson.Location = new Point(37, 232);
+                btnFindUser.Location = new Point(37, 285);
+
+                splitContainer2.SplitterDistance = 530;
+
+                chkQueckSearch.Text = "Quick Search Is OF";
+            }
         }
     }
 }

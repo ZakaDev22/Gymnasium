@@ -16,6 +16,9 @@ namespace Gymnasium.Subscription_Peroids
         private int _SubscriptionPeriodID = -1;
         private clsSubscriptionPeriods _SubscriptionPeriod;
 
+        public delegate void CloseFormDataBack(object sender, bool IsClosed);
+        public event CloseFormDataBack OnClosingSubForm;
+
         public AddEditeSubscriptionPeriodForm(int memberID, int paymentID, decimal amount, short subMonths)
         {
             InitializeComponent();
@@ -96,18 +99,26 @@ namespace Gymnasium.Subscription_Peroids
             if (_SubscriptionPeriod.Save())
             {
 
-                MessageBox.Show("Subscription Period Added Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Subscription Period Added Successfully \n tap Ok To Close The Form Directly", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 lbSubPeriodID.Text = _SubscriptionPeriod.PeriodID.ToString();
 
                 _Mode = enMode.Update;
 
                 btnSave.Enabled = false;
+
+                this.Close();
             }
             else
             {
                 MessageBox.Show("Failed To Add Subscription Period", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void AddEditeSubscriptionPeriodForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // rising the event to Tell The Payment form That The Form Is Closing
+            OnClosingSubForm?.Invoke(this, true);
         }
     }
 }

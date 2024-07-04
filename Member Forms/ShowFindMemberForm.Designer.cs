@@ -43,14 +43,14 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(10, 632);
+            this.panel2.Size = new System.Drawing.Size(10, 591);
             this.panel2.TabIndex = 173;
             // 
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.LawnGreen;
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(10, 622);
+            this.panel4.Location = new System.Drawing.Point(10, 581);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(880, 10);
             this.panel4.TabIndex = 175;
@@ -61,7 +61,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel1.Location = new System.Drawing.Point(880, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(10, 622);
+            this.panel1.Size = new System.Drawing.Size(10, 581);
             this.panel1.TabIndex = 176;
             // 
             // panel3
@@ -110,7 +110,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(890, 632);
+            this.BackColor = System.Drawing.Color.Honeydew;
+            this.ClientSize = new System.Drawing.Size(890, 591);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnCLose);
             this.Controls.Add(this.ctrlMemberCardInfoWithFilter1);

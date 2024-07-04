@@ -34,6 +34,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showMemberDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showPaymnetDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.setMemberInActiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renweMemberSubscriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.showMemberHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.txtFilterValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -41,16 +49,8 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnClose = new System.Windows.Forms.Button();
             this.pbPersonImage = new System.Windows.Forms.PictureBox();
-            this.showMemberDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showPaymnetDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setMemberInActiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renweMemberSubscriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showMemberHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbNoExpired = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -119,6 +119,72 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(804, 230);
             this.dataGridView1.TabIndex = 137;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(25, 25);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showMemberDetailsToolStripMenuItem,
+            this.showPaymnetDetailsToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.setMemberInActiveToolStripMenuItem,
+            this.renweMemberSubscriptionToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.showMemberHistoryToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(262, 176);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // showMemberDetailsToolStripMenuItem
+            // 
+            this.showMemberDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.showMemberDetailsToolStripMenuItem.Name = "showMemberDetailsToolStripMenuItem";
+            this.showMemberDetailsToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
+            this.showMemberDetailsToolStripMenuItem.Text = "Show Member Details";
+            this.showMemberDetailsToolStripMenuItem.Click += new System.EventHandler(this.showMemberDetailsToolStripMenuItem_Click);
+            // 
+            // showPaymnetDetailsToolStripMenuItem
+            // 
+            this.showPaymnetDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.showPaymnetDetailsToolStripMenuItem.Name = "showPaymnetDetailsToolStripMenuItem";
+            this.showPaymnetDetailsToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
+            this.showPaymnetDetailsToolStripMenuItem.Text = "Show Paymnet Details";
+            this.showPaymnetDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymnetDetailsToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(258, 6);
+            // 
+            // setMemberInActiveToolStripMenuItem
+            // 
+            this.setMemberInActiveToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Saki_NuoveXT_2_Actions_stop_32;
+            this.setMemberInActiveToolStripMenuItem.Name = "setMemberInActiveToolStripMenuItem";
+            this.setMemberInActiveToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
+            this.setMemberInActiveToolStripMenuItem.Text = "Set Member InActive";
+            this.setMemberInActiveToolStripMenuItem.Click += new System.EventHandler(this.setMemberInActiveToolStripMenuItem_Click);
+            // 
+            // renweMemberSubscriptionToolStripMenuItem
+            // 
+            this.renweMemberSubscriptionToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
+            this.renweMemberSubscriptionToolStripMenuItem.Name = "renweMemberSubscriptionToolStripMenuItem";
+            this.renweMemberSubscriptionToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
+            this.renweMemberSubscriptionToolStripMenuItem.Text = "Renwe Member Subscription";
+            this.renweMemberSubscriptionToolStripMenuItem.Click += new System.EventHandler(this.renweMemberSubscriptionToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(258, 6);
+            // 
+            // showMemberHistoryToolStripMenuItem
+            // 
+            this.showMemberHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
+            this.showMemberHistoryToolStripMenuItem.Name = "showMemberHistoryToolStripMenuItem";
+            this.showMemberHistoryToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
+            this.showMemberHistoryToolStripMenuItem.Text = "Show Member History";
+            this.showMemberHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberHistoryToolStripMenuItem_Click);
             // 
             // cbFilterBy
             // 
@@ -195,32 +261,6 @@
             this.panel4.Size = new System.Drawing.Size(879, 10);
             this.panel4.TabIndex = 169;
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(25, 25);
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showMemberDetailsToolStripMenuItem,
-            this.showPaymnetDetailsToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.setMemberInActiveToolStripMenuItem,
-            this.renweMemberSubscriptionToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.showMemberHistoryToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(262, 176);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(258, 6);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(258, 6);
-            // 
             // btnClose
             // 
             this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -249,54 +289,14 @@
             this.pbPersonImage.TabIndex = 141;
             this.pbPersonImage.TabStop = false;
             // 
-            // showMemberDetailsToolStripMenuItem
-            // 
-            this.showMemberDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.showMemberDetailsToolStripMenuItem.Name = "showMemberDetailsToolStripMenuItem";
-            this.showMemberDetailsToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
-            this.showMemberDetailsToolStripMenuItem.Text = "Show Member Details";
-            this.showMemberDetailsToolStripMenuItem.Click += new System.EventHandler(this.showMemberDetailsToolStripMenuItem_Click);
-            // 
-            // showPaymnetDetailsToolStripMenuItem
-            // 
-            this.showPaymnetDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.showPaymnetDetailsToolStripMenuItem.Name = "showPaymnetDetailsToolStripMenuItem";
-            this.showPaymnetDetailsToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
-            this.showPaymnetDetailsToolStripMenuItem.Text = "Show Paymnet Details";
-            this.showPaymnetDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymnetDetailsToolStripMenuItem_Click);
-            // 
-            // setMemberInActiveToolStripMenuItem
-            // 
-            this.setMemberInActiveToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Saki_NuoveXT_2_Actions_stop_32;
-            this.setMemberInActiveToolStripMenuItem.Name = "setMemberInActiveToolStripMenuItem";
-            this.setMemberInActiveToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
-            this.setMemberInActiveToolStripMenuItem.Text = "Set Member InActive";
-            this.setMemberInActiveToolStripMenuItem.Click += new System.EventHandler(this.setMemberInActiveToolStripMenuItem_Click);
-            // 
-            // renweMemberSubscriptionToolStripMenuItem
-            // 
-            this.renweMemberSubscriptionToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
-            this.renweMemberSubscriptionToolStripMenuItem.Name = "renweMemberSubscriptionToolStripMenuItem";
-            this.renweMemberSubscriptionToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
-            this.renweMemberSubscriptionToolStripMenuItem.Text = "Renwe Member Subscription";
-            this.renweMemberSubscriptionToolStripMenuItem.Click += new System.EventHandler(this.renweMemberSubscriptionToolStripMenuItem_Click);
-            // 
-            // showMemberHistoryToolStripMenuItem
-            // 
-            this.showMemberHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
-            this.showMemberHistoryToolStripMenuItem.Name = "showMemberHistoryToolStripMenuItem";
-            this.showMemberHistoryToolStripMenuItem.Size = new System.Drawing.Size(261, 32);
-            this.showMemberHistoryToolStripMenuItem.Text = "Show Member History";
-            this.showMemberHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberHistoryToolStripMenuItem_Click);
-            // 
             // lbNoExpired
             // 
             this.lbNoExpired.AutoSize = true;
             this.lbNoExpired.BackColor = System.Drawing.Color.Gold;
-            this.lbNoExpired.Font = new System.Drawing.Font("NSimSun", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbNoExpired.Location = new System.Drawing.Point(205, 291);
+            this.lbNoExpired.Font = new System.Drawing.Font("NSimSun", 24F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbNoExpired.Location = new System.Drawing.Point(80, 292);
             this.lbNoExpired.Name = "lbNoExpired";
-            this.lbNoExpired.Size = new System.Drawing.Size(504, 21);
+            this.lbNoExpired.Size = new System.Drawing.Size(729, 33);
             this.lbNoExpired.TabIndex = 171;
             this.lbNoExpired.Text = "No Expired Subscription Periods ✅✅✅😎💪";
             this.lbNoExpired.Visible = false;

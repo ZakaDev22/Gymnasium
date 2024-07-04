@@ -101,6 +101,14 @@ namespace Gymnasium.Payments_Forms
             // txtAmount.Enabled = obj == true ? false : true;
         }
 
+        // Handles the closing of a subform event.
+        // Closes the form if the IsSubscriptionFormClosed parameter is true.
+        private void Fm_OnClosingSubForm(object sender, bool IsSubscriptionFormClosed)
+        {
+            if (IsSubscriptionFormClosed)
+                this.Close();
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
@@ -129,7 +137,7 @@ namespace Gymnasium.Payments_Forms
                     MessageBox.Show("Saved Successfully n \n Now Go To Finish The Subscription Period", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     AddEditeSubscriptionPeriodForm frm = new AddEditeSubscriptionPeriodForm(_Payment.MemberID, _Payment.PaymentID, _FinalAmount, _SubMonths);
-
+                    frm.OnClosingSubForm += Fm_OnClosingSubForm;
                     frm.ShowDialog();
 
                 }
