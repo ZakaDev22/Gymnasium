@@ -24,6 +24,8 @@ namespace GymnasiumLogicLayer
             Instructors = 1 << 10, // 1024
             ExpiredSubscriptions = 1 << 11, // 2048
 
+            All = People | Users | Members | Sports | MemberInstructor | SubscriptionPeriods | Payments | EmergencyContacts | BeltRank | BeltTests | Instructors | ExpiredSubscriptions
+
             // Total Permissions = 4095
 
 

@@ -111,7 +111,7 @@ namespace Gymnasium.People_Forms
 
         private void llEditPersonInfo_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (clsGlobal._CurrentUser.UserID != 1)
+            if (_PersonID == 1 && clsGlobal._CurrentUser.UserID != 1)
             {
                 MessageBox.Show($"Error,You Can't Edit The Admin User Information 😎💪🙄🤣🤣", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

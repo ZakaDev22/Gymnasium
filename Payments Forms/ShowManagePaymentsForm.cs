@@ -135,6 +135,8 @@ namespace Gymnasium.Payments_Forms
         private void ShowManagePaymentsForm_Load(object sender, EventArgs e)
         {
             rbByPages.Checked = true;
+
+            cbFilterBy.SelectedIndex = 0;
         }
 
         private void showPaymentDetailsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -143,6 +145,58 @@ namespace Gymnasium.Payments_Forms
 
             AddEditePaymentForm showPaymentDetailsForm = new AddEditePaymentForm(paymentID);
             showPaymentDetailsForm.ShowDialog();
+        }
+
+        private void txtFilterValue_TextChanged(object sender, EventArgs e)
+        {
+            string filterName = cbFilterBy.SelectedItem.ToString();
+
+
+            switch (filterName)
+            {
+                case "Payment ID":
+                    filterName = "PaymentID";
+                    break;
+
+                case "Member ID":
+                    filterName = "MemberID";
+                    break;
+                default:
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(txtFilterValue.Text))
+            {
+                dt.DefaultView.RowFilter = string.Empty;
+                lbRecords.Text = dataGridView1.Rows.Count.ToString();
+                return;
+            }
+
+
+            // this for,at only for Numbers and not strings
+            dt.DefaultView.RowFilter = string.Format("{0} = {1}", filterName, txtFilterValue.Text.Trim());
+
+            lbRecords.Text = dataGridView1.Rows.Count.ToString();
+        }
+
+        private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbFilterBy.SelectedIndex == 0)
+            {
+                txtFilterValue.Visible = false;
+                txtFilterValue.Clear();
+            }
+
+
+            else
+                txtFilterValue.Visible = true;
+            txtFilterValue.Clear();
+
+        }
+
+        private void txtFilterValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GymnasiumLogicLayer;
+﻿using Gymnasium.Payments_Forms;
+using GymnasiumLogicLayer;
 using System;
 using System.Data;
 using System.Windows.Forms;
@@ -65,6 +66,12 @@ namespace Gymnasium.Member_Forms
         private void SHowMemberPeriodsHistoryForm_Load(object sender, EventArgs e)
         {
             _RefreshDataGrideView();
+        }
+
+        private void showPaymentDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddEditePaymentForm addEditePaymentForm = new AddEditePaymentForm((int)dataGridView1.CurrentRow.Cells[6].Value);
+            addEditePaymentForm.ShowDialog();
         }
     }
 }

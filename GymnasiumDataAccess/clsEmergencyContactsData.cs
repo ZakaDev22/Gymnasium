@@ -216,5 +216,29 @@ namespace GymnasiumDataAccess
 
             return false;
         }
+
+        public static bool IsEmergencyContactExistByPersonID(int PersonID)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_EmergencyContacts_IsEmergencyContactExistByPersonID", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@PersonID", PersonID);
+
+                        connection.Open();
+                        return Convert.ToBoolean(command.ExecuteScalar());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return false;
+        }
     }
 }

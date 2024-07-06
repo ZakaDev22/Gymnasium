@@ -58,6 +58,12 @@
     <Compile Include="Belt Tests Forms\ShowManageBeltTestsForm.Designer.cs">
       <DependentUpon>ShowManageBeltTestsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Emergency Contacts Forms\AddEditeEmergencyContactForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Emergency Contacts Forms\AddEditeEmergencyContactForm.Designer.cs">
+      <DependentUpon>AddEditeEmergencyContactForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Emergency Contacts Forms\ShowManageEmergencyContactsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Belt Tests Forms\ShowManageBeltTestsForm.resx">
       <DependentUpon>ShowManageBeltTestsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Emergency Contacts Forms\AddEditeEmergencyContactForm.resx">
+      <DependentUpon>AddEditeEmergencyContactForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Emergency Contacts Forms\ShowManageEmergencyContactsForm.resx">
       <DependentUpon>ShowManageEmergencyContactsForm.cs</DependentUpon>

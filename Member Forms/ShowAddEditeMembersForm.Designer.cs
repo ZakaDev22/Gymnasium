@@ -35,7 +35,6 @@
             this.txtEmergencyContact = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.cbSports = new System.Windows.Forms.ComboBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -54,6 +53,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnAddNewEmergencyContact = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
@@ -92,7 +92,7 @@
             this.chkIsActive.Checked = true;
             this.chkIsActive.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkIsActive.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIsActive.Location = new System.Drawing.Point(190, 525);
+            this.chkIsActive.Location = new System.Drawing.Point(227, 545);
             this.chkIsActive.Name = "chkIsActive";
             this.chkIsActive.Size = new System.Drawing.Size(121, 29);
             this.chkIsActive.TabIndex = 140;
@@ -101,7 +101,7 @@
             // 
             // txtEmergencyContact
             // 
-            this.txtEmergencyContact.Location = new System.Drawing.Point(228, 462);
+            this.txtEmergencyContact.Location = new System.Drawing.Point(227, 469);
             this.txtEmergencyContact.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtEmergencyContact.MaxLength = 50;
             this.txtEmergencyContact.Name = "txtEmergencyContact";
@@ -114,7 +114,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(12, 462);
+            this.label1.Location = new System.Drawing.Point(11, 469);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(176, 20);
@@ -126,26 +126,17 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Red;
-            this.label2.Location = new System.Drawing.Point(120, 493);
+            this.label2.Location = new System.Drawing.Point(120, 513);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 20);
             this.label2.TabIndex = 134;
             this.label2.Text = "Sport :";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(58, 567);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(337, 13);
-            this.label5.TabIndex = 144;
-            this.label5.Text = "Add Button To Add Emergancy Contact Where The Member Want To";
-            // 
             // cbSports
             // 
             this.cbSports.FormattingEnabled = true;
-            this.cbSports.Location = new System.Drawing.Point(227, 492);
+            this.cbSports.Location = new System.Drawing.Point(227, 512);
             this.cbSports.Name = "cbSports";
             this.cbSports.Size = new System.Drawing.Size(168, 21);
             this.cbSports.TabIndex = 145;
@@ -169,7 +160,7 @@
             // pictureBox8
             // 
             this.pictureBox8.Image = global::Gymnasium.Properties.Resources.ApplicationTitle;
-            this.pictureBox8.Location = new System.Drawing.Point(190, 460);
+            this.pictureBox8.Location = new System.Drawing.Point(189, 467);
             this.pictureBox8.Name = "pictureBox8";
             this.pictureBox8.Size = new System.Drawing.Size(31, 26);
             this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -179,7 +170,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = global::Gymnasium.Properties.Resources.Password_321;
-            this.pictureBox3.Location = new System.Drawing.Point(190, 493);
+            this.pictureBox3.Location = new System.Drawing.Point(190, 513);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(31, 26);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -334,18 +325,37 @@
             this.panel4.Size = new System.Drawing.Size(852, 10);
             this.panel4.TabIndex = 176;
             // 
+            // btnAddNewEmergencyContact
+            // 
+            this.btnAddNewEmergencyContact.BackColor = System.Drawing.Color.OrangeRed;
+            this.btnAddNewEmergencyContact.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddNewEmergencyContact.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnAddNewEmergencyContact.Font = new System.Drawing.Font("Mongolian Baiti", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddNewEmergencyContact.ForeColor = System.Drawing.SystemColors.Control;
+            this.btnAddNewEmergencyContact.Image = global::Gymnasium.Properties.Resources.AddPerson_32;
+            this.btnAddNewEmergencyContact.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAddNewEmergencyContact.Location = new System.Drawing.Point(402, 465);
+            this.btnAddNewEmergencyContact.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnAddNewEmergencyContact.Name = "btnAddNewEmergencyContact";
+            this.btnAddNewEmergencyContact.Size = new System.Drawing.Size(163, 31);
+            this.btnAddNewEmergencyContact.TabIndex = 177;
+            this.btnAddNewEmergencyContact.Text = "Add New Cntact";
+            this.btnAddNewEmergencyContact.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnAddNewEmergencyContact.UseVisualStyleBackColor = false;
+            this.btnAddNewEmergencyContact.Click += new System.EventHandler(this.btnAddNewEmergencyContact_Click);
+            // 
             // ShowAddEditeMembersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(872, 595);
+            this.Controls.Add(this.btnAddNewEmergencyContact);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.ctrlPersonInfoCardWithFilter1);
             this.Controls.Add(this.cbSports);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.pictureBox5);
             this.Controls.Add(this.lbSportFees);
             this.Controls.Add(this.pcPaymentID);
@@ -391,7 +401,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cbSports;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private People_Forms.ctrlPersonInfoCardWithFilter ctrlPersonInfoCardWithFilter1;
@@ -405,5 +414,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Button btnAddNewEmergencyContact;
     }
 }

@@ -289,5 +289,11 @@ namespace Gymnasium.Subscription_Peroids
             SHowMemberPeriodsHistoryForm frm = new SHowMemberPeriodsHistoryForm((int)dataGridView1.CurrentRow.Cells[5].Value);
             frm.ShowDialog();
         }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            AddEditeSubscriptionPeriodForm frm = new AddEditeSubscriptionPeriodForm((int)dataGridView1.CurrentRow.Cells[0].Value);
+            frm.ShowDialog();
+        }
     }
 }

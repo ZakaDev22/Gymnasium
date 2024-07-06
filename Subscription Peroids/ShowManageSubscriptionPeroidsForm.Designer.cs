@@ -39,6 +39,11 @@
             this.rbByPages = new System.Windows.Forms.RadioButton();
             this.rbAllPeople = new System.Windows.Forms.RadioButton();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showMemberDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showPaymnetDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.showMemberHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.txtFilterValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,19 +52,16 @@
             this.btnRight = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.pbPersonImage = new System.Windows.Forms.PictureBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.showMemberDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showPaymnetDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.showMemberHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbPersonImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbPersonImage)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPageNumber
@@ -200,6 +202,49 @@
             this.dataGridView1.Size = new System.Drawing.Size(819, 230);
             this.dataGridView1.TabIndex = 102;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(25, 25);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showMemberDetailsToolStripMenuItem,
+            this.showPaymnetDetailsToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem1,
+            this.toolStripSeparator1,
+            this.showMemberHistoryToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 166);
+            // 
+            // showMemberDetailsToolStripMenuItem
+            // 
+            this.showMemberDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.showMemberDetailsToolStripMenuItem.Name = "showMemberDetailsToolStripMenuItem";
+            this.showMemberDetailsToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
+            this.showMemberDetailsToolStripMenuItem.Text = "Show Member Details";
+            this.showMemberDetailsToolStripMenuItem.Click += new System.EventHandler(this.showMemberDetailsToolStripMenuItem_Click);
+            // 
+            // showPaymnetDetailsToolStripMenuItem
+            // 
+            this.showPaymnetDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.showPaymnetDetailsToolStripMenuItem.Name = "showPaymnetDetailsToolStripMenuItem";
+            this.showPaymnetDetailsToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
+            this.showPaymnetDetailsToolStripMenuItem.Text = "Show Paymnet Details";
+            this.showPaymnetDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymnetDetailsToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(220, 6);
+            // 
+            // showMemberHistoryToolStripMenuItem
+            // 
+            this.showMemberHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
+            this.showMemberHistoryToolStripMenuItem.Name = "showMemberHistoryToolStripMenuItem";
+            this.showMemberHistoryToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
+            this.showMemberHistoryToolStripMenuItem.Text = "Show Member History";
+            this.showMemberHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberHistoryToolStripMenuItem_Click);
+            // 
             // cbFilterBy
             // 
             this.cbFilterBy.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -315,47 +360,6 @@
             this.pbPersonImage.TabIndex = 106;
             this.pbPersonImage.TabStop = false;
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(25, 25);
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showMemberDetailsToolStripMenuItem,
-            this.showPaymnetDetailsToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.showMemberHistoryToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 106);
-            // 
-            // showMemberDetailsToolStripMenuItem
-            // 
-            this.showMemberDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.showMemberDetailsToolStripMenuItem.Name = "showMemberDetailsToolStripMenuItem";
-            this.showMemberDetailsToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
-            this.showMemberDetailsToolStripMenuItem.Text = "Show Member Details";
-            this.showMemberDetailsToolStripMenuItem.Click += new System.EventHandler(this.showMemberDetailsToolStripMenuItem_Click);
-            // 
-            // showPaymnetDetailsToolStripMenuItem
-            // 
-            this.showPaymnetDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.showPaymnetDetailsToolStripMenuItem.Name = "showPaymnetDetailsToolStripMenuItem";
-            this.showPaymnetDetailsToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
-            this.showPaymnetDetailsToolStripMenuItem.Text = "Show Paymnet Details";
-            this.showPaymnetDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymnetDetailsToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(220, 6);
-            // 
-            // showMemberHistoryToolStripMenuItem
-            // 
-            this.showMemberHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
-            this.showMemberHistoryToolStripMenuItem.Name = "showMemberHistoryToolStripMenuItem";
-            this.showMemberHistoryToolStripMenuItem.Size = new System.Drawing.Size(223, 32);
-            this.showMemberHistoryToolStripMenuItem.Text = "Show Member History";
-            this.showMemberHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberHistoryToolStripMenuItem_Click);
-            // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.OrangeRed;
@@ -392,6 +396,19 @@
             this.panel4.Size = new System.Drawing.Size(863, 10);
             this.panel4.TabIndex = 174;
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Image = global::Gymnasium.Properties.Resources.Detain_512;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(223, 32);
+            this.toolStripMenuItem1.Text = "Show Period Details";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
+            // 
             // ShowManageSubscriptionPeroidsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -425,8 +442,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbPersonImage)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbPersonImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -461,5 +478,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }

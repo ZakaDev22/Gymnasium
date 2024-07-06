@@ -1,4 +1,5 @@
-﻿using Gymnasium.Payments_Forms;
+﻿using Gymnasium.Emergency_Contacts_Forms;
+using Gymnasium.Payments_Forms;
 using GymnasiumLogicLayer;
 using System;
 using System.Data;
@@ -202,6 +203,24 @@ namespace Gymnasium.Member_Forms
         {
             SportFees = clsSports.FindByName(cbSports.Text).Fees;
             lbSportFees.Text = SportFees.ToString();
+        }
+
+        // Sets the text of the txtEmergencyContact control to the string representation of the EmergencyContactID.
+        // set btn Add New Emergency Contact enabled to false To Not Let The User Add Another Emergency Contact 
+        private void OnEmergencyContactDataBack(object obj, int EmergencyContactID)
+        {
+            txtEmergencyContact.Text = EmergencyContactID.ToString();
+
+            btnAddNewEmergencyContact.Enabled = false;
+        }
+
+        //This code defines a button click event handler that creates a new instance of the AddEditeEmergencyContactForm form,
+        //subscribes to its OnEmergencyDataBack event with the method OnEmergencyContactDataBack, and then shows the form as a dialog box.
+        private void btnAddNewEmergencyContact_Click(object sender, EventArgs e)
+        {
+            AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm();
+            frm.OnEmergencyDataBack += OnEmergencyContactDataBack;
+            frm.ShowDialog();
         }
     }
 }

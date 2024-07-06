@@ -19,6 +19,8 @@ namespace Gymnasium.Subscription_Peroids
         public delegate void CloseFormDataBack(object sender, bool IsClosed);
         public event CloseFormDataBack OnClosingSubForm;
 
+
+        // calling This Constructor To Add New Mode
         public AddEditeSubscriptionPeriodForm(int memberID, int paymentID, decimal amount, short subMonths)
         {
             InitializeComponent();
@@ -31,7 +33,7 @@ namespace Gymnasium.Subscription_Peroids
             _Mode = enMode.AddNew;
         }
 
-
+        // calling This Constructor To update Mode
         public AddEditeSubscriptionPeriodForm(int SubscriptionPeriodID)
         {
             InitializeComponent();
@@ -52,7 +54,7 @@ namespace Gymnasium.Subscription_Peroids
             {
                 _SubscriptionPeriod = new clsSubscriptionPeriods();
 
-                lbMemberID.Text = _MemberID.ToString();
+                lbisPaid.Text = _MemberID.ToString();
                 lbPaymentID.Text = _PaymentID.ToString();
                 lbSubscriptionFees.Text = _Amount.ToString();
                 lbStartDate.Text = DateTime.Now.ToShortDateString();
@@ -71,12 +73,15 @@ namespace Gymnasium.Subscription_Peroids
             }
 
             lbSubPeriodID.Text = _SubscriptionPeriod.PeriodID.ToString();
-            lbMemberID.Text = _SubscriptionPeriod.MemberID.ToString();
+            lbisPaid.Text = _SubscriptionPeriod.MemberID.ToString();
             lbPaymentID.Text = _SubscriptionPeriod.PaymentID.ToString();
             lbSubscriptionFees.Text = _SubscriptionPeriod.Fees.ToString();
             lbStartDate.Text = _SubscriptionPeriod.StartDate.ToShortDateString();
             lbEndDate.Text = _SubscriptionPeriod.EndDate.ToShortDateString();
             chkIsPaid.Checked = _SubscriptionPeriod.Paid;
+
+            chkIsPaid.Enabled = false;
+            lbisPaid.Visible = true;
 
             btnSave.Enabled = false;
         }

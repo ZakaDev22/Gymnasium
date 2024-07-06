@@ -1,4 +1,5 @@
-﻿using GymnasiumLogicLayer;
+﻿using Gymnasium.People_Forms;
+using GymnasiumLogicLayer;
 using System;
 using System.Data;
 using System.Drawing;
@@ -211,6 +212,28 @@ namespace Gymnasium.Emergency_Contacts_Forms
         {
             if (cbFilterBy.SelectedIndex == 1 || cbFilterBy.SelectedIndex == 2)
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+
+
+        private void btnAddemergencyContact_Click(object sender, EventArgs e)
+        {
+            AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm();
+            frm.ShowDialog();
+
+            LoadPagedData();
+        }
+
+        private void showPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm((int)dataGridView1.CurrentRow.Cells[1].Value);
+            frm.ShowDialog();
+        }
+
+        private void showContactDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm((int)dataGridView1.CurrentRow.Cells[0].Value);
+            frm.ShowDialog();
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Gymnasium.User_Forms
             if (!this.ValidateChildren())
             {
                 //Here we dont continue becuase the form is not valid
-                MessageBox.Show("Some fileds are not valide!, put the mouse over the red icon(s) to see the error",
+                MessageBox.Show("Some fields are not valid!, put the mouse over the red icon(s) to see the error",
                     "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
 
@@ -117,7 +117,7 @@ namespace Gymnasium.User_Forms
 
         private void _ResetDefualtValues()
         {
-            //this will initialize the reset the defaule values
+            //this will initialize the reset the default values
 
             if (_Mode == enMode.AddNew)
             {
@@ -156,7 +156,7 @@ namespace Gymnasium.User_Forms
 
             if (_User == null)
             {
-                MessageBox.Show("No User with ID = " + _User, "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("No User with ID = " + _UserID, "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 this.Close();
 
                 return;
@@ -170,68 +170,68 @@ namespace Gymnasium.User_Forms
             chkIsActive.Checked = _User.IsActive;
             ctrlPersonInfoCardWithFilter1.LoadPersonInfo(_User.PersonID);
 
-            if (_User.Permissions == 4092)
+            if (_User.Permissions == (int)clsUsers.enPermissions.All)
             {
                 chkAll.Checked = true;
             }
             else
             {
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 1))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.People))
                 {
                     chkPeople.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 2))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.Users))
                 {
                     chkUsers.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 4))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.Members))
                 {
                     chkMembers.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 8))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.Sports))
                 {
                     chkSports.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 16))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.MemberInstructor))
                 {
                     chkMemberInstruct.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 32))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.SubscriptionPeriods))
                 {
                     chkSubPeriod.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 64))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.Payments))
                 {
                     chkPayments.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 128))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.EmergencyContacts))
                 {
                     chkEmergContc.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 256))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.BeltRank))
                 {
                     chkBeltRank.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 512))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.BeltTests))
                 {
                     chkBeltTests.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 1024))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.Instructors))
                 {
                     chkInstructors.Checked = true;
                 }
 
-                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, 2048))
+                if (clsValidation.IsUserHaveThisPermission(_User.Permissions, (int)clsUsers.enPermissions.ExpiredSubscriptions))
                 {
                     chkExpiredSubscriptions.Checked = true;
                 }

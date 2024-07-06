@@ -16,6 +16,8 @@ namespace GymnasiumLogicLayer
         public string Phone { get; set; }
         public string Email { get; set; }
 
+        public clsPeople _PersonInfo;
+
         public clsEmergencyContacts()
         {
             this.EmergencyContactID = -1;
@@ -36,6 +38,8 @@ namespace GymnasiumLogicLayer
             this.Relationship = relationship;
             this.Phone = phone;
             this.Email = email;
+
+            _PersonInfo = clsPeople.FindByID(personID);
 
             _Mode = enMode.Update;
         }
@@ -101,6 +105,12 @@ namespace GymnasiumLogicLayer
         {
             return clsEmergencyContactsData.IsEmergencyContactExistByID(emergencyContactID);
         }
+
+        public static bool ExistsByIDPersonID(int PersonID)
+        {
+            return clsEmergencyContactsData.IsEmergencyContactExistByPersonID(PersonID);
+        }
+
 
         public static DataTable GetAllEmergencyContacts()
         {

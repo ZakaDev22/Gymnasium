@@ -54,6 +54,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.chkQueckSearch = new System.Windows.Forms.CheckBox();
             this.btnCLose = new System.Windows.Forms.Button();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -102,7 +103,6 @@
             this.btnFindPerson = new System.Windows.Forms.Button();
             this.btnExpiredSubscriptions = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.chkQueckSearch = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -510,6 +510,24 @@
             this.splitContainer1.Size = new System.Drawing.Size(832, 702);
             this.splitContainer1.SplitterDistance = 361;
             this.splitContainer1.TabIndex = 5;
+            // 
+            // chkQueckSearch
+            // 
+            this.chkQueckSearch.AutoSize = true;
+            this.chkQueckSearch.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+            this.chkQueckSearch.FlatAppearance.BorderSize = 3;
+            this.chkQueckSearch.FlatAppearance.CheckedBackColor = System.Drawing.Color.Black;
+            this.chkQueckSearch.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.chkQueckSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Lime;
+            this.chkQueckSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkQueckSearch.ForeColor = System.Drawing.Color.Red;
+            this.chkQueckSearch.Location = new System.Drawing.Point(650, 330);
+            this.chkQueckSearch.Name = "chkQueckSearch";
+            this.chkQueckSearch.Size = new System.Drawing.Size(117, 17);
+            this.chkQueckSearch.TabIndex = 2;
+            this.chkQueckSearch.Text = "Queck Search Is Of";
+            this.chkQueckSearch.UseVisualStyleBackColor = true;
+            this.chkQueckSearch.CheckedChanged += new System.EventHandler(this.chkQueckSearch_CheckedChanged);
             // 
             // btnCLose
             // 
@@ -1099,24 +1117,6 @@
             this.label3.Size = new System.Drawing.Size(194, 28);
             this.label3.TabIndex = 0;
             this.label3.Text = "Quick Search :";
-            // 
-            // chkQueckSearch
-            // 
-            this.chkQueckSearch.AutoSize = true;
-            this.chkQueckSearch.FlatAppearance.BorderColor = System.Drawing.Color.Red;
-            this.chkQueckSearch.FlatAppearance.BorderSize = 3;
-            this.chkQueckSearch.FlatAppearance.CheckedBackColor = System.Drawing.Color.Black;
-            this.chkQueckSearch.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.chkQueckSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Lime;
-            this.chkQueckSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkQueckSearch.ForeColor = System.Drawing.Color.Red;
-            this.chkQueckSearch.Location = new System.Drawing.Point(619, 330);
-            this.chkQueckSearch.Name = "chkQueckSearch";
-            this.chkQueckSearch.Size = new System.Drawing.Size(117, 17);
-            this.chkQueckSearch.TabIndex = 2;
-            this.chkQueckSearch.Text = "Queck Search Is Of";
-            this.chkQueckSearch.UseVisualStyleBackColor = true;
-            this.chkQueckSearch.CheckedChanged += new System.EventHandler(this.chkQueckSearch_CheckedChanged);
             // 
             // ShowMainScreenFormcs
             // 

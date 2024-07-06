@@ -45,7 +45,7 @@
             this.lbEndDate = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.lbMemberID = new System.Windows.Forms.Label();
+            this.lbisPaid = new System.Windows.Forms.Label();
             this.lbStartDate = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbPaymentID = new System.Windows.Forms.Label();
@@ -141,7 +141,7 @@
             this.groupBox1.Controls.Add(this.lbEndDate);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.lbMemberID);
+            this.groupBox1.Controls.Add(this.lbisPaid);
             this.groupBox1.Controls.Add(this.lbStartDate);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.lbPaymentID);
@@ -161,7 +161,7 @@
             this.chkIsPaid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkIsPaid.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkIsPaid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.chkIsPaid.Location = new System.Drawing.Point(231, 175);
+            this.chkIsPaid.Location = new System.Drawing.Point(171, 176);
             this.chkIsPaid.Name = "chkIsPaid";
             this.chkIsPaid.Size = new System.Drawing.Size(123, 35);
             this.chkIsPaid.TabIndex = 27;
@@ -257,16 +257,17 @@
             this.label5.TabIndex = 26;
             this.label5.Text = "End Date :";
             // 
-            // lbMemberID
+            // lbisPaid
             // 
-            this.lbMemberID.AutoSize = true;
-            this.lbMemberID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbMemberID.ForeColor = System.Drawing.Color.Black;
-            this.lbMemberID.Location = new System.Drawing.Point(167, 133);
-            this.lbMemberID.Name = "lbMemberID";
-            this.lbMemberID.Size = new System.Drawing.Size(55, 24);
-            this.lbMemberID.TabIndex = 25;
-            this.lbMemberID.Text = "[???]";
+            this.lbisPaid.AutoSize = true;
+            this.lbisPaid.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbisPaid.ForeColor = System.Drawing.Color.Black;
+            this.lbisPaid.Location = new System.Drawing.Point(290, 184);
+            this.lbisPaid.Name = "lbisPaid";
+            this.lbisPaid.Size = new System.Drawing.Size(63, 24);
+            this.lbisPaid.TabIndex = 25;
+            this.lbisPaid.Text = " : Yes";
+            this.lbisPaid.Visible = false;
             // 
             // lbStartDate
             // 
@@ -340,7 +341,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lbSubPeriodID;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label lbMemberID;
+        private System.Windows.Forms.Label lbisPaid;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lbPaymentID;
         private System.Windows.Forms.Label label10;
