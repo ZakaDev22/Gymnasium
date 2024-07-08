@@ -41,6 +41,16 @@ namespace Gymnasium.People_Forms
             }
         }
 
+        public event Action<bool> OnAddNewPerson;
+        protected virtual void AddNewPerson(bool IsPersonAdded)
+        {
+            Action<bool> handler = OnAddNewPerson;
+            if (handler != null)
+            {
+                handler(IsPersonAdded); // Raise the event with the parameter
+            }
+        }
+
         // try The New Way Of The Events  To OverRide This Tow Old Ways Of The Events Event If It Works
 
 
@@ -56,6 +66,11 @@ namespace Gymnasium.People_Forms
                 _ShowAddPerson = value;
                 btnAddNewPerson.Visible = _ShowAddPerson;
             }
+        }
+
+        public void PerformSearchClick()
+        {
+            btnFind.PerformClick();
         }
 
         private bool _FilterEnabled = true;
@@ -124,6 +139,9 @@ namespace Gymnasium.People_Forms
             cbFilterBy.SelectedIndex = 1;
             txtFilterValue.Text = PersonID.ToString();
             ctrlPersonInfoCard1.LoadPersonInfo(PersonID);
+
+            // rise The Event To Tell The Form That The Data Is Back 
+            OnAddNewPerson?.Invoke(true);
         }
 
         public void FilterFocus()

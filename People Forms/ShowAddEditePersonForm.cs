@@ -74,7 +74,7 @@ namespace Gymnasium.People_Forms
 
             if (_Person == null)
             {
-                MessageBox.Show($"this Form Will Be Closed Because  Contact With {_Person.PersonID} Is Not Found :-( ");
+                MessageBox.Show($"this Form Will Be Closed Because  Contact With {_Person.PersonID} Is Not Found :-( ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 return;
             }
@@ -92,19 +92,11 @@ namespace Gymnasium.People_Forms
             txtAddress.Text = _Person.Address;
             cbCountries.SelectedIndex = (_Person.CountryID - 1);
 
-            if (_Person.Gender == 0)
-            {
-                rbMale.Checked = true;
-            }
-            else
-            {
-                rbFemale.Checked = true;
-            }
+            rbMale.Checked = _Person.Gender == 0 ? true : false;
+            rbFemale.Checked = rbMale.Checked == false ? true : false;
 
             if (_Person.ImagePath != "")
-            {
                 pictureBox1.Load(_Person.ImagePath);
-            }
 
             lnkRemoveImage.Visible = (_Person.ImagePath != "");
         }
@@ -117,35 +109,22 @@ namespace Gymnasium.People_Forms
         private void rbMale_CheckedChanged(object sender, EventArgs e)
         {
             if (rbMale.Checked)
-            {
                 pictureBox1.Image = Resources.Male_512;
-            }
         }
 
         private void rbFemale_CheckedChanged(object sender, EventArgs e)
         {
-
             if (rbFemale.Checked)
-            {
                 pictureBox1.Image = Resources.Female_512;
-            }
         }
 
         private void btnClose_Click_1(object sender, EventArgs e)
         {
-            //int ID = _Person.PersonID;
-
-            //DataBack?.Invoke(ID);
-
             this.Close();
         }
 
         private void btnCLose2_Click(object sender, EventArgs e)
         {
-            //int ID = _Person.PersonID;
-
-            //DataBack?.Invoke(ID);
-
             this.Close();
         }
 
@@ -169,32 +148,23 @@ namespace Gymnasium.People_Forms
             _Person.Phone = txtPhone.Text;
             _Person.CountryID = CountryID;
 
-            if (rbMale.Checked)
-            {
-                _Person.Gender = 0;
-            }
-            else
-            {
-                _Person.Gender = 1;
-            }
+            _Person.Gender = rbMale.Checked == true ? (short)0 : (short)1;
 
             if (pictureBox1.ImageLocation != null)
-            {
                 _Person.ImagePath = pictureBox1.ImageLocation;
-            }
             else
                 _Person.ImagePath = "";
 
             if (_Person.Save())
             {
-                MessageBox.Show("Data Saved Successfully.");
+                MessageBox.Show("Data Saved Successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Trigger the event to send data back to the caller form.
                 DataBack?.Invoke(this, _Person.PersonID);
             }
             else
             {
-                MessageBox.Show("Error! : Data Is Not Saved Successfully.");
+                MessageBox.Show("Error! : Data Is Not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             _Mode = EnMode.Update;

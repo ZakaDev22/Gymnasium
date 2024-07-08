@@ -104,6 +104,7 @@ namespace Gymnasium.People_Forms
             lblCountry.Text = "[????]";
             lblAddress.Text = "[????]";
             pbPersonImage.Image = Resources.Male_512;
+            llEditPersonInfo.Enabled = false;
 
         }
 

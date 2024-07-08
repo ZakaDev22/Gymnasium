@@ -202,5 +202,16 @@ namespace GymnasiumLogicLayer
         {
             return clsUsersData.GetPagedUsers(pageNumber, pageSize, out totalCount);
         }
+
+        public static bool SetUserAsActiveOrInactive(int UserID, bool ActiveOrNot)
+        {
+            return clsUsersData.SetUserAsActiveOrInactive(UserID, ActiveOrNot);
+        }
+
+        // New method to check if member is active
+        public static bool IsUserActive(int UserID)
+        {
+            return clsUsersData.IsUserActive(UserID);
+        }
     }
 }

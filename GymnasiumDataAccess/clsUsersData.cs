@@ -424,5 +424,68 @@ namespace GymnasiumDataAccess
             }
             return false;
         }
+
+
+        public static bool IsUserActive(int UserID)
+        {
+
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_Users_IsUserActive", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@UserID", UserID);
+
+                        connection.Open();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            return reader.HasRows;
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return false;
+        }
+
+        public static bool SetUserAsActiveOrInactive(int UserID, bool isActiveOrNot)
+        {
+            int rowsAffected = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("sp_Users_SetUserAsActiveOrInactive", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@UserID", UserID);
+
+                    command.Parameters.AddWithValue("@Result", isActiveOrNot);
+
+                    connection.Open();
+                    rowsAffected = command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return rowsAffected > 0;
+        }
     }
 }

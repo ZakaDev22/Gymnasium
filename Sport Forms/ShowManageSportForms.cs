@@ -12,22 +12,15 @@ namespace Gymnasium.Sport_Forms
             InitializeComponent();
             LoadPagedData();
         }
-        //=========================================================
 
-        //private int currentPage = 1;
-        //private int pageSize = 10;
-        //private int totalRecords = 0;
         private DataTable dt;
 
 
         private void LoadPagedData()
         {
-            // dt = clsUsers.GetPagedUsers(currentPage, pageSize, out totalRecords);
 
             dt = clsSports.GetAllSports();
             dataGridView1.DataSource = dt;
-
-            // Update Hidders. for Every column
 
             if (dataGridView1.Rows.Count > 0)
             {
@@ -42,22 +35,13 @@ namespace Gymnasium.Sport_Forms
                 dataGridView1.Columns[2].Width = 345;
 
             }
-        }
 
-
-        private void ShowManageSportForms_Load(object sender, EventArgs e)
-        {
-
+            lbRecords.Text = dt.Rows.Count.ToString();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

@@ -23,8 +23,6 @@ namespace Gymnasium
     {
         private LoginForm _loginForm;
 
-        private ShowManagePeopleForm _Form;
-
         public ShowMainScreenFormcs(LoginForm loginForm)
         {
             InitializeComponent();
@@ -360,13 +358,25 @@ namespace Gymnasium
             }
             else
             {
-                btnFindPerson.Location = new Point(37, 232);
-                btnFindUser.Location = new Point(37, 285);
+                btnFindPerson.Location = new Point(37, 242);
+                btnFindUser.Location = new Point(37, 284);
 
                 splitContainer2.SplitterDistance = 530;
 
                 chkQueckSearch.Text = "Quick Search Is OF";
             }
+        }
+
+        private void btnDeletedMembers_Click(object sender, EventArgs e)
+        {
+            ShowDeletedMembersForm frm = new ShowDeletedMembersForm();
+            frm.ShowDialog();
+        }
+
+        private void btnFindUser_Click(object sender, EventArgs e)
+        {
+            ShowFindUserForm showFindUserForm = new ShowFindUserForm();
+            showFindUserForm.ShowDialog();
         }
     }
 }

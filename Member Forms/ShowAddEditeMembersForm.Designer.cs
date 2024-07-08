@@ -42,7 +42,6 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.ctrlPersonInfoCardWithFilter1 = new Gymnasium.People_Forms.ctrlPersonInfoCardWithFilter();
             this.lbPaumentID2 = new System.Windows.Forms.Label();
             this.lbPaymentID = new System.Windows.Forms.Label();
             this.pcPaymentID = new System.Windows.Forms.PictureBox();
@@ -54,6 +53,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btnAddNewEmergencyContact = new System.Windows.Forms.Button();
+            this.ctrlPersonInfoCardWithFilter1 = new Gymnasium.People_Forms.ctrlPersonInfoCardWithFilter();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
@@ -209,17 +209,6 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // ctrlPersonInfoCardWithFilter1
-            // 
-            this.ctrlPersonInfoCardWithFilter1.FilterEnabled = true;
-            this.ctrlPersonInfoCardWithFilter1.Location = new System.Drawing.Point(23, 23);
-            this.ctrlPersonInfoCardWithFilter1.Name = "ctrlPersonInfoCardWithFilter1";
-            this.ctrlPersonInfoCardWithFilter1.ShowAddPerson = true;
-            this.ctrlPersonInfoCardWithFilter1.Size = new System.Drawing.Size(837, 399);
-            this.ctrlPersonInfoCardWithFilter1.TabIndex = 146;
-            this.ctrlPersonInfoCardWithFilter1.OnPersonSelected += new System.Action<int>(this.ctrlPersonInfoCardWithFilter1_OnPersonSelected);
-            this.ctrlPersonInfoCardWithFilter1.OntxtFilterValueEmpty += new System.Action<bool>(this.ctrlPersonInfoCardWithFilter1_OntxtFilterValueEmpty);
-            // 
             // lbPaumentID2
             // 
             this.lbPaumentID2.AutoSize = true;
@@ -344,17 +333,29 @@
             this.btnAddNewEmergencyContact.UseVisualStyleBackColor = false;
             this.btnAddNewEmergencyContact.Click += new System.EventHandler(this.btnAddNewEmergencyContact_Click);
             // 
+            // ctrlPersonInfoCardWithFilter1
+            // 
+            this.ctrlPersonInfoCardWithFilter1.FilterEnabled = true;
+            this.ctrlPersonInfoCardWithFilter1.Location = new System.Drawing.Point(15, 16);
+            this.ctrlPersonInfoCardWithFilter1.Name = "ctrlPersonInfoCardWithFilter1";
+            this.ctrlPersonInfoCardWithFilter1.ShowAddPerson = true;
+            this.ctrlPersonInfoCardWithFilter1.Size = new System.Drawing.Size(837, 399);
+            this.ctrlPersonInfoCardWithFilter1.TabIndex = 178;
+            this.ctrlPersonInfoCardWithFilter1.OnPersonSelected += new System.Action<int>(this.ctrlPersonInfoCardWithFilter1_OnPersonSelected_1);
+            this.ctrlPersonInfoCardWithFilter1.OntxtFilterValueEmpty += new System.Action<bool>(this.ctrlPersonInfoCardWithFilter1_OntxtFilterValueEmpty_1);
+            this.ctrlPersonInfoCardWithFilter1.OnAddNewPerson += new System.Action<bool>(this.ctrlPersonInfoCardWithFilter1_OnAddNewPerson);
+            // 
             // ShowAddEditeMembersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(872, 595);
+            this.Controls.Add(this.ctrlPersonInfoCardWithFilter1);
             this.Controls.Add(this.btnAddNewEmergencyContact);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.ctrlPersonInfoCardWithFilter1);
             this.Controls.Add(this.cbSports);
             this.Controls.Add(this.pictureBox5);
             this.Controls.Add(this.lbSportFees);
@@ -403,7 +404,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.ComboBox cbSports;
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private People_Forms.ctrlPersonInfoCardWithFilter ctrlPersonInfoCardWithFilter1;
         private System.Windows.Forms.PictureBox pcPaymentID;
         private System.Windows.Forms.Label lbPaymentID;
         private System.Windows.Forms.Label lbPaumentID2;
@@ -415,5 +415,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button btnAddNewEmergencyContact;
+        private People_Forms.ctrlPersonInfoCardWithFilter ctrlPersonInfoCardWithFilter1;
     }
 }

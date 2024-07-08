@@ -47,9 +47,6 @@ namespace GymnasiumLogicLayer
         // Data Access Methods
         private bool _AddNewMember()
         {
-            // Implement logic to add new member to the database
-            // throw new NotImplementedException
-
             this.MemberID = clsMembersData.AddNewMember(this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
 
             return this.MemberID != -1;
@@ -57,9 +54,6 @@ namespace GymnasiumLogicLayer
 
         private bool _UpdateMember()
         {
-            // Implement logic to update existing member in the database
-            // throw new NotImplementedException();
-
             return clsMembersData.UpdateMember(this.MemberID, this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
         }
 
@@ -92,10 +86,13 @@ namespace GymnasiumLogicLayer
 
         public static bool DeleteMember(int memberID)
         {
-            // Implement logic to delete member from the database
-            //  throw new NotImplementedException();
-
             return clsMembersData.DeleteMember(memberID);
+        }
+
+        // Set The Old Member To In Deleted In Case He Return To The Gym After  Months
+        public static bool SetMemberToInDeleted(int memberID)
+        {
+            return clsMembersData.SetMemberToInDeleted(memberID);
         }
 
         public static DataTable GetAllMembers()
@@ -109,27 +106,30 @@ namespace GymnasiumLogicLayer
             return clsMembersData.GetPagedMembers(pageNumber, pageSize, out totalCount);
         }
 
+        // Get Deleted Members
+        public static DataTable GetAllDeletedMembers()
+        {
+            return clsMembersData.GetAllDeletedMembers();
+        }
+
+        // New method to get paged Deleted members
+        public static DataTable GetPagedDeletedMembers(int pageNumber, int pageSize, out int totalCount)
+        {
+            return clsMembersData.GetPagedDeletedMembers(pageNumber, pageSize, out totalCount);
+        }
+
         public static bool IsMemberExistsByID(int memberID)
         {
-            // Implement logic to check if member exists by ID in the database
-            // throw new NotImplementedException();
-
             return clsMembersData.IsMemberExistsByID(memberID);
         }
 
         public static bool IsMemberExistsByPersnonID(int PersonID)
         {
-            // Implement logic to check if member exists by ID in the database
-            // throw new NotImplementedException();
-
             return clsMembersData.IsMemberExistsByPersonID(PersonID);
         }
 
         public static clsMembers GetMemberByID(int MemberID)
         {
-            // Implement logic to retrieve all members from the database
-            // throw new NotImplementedException();
-
             int personID = -1;
             int sportID = -1;
             int emergencyContactID = -1;
@@ -140,20 +140,13 @@ namespace GymnasiumLogicLayer
                           ref emergencyContactID, ref joinDate, ref isActive);
 
             if (isfound)
-            {
                 return new clsMembers(MemberID, personID, sportID, emergencyContactID, joinDate, isActive);
-            }
             else
-            {
                 return null;
-            }
         }
 
         public static clsMembers FindMemberByPersonID(int PersonID)
         {
-            // Implement logic to retrieve all members from the database
-            // throw new NotImplementedException();
-
             int Memberid = -1;
             int sportID = -1;
             int emergencyContactID = -1;
@@ -164,27 +157,19 @@ namespace GymnasiumLogicLayer
                           ref emergencyContactID, ref joinDate, ref isActive);
 
             if (isfound)
-            {
                 return new clsMembers(Memberid, PersonID, sportID, emergencyContactID, joinDate, isActive);
-            }
             else
-            {
                 return null;
-            }
         }
 
         public static bool SetMemberAsActiveOrInactive(int memberID, bool ActiveOrNot)
         {
-            // Implement logic to set member as Active Or inactive in the database
-            // throw new NotImplementedException();
-
             return clsMembersData.SetMemberAsActiveOrInactive(memberID, ActiveOrNot);
         }
 
         // New method to check if member is active
         public static bool IsMemberActive(int memberID)
         {
-
             return clsMembersData.IsMemberActive(memberID);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Gymnasium.People_Forms;
+﻿using Gymnasium.Payments_Forms;
+using Gymnasium.People_Forms;
 using GymnasiumLogicLayer;
 using System;
 using System.Data;
@@ -7,13 +8,11 @@ using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
 {
-    public partial class ShowManageMembersForm : Form
+    public partial class ShowDeletedMembersForm : Form
     {
-        public ShowManageMembersForm()
+        public ShowDeletedMembersForm()
         {
             InitializeComponent();
-            rbByPages.Checked = true;
-            LoadPagedData();
         }
 
         private int currentPage = 1;
@@ -21,14 +20,13 @@ namespace Gymnasium.Member_Forms
         private int totalRecords = 0;
         private DataTable dt;
 
-
         private void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsMembers.GetPagedMembers(currentPage, pageSize, out totalRecords);
+                dt = clsMembers.GetPagedDeletedMembers(currentPage, pageSize, out totalRecords);
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -36,7 +34,7 @@ namespace Gymnasium.Member_Forms
             else
             {
                 // Load all data
-                dt = clsMembers.GetAllMembers();
+                dt = clsMembers.GetAllDeletedMembers();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -62,7 +60,10 @@ namespace Gymnasium.Member_Forms
             btnRight.BackColor = btnRight.Enabled ? Color.GreenYellow : Color.Red;
         }
 
-
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
         private void btnLeft_Click(object sender, EventArgs e)
         {
@@ -82,91 +83,9 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-
-        /// <summary>
-        /// Handles the SelectedIndexChanged event of the cbFilterBy combo box.
-        /// Updates the visibility and content of the cbIsActive combo box and txtFilterValue text box based on the selected index.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The event data.</param>
-        private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbFilterBy.SelectedIndex == 0)
-            {
-                cbIsActive.Visible = false;
-                txtFilterValue.Visible = false;
-            }
-            else
-            {
-                if (cbFilterBy.SelectedIndex == 6)
-                {
-                    txtFilterValue.Visible = false;
-                    cbIsActive.Visible = true;
-                    cbIsActive.SelectedIndex = 0;
-                }
-                else
-                {
-                    cbIsActive.Visible = false;
-                    txtFilterValue.Visible = true;
-                    txtFilterValue.Clear();
-                    txtFilterValue.Focus();
-                }
-
-            }
-        }
-
-        private void cbIsActive_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string FilterColumn = "IsActive";
-            short FilterValue = 0;
-
-            //Map Selected Filter to real Column name 
-            switch (cbIsActive.Text)
-            {
-
-                case "Active.":
-                    FilterValue = 1;
-                    break;
-
-                case "Not Active.":
-                    FilterValue = 0;
-                    break;
-
-                default:
-                    FilterColumn = "None";
-                    break;
-
-            }
-
-            //Reset the filters in case nothing selected or filter value conains nothing.
-            if (FilterColumn == "None")
-            {
-                dt.DefaultView.RowFilter = "";
-                lbRecords.Text = dataGridView1.Rows.Count.ToString();
-                return;
-            }
-
-
-            // if (FilterColumn == "PersonID" || FilterColumn == "UserID" || FilterColumn == "Permissions")
-            //in this case we deal with integer not string.
-
-            // in this case there is only true or false Cases Thats Whay I Dont Ned To check With If Statement
-            dt.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, FilterValue);
-
-            //else
-            //    dt.DefaultView.RowFilter = string.Format("[{0}] LIKE '{1}%'", FilterColumn, txtFilterValue.Text.Trim());
-
-            lbRecords.Text = dataGridView1.Rows.Count.ToString();
-        }
 
         private void txtFilterValue_TextChanged(object sender, EventArgs e)
         {
-
             string FilterColumn = "";
             //Map Selected Filter to real Column name 
             switch (cbFilterBy.Text)
@@ -218,6 +137,83 @@ namespace Gymnasium.Member_Forms
             lbRecords.Text = dataGridView1.Rows.Count.ToString();
         }
 
+        /// <summary>
+        /// Handles the SelectedIndexChanged event of the cbFilterBy combo box.
+        /// Updates the visibility and content of the cbIsActive combo box and txtFilterValue text box based on the selected index.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbFilterBy.SelectedIndex == 0)
+            {
+                cbIsActive.Visible = false;
+                txtFilterValue.Visible = false;
+            }
+            else
+            {
+                if (cbFilterBy.SelectedIndex == 6)
+                {
+                    txtFilterValue.Visible = false;
+                    cbIsActive.Visible = true;
+                    cbIsActive.SelectedIndex = 0;
+                }
+                else
+                {
+                    cbIsActive.Visible = false;
+                    txtFilterValue.Visible = true;
+                    txtFilterValue.Clear();
+                    txtFilterValue.Focus();
+                }
+
+            }
+        }
+
+        private void cbIsActive_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            string FilterColumn = "IsActive";
+            short FilterValue = 0;
+
+            //Map Selected Filter to real Column name 
+            switch (cbIsActive.Text)
+            {
+
+                case "Active.":
+                    FilterValue = 1;
+                    break;
+
+                case "Not Active.":
+                    FilterValue = 0;
+                    break;
+
+                default:
+                    FilterColumn = "None";
+                    break;
+
+            }
+
+            //Reset the filters in case nothing selected or filter value conains nothing.
+            if (FilterColumn == "None")
+            {
+                dt.DefaultView.RowFilter = "";
+                lbRecords.Text = dataGridView1.Rows.Count.ToString();
+                return;
+            }
+
+
+            // if (FilterColumn == "PersonID" || FilterColumn == "UserID" || FilterColumn == "Permissions")
+            //in this case we deal with integer not string.
+
+            // in this case there is only true or false Cases Thats Whay I Dont Ned To check With If Statement
+            dt.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, FilterValue);
+
+            //else
+            //    dt.DefaultView.RowFilter = string.Format("[{0}] LIKE '{1}%'", FilterColumn, txtFilterValue.Text.Trim());
+
+            lbRecords.Text = dataGridView1.Rows.Count.ToString();
+        }
+
         private void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             pageSize = Convert.ToInt32(cbPageSize.SelectedItem);
@@ -260,15 +256,10 @@ namespace Gymnasium.Member_Forms
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The event data.</param>
-        private void ShowManageMembersForm_Load(object sender, EventArgs e)
+        private void ShowDeletedMembersForm_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex = 0;
-        }
-
-        private void btnAddMember_Click(object sender, EventArgs e)
-        {
-            ShowAddEditeMembersForm frm = new ShowAddEditeMembersForm();
-            frm.ShowDialog();
+            rbByPages.Checked = true;
             LoadPagedData();
         }
 
@@ -282,32 +273,45 @@ namespace Gymnasium.Member_Forms
         {
             ShowAddEditeMembersForm frm = new ShowAddEditeMembersForm();
             frm.ShowDialog();
-            LoadPagedData();
         }
 
-        private void updateMemberToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SetMemberToActiveMenuItem_Click(object sender, EventArgs e)
         {
-            int MemeberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
-            ShowAddEditeMembersForm frm = new ShowAddEditeMembersForm(MemeberID);
-            frm.ShowDialog();
-            LoadPagedData();
-        }
+            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
-        private void deleteMemberToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to delete this member?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+            if (MessageBox.Show("Are you sure you want to Set this member to Active AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.DeleteMember((int)dataGridView1.CurrentRow.Cells[0].Value))
+                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
                 {
-                    MessageBox.Show("Member was deleted successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Member was  Set To Active  successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();
                 }
                 else
-                    MessageBox.Show("Error, Member was not deleted", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error, Member was not Set To Active", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                MessageBox.Show("Member was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(" set Member to Active was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void SetMemberToInActiveMenuItem_Click(object sender, EventArgs e)
+        {
+            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+
+            if (MessageBox.Show("Are you sure you want to Set this member to InActive AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+            {
+                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
+                {
+                    MessageBox.Show("Member was  Set To InActive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPagedData();
+                }
+                else
+                    MessageBox.Show("Error, Member was not Set To InActive", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(" set Member to InActive was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -341,41 +345,28 @@ namespace Gymnasium.Member_Forms
         {
             int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
-            if (MessageBox.Show("Are you sure you want to Set this member to Active AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+            if (MessageBox.Show("Are you sure you want to Set this member to InDeleted Again?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
+                if (clsMembers.SetMemberToInDeleted(MemberID))
                 {
-                    MessageBox.Show("Member was  Set To Active  successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Member was  Set To InDeleted successfully,\n Now Renew The Subscription For This Member \n" +
+                        "Tap Ok To Go To Payment Form", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    clsMembers _Member = clsMembers.GetMemberByID(MemberID);
+                    AddEditePaymentForm frm = new AddEditePaymentForm(MemberID, _Member._SportInfo.Fees);
+                    frm.ShowDialog();
+
                     LoadPagedData();
                 }
                 else
-                    MessageBox.Show("Error, Member was not Set To Active", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error, Member was not Set To InDeleted", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                MessageBox.Show(" set Member to Active was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void toolStripMenuItem4_Click(object sender, EventArgs e)
-        {
-
-            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
-
-            if (MessageBox.Show("Are you sure you want to Set this member to InActive AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
-            {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
-                {
-                    MessageBox.Show("Member was  Set To InActive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPagedData();
-                }
-                else
-                    MessageBox.Show("Error, Member was not Set To InActive", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show(" set Member to InActive was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(" set Member to InDeleted was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }
 }
+
+

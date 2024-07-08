@@ -214,8 +214,6 @@ namespace Gymnasium.Emergency_Contacts_Forms
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
-
-
         private void btnAddemergencyContact_Click(object sender, EventArgs e)
         {
             AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm();

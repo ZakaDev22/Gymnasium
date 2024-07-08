@@ -25,7 +25,6 @@ namespace Gymnasium.Payments_Forms
         {
             InitializeComponent();
             _PaymentID = PaymentID;
-
             _Mode = enMode.Update;
         }
 
@@ -35,7 +34,6 @@ namespace Gymnasium.Payments_Forms
             InitializeComponent();
             _MemberID = MemberID;
             _Amount = Amount;
-
             _Mode = enMode.AddNew;
         }
 
@@ -49,7 +47,8 @@ namespace Gymnasium.Payments_Forms
             txtAmount.Text = _Amount.ToString();
             txtAmount.Enabled = false;
 
-            // btnSave.Enabled = true;
+            lbPaymentDate.Text = DateTime.Now.ToString();
+
         }
 
         private void SetFormForUpdatePayments()
@@ -57,23 +56,21 @@ namespace Gymnasium.Payments_Forms
             _Payment = clsPayments.FindByID(_PaymentID);
 
             ctrlMemberCardInfoWithFilter1.LoadMemberInfo(_Payment.MemberID);
-            ctrlMemberCardInfoWithFilter1.Enabled = false;
+            ctrlMemberCardInfoWithFilter1.FilterEnabled = false;
 
             txtAmount.Text = _Payment.Amount.ToString();
             txtAmount.Enabled = false;
 
             lbPaymentID.Text = _Payment.PaymentID.ToString();
+            lbPaymentDate.Text = _Payment.Date.ToString();
 
             if (_Payment.Amount < 150)
-            {
                 rbOneMonth.Checked = true;
-            }
             else
-            {
                 rbThreeMonths.Checked = true;
-            }
 
-            gbPeriodMonths.Enabled = false;
+            rbOneMonth.Enabled = false;
+            rbThreeMonths.Enabled = false;
 
             btnSave.Enabled = false;
         }
@@ -87,18 +84,12 @@ namespace Gymnasium.Payments_Forms
         private void ctrlMemberCardInfoWithFilter1_OnMemberSelected(int obj)
         {
             if (obj != -1)
-            {
                 btnSave.Enabled = true;
-
-                // txtAmount.Enabled = true;
-            }
         }
 
         private void ctrlMemberCardInfoWithFilter1_OntxtFilterValueEmpty(bool obj)
         {
             btnSave.Enabled = obj == true ? false : true;
-
-            // txtAmount.Enabled = obj == true ? false : true;
         }
 
         // Handles the closing of a subform event.
@@ -158,26 +149,18 @@ namespace Gymnasium.Payments_Forms
         private void AddEditePaymentForm_Load(object sender, EventArgs e)
         {
             if (_Mode == enMode.AddNew)
-            {
                 SetFormForAddNewPayments();
-            }
             else
-            {
                 SetFormForUpdatePayments();
-            }
         }
 
 
         private void rbOneMonth_CheckedChanged(object sender, EventArgs e)
         {
             if (rbOneMonth.Checked)
-            {
                 _SubMonths = 1;
-            }
             else
-            {
                 _SubMonths = 3;
-            }
         }
     }
 }

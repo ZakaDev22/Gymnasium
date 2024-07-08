@@ -25,7 +25,20 @@ namespace Gymnasium.User_Forms
             _User = clsUsers.FindByID(UserID);
             if (_User == null)
             {
-                _ResetPersonInfo();
+                _ResetUserInfo();
+                MessageBox.Show("No User with UserID = " + UserID.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _FillUserInfo();
+        }
+
+        public void LoadUserInfoByPersonID(int PersonID)
+        {
+            _User = clsUsers.FindUserByPersonID(PersonID);
+            if (_User == null)
+            {
+                _ResetUserInfo();
                 MessageBox.Show("No User with UserID = " + UserID.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -47,7 +60,7 @@ namespace Gymnasium.User_Forms
 
         }
 
-        private void _ResetPersonInfo()
+        public void _ResetUserInfo()
         {
 
             ctrlPersonInfoCard1.ResetPersonInfo();
@@ -55,5 +68,7 @@ namespace Gymnasium.User_Forms
             lblUserName.Text = "[???]";
             lblIsActive.Text = "[???]";
         }
+
+
     }
 }

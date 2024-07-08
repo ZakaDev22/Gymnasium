@@ -14,7 +14,8 @@ namespace Gymnasium
         public ShowManageUsersForm()
         {
             InitializeComponent();
-            //  LoadPagedData();
+            rbByPages.Checked = true;
+            LoadPagedData();
         }
 
 
@@ -204,8 +205,6 @@ namespace Gymnasium
         private void ShowManageUsersForm_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex = 0;
-            rbByPages.Checked = true;
-            LoadPagedData();
         }
 
         private void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -396,6 +395,81 @@ namespace Gymnasium
 
             ShowCHangeUserPasswordForm frm = new ShowCHangeUserPasswordForm((int)dataGridView1.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+
+            int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+
+            if ((UserID == 1) && clsGlobal._CurrentUser.UserID != 1)
+            {
+                MessageBox.Show($"Error,You Can't Set The Admin As InActive 😎💪🙄", "Are You Serious", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Make Me And My Brother Admin So That No Other User Can Update Our Information 🤣
+            if (UserID == 2 && clsGlobal._CurrentUser.UserID != 1 && clsGlobal._CurrentUser.UserID != 2)
+            {
+                MessageBox.Show($"Error,You Can't Set Hamza As InActive 😎💪🙄", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure you want to Set this User to InActive Again?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+            {
+                if (clsUsers.SetUserAsActiveOrInactive(UserID, false))
+                {
+                    MessageBox.Show("User was  Set To InActive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPagedData();
+                }
+                else
+                    MessageBox.Show("Error, User was not Set To InActive", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(" set User to InActive was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+
+            if (MessageBox.Show("Are you sure you want to Set this User to Active Again?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+            {
+                if (clsUsers.SetUserAsActiveOrInactive(UserID, true))
+                {
+                    MessageBox.Show("User was  Set To Active  successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPagedData();
+                }
+                else
+                    MessageBox.Show("Error, User was not Set To Active", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(" set User to Active was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // check if The DataGrid View has Any Row, if not Then This Code Will Not Implemented
+            if (dataGridView1.Rows.Count > 0)
+            {
+                // Set The Enabled Property Of The Context Menu Strip To True
+                contextMenuStrip1.Enabled = true;
+
+                int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+
+                bool UserActive = clsUsers.IsUserActive(UserID);
+
+                SetUserToInActivetoolStripMenuItem.Enabled = UserActive;
+
+                SetUserToActivetoolStripMenuItem.Enabled = UserActive == false;
+            }
+            else
+                contextMenuStrip1.Enabled = false;
         }
     }
 }

@@ -57,6 +57,8 @@
             this.btnAddPerson = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.pbPersonImage = new System.Windows.Forms.PictureBox();
+            this.SetUserToInActivetoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SetUserToActivetoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -73,7 +75,7 @@
             this.btnPageNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPageNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.btnPageNumber.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPageNumber.Location = new System.Drawing.Point(402, 412);
+            this.btnPageNumber.Location = new System.Drawing.Point(343, 412);
             this.btnPageNumber.Name = "btnPageNumber";
             this.btnPageNumber.Size = new System.Drawing.Size(67, 44);
             this.btnPageNumber.TabIndex = 114;
@@ -105,7 +107,7 @@
             // 
             this.lblTitle.Font = new System.Drawing.Font("Times New Roman", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lblTitle.Location = new System.Drawing.Point(287, 4);
+            this.lblTitle.Location = new System.Drawing.Point(237, 4);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(305, 54);
             this.lblTitle.TabIndex = 107;
@@ -195,7 +197,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.dataGridView1.Location = new System.Drawing.Point(157, 176);
+            this.dataGridView1.Location = new System.Drawing.Point(95, 176);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(595, 230);
@@ -209,13 +211,16 @@
             this.showPersonIDToolStripMenuItem,
             this.showUserInformationToolStripMenuItem,
             this.toolStripMenuItem1,
+            this.SetUserToInActivetoolStripMenuItem,
+            this.SetUserToActivetoolStripMenuItem,
             this.addUserToolStripMenuItem,
             this.updateUserToolStripMenuItem,
             this.deleteUserToolStripMenuItem,
             this.toolStripMenuItem2,
             this.changePasswordToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(243, 208);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(243, 272);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // showPersonIDToolStripMenuItem
             // 
@@ -340,7 +345,7 @@
             this.btnLeft.FlatAppearance.BorderSize = 0;
             this.btnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLeft.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLeft.Location = new System.Drawing.Point(329, 413);
+            this.btnLeft.Location = new System.Drawing.Point(270, 413);
             this.btnLeft.Name = "btnLeft";
             this.btnLeft.Size = new System.Drawing.Size(67, 44);
             this.btnLeft.TabIndex = 113;
@@ -356,7 +361,7 @@
             this.btnRight.FlatAppearance.BorderSize = 0;
             this.btnRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRight.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRight.Location = new System.Drawing.Point(475, 412);
+            this.btnRight.Location = new System.Drawing.Point(416, 412);
             this.btnRight.Name = "btnRight";
             this.btnRight.Size = new System.Drawing.Size(67, 44);
             this.btnRight.TabIndex = 112;
@@ -373,7 +378,7 @@
             this.btnAddPerson.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnAddPerson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAddPerson.Image = global::Gymnasium.Properties.Resources.Add_New_User_32;
-            this.btnAddPerson.Location = new System.Drawing.Point(801, 113);
+            this.btnAddPerson.Location = new System.Drawing.Point(680, 116);
             this.btnAddPerson.Name = "btnAddPerson";
             this.btnAddPerson.Size = new System.Drawing.Size(72, 57);
             this.btnAddPerson.TabIndex = 108;
@@ -387,7 +392,7 @@
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::Gymnasium.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnClose.Location = new System.Drawing.Point(738, 412);
+            this.btnClose.Location = new System.Drawing.Point(617, 412);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(135, 36);
             this.btnClose.TabIndex = 109;
@@ -400,7 +405,7 @@
             this.pbPersonImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pbPersonImage.Image = global::Gymnasium.Properties.Resources.People_400;
             this.pbPersonImage.InitialImage = null;
-            this.pbPersonImage.Location = new System.Drawing.Point(599, 4);
+            this.pbPersonImage.Location = new System.Drawing.Point(590, 4);
             this.pbPersonImage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pbPersonImage.Name = "pbPersonImage";
             this.pbPersonImage.Size = new System.Drawing.Size(162, 101);
@@ -408,11 +413,27 @@
             this.pbPersonImage.TabIndex = 106;
             this.pbPersonImage.TabStop = false;
             // 
+            // SetUserToInActivetoolStripMenuItem
+            // 
+            this.SetUserToInActivetoolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Saki_NuoveXT_2_Actions_stop_32;
+            this.SetUserToInActivetoolStripMenuItem.Name = "SetUserToInActivetoolStripMenuItem";
+            this.SetUserToInActivetoolStripMenuItem.Size = new System.Drawing.Size(242, 32);
+            this.SetUserToInActivetoolStripMenuItem.Text = "Set User To InActive";
+            this.SetUserToInActivetoolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            // 
+            // SetUserToActivetoolStripMenuItem
+            // 
+            this.SetUserToActivetoolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
+            this.SetUserToActivetoolStripMenuItem.Name = "SetUserToActivetoolStripMenuItem";
+            this.SetUserToActivetoolStripMenuItem.Size = new System.Drawing.Size(242, 32);
+            this.SetUserToActivetoolStripMenuItem.Text = "Set User To Active";
+            this.SetUserToActivetoolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
+            // 
             // ShowManageUsersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(883, 460);
+            this.ClientSize = new System.Drawing.Size(773, 460);
             this.Controls.Add(this.cbIsActive);
             this.Controls.Add(this.btnPageNumber);
             this.Controls.Add(this.btnLeft);
@@ -475,5 +496,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem changePasswordToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SetUserToInActivetoolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SetUserToActivetoolStripMenuItem;
     }
 }

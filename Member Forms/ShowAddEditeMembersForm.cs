@@ -166,20 +166,6 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void ctrlPersonInfoCardWithFilter1_OnPersonSelected(int obj)
-        {
-            if (obj != -1)
-            {
-                btnSave.Enabled = true;
-                //btnAddPayment.Enabled = true;
-            }
-        }
-
-        private void ctrlPersonInfoCardWithFilter1_OntxtFilterValueEmpty(bool obj)
-        {
-            btnSave.Enabled = obj == true ? false : true;
-            // btnAddPayment.Enabled = obj == true ? false : true;
-        }
 
 
         private void PaymentDataBack(int PaymentID)
@@ -192,6 +178,8 @@ namespace Gymnasium.Member_Forms
                 pcPaymentID.Visible = true;
                 lbPaymentID.Visible = true;
 
+                ctrlPersonInfoCardWithFilter1.FilterEnabled = false;
+                txtEmergencyContact.Enabled = false;
                 _PaymentID = PaymentID;
                 lbPaymentID.Text = PaymentID.ToString();
 
@@ -221,6 +209,24 @@ namespace Gymnasium.Member_Forms
             AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm();
             frm.OnEmergencyDataBack += OnEmergencyContactDataBack;
             frm.ShowDialog();
+        }
+
+        private void ctrlPersonInfoCardWithFilter1_OnAddNewPerson(bool obj)
+        {
+            // CHeck If We Add New Person From Add New Button So That We Tel This Form To Perform The Search Button Without Let The User To Click It
+            if (obj)
+                ctrlPersonInfoCardWithFilter1.PerformSearchClick();
+        }
+
+        private void ctrlPersonInfoCardWithFilter1_OnPersonSelected_1(int obj)
+        {
+            if (obj != -1)
+                btnSave.Enabled = true;
+        }
+
+        private void ctrlPersonInfoCardWithFilter1_OntxtFilterValueEmpty_1(bool obj)
+        {
+            btnSave.Enabled = obj == true ? false : true;
         }
     }
 }

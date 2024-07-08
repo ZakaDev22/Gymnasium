@@ -103,6 +103,12 @@
     <Compile Include="Member Forms\ShowAddEditeMembersForm.Designer.cs">
       <DependentUpon>ShowAddEditeMembersForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Member Forms\ShowDeletedMembersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Member Forms\ShowDeletedMembersForm.Designer.cs">
+      <DependentUpon>ShowDeletedMembersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Member Forms\ShowFindMemberForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,6 +231,12 @@
     <Compile Include="User Forms\ctrlUserCard.Designer.cs">
       <DependentUpon>ctrlUserCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="User Forms\ctrlUserCardWithFilter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User Forms\ctrlUserCardWithFilter.Designer.cs">
+      <DependentUpon>ctrlUserCardWithFilter.cs</DependentUpon>
+    </Compile>
     <Compile Include="User Forms\ShowAddEditeUserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,17 +249,17 @@
     <Compile Include="User Forms\ShowCHangeUserPasswordForm.Designer.cs">
       <DependentUpon>ShowCHangeUserPasswordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="User Forms\ShowFindUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="User Forms\ShowFindUserForm.Designer.cs">
+      <DependentUpon>ShowFindUserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="User Forms\ShowManageUsersForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="User Forms\ShowManageUsersForm.Designer.cs">
       <DependentUpon>ShowManageUsersForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TestForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestForm.Designer.cs">
-      <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="User Forms\ShowUserInfoForm.cs">
       <SubType>Form</SubType>
@@ -281,6 +293,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Member Forms\ShowAddEditeMembersForm.resx">
       <DependentUpon>ShowAddEditeMembersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Member Forms\ShowDeletedMembersForm.resx">
+      <DependentUpon>ShowDeletedMembersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Member Forms\ShowFindMemberForm.resx">
       <DependentUpon>ShowFindMemberForm.cs</DependentUpon>
@@ -349,17 +364,20 @@
     <EmbeddedResource Include="Subscription Peroids\ShowManageSubscriptionPeroidsForm.resx">
       <DependentUpon>ShowManageSubscriptionPeroidsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestForm.resx">
-      <DependentUpon>TestForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="User Forms\ctrlUserCard.resx">
       <DependentUpon>ctrlUserCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User Forms\ctrlUserCardWithFilter.resx">
+      <DependentUpon>ctrlUserCardWithFilter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User Forms\ShowAddEditeUserForm.resx">
       <DependentUpon>ShowAddEditeUserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User Forms\ShowCHangeUserPasswordForm.resx">
       <DependentUpon>ShowCHangeUserPasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User Forms\ShowFindUserForm.resx">
+      <DependentUpon>ShowFindUserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User Forms\ShowManageUsersForm.resx">
       <DependentUpon>ShowManageUsersForm.cs</DependentUpon>
@@ -613,6 +631,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\history.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\professional-services-icon-cancel-sign-260nw-2345962497.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Graphicloads-Polygon-Cross-2.256.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

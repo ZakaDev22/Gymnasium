@@ -12,7 +12,8 @@ namespace Gymnasium.People_Forms
         public ShowManagePeopleForm()
         {
             InitializeComponent();
-
+            rbByPages.Checked = true;
+            LoadPagedData();
         }
 
 
@@ -118,17 +119,13 @@ namespace Gymnasium.People_Forms
         /// <param name="e">The event data.</param>
         private void ShowManagePeopleForm_Load(object sender, EventArgs e)
         {
-            LoadPagedData();
             cbFilterBy.SelectedIndex = 0;
-            rbByPages.Checked = true;
-
         }
 
         private void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             pageSize = Convert.ToInt32(cbPageSize.Text);
             LoadPagedData();
-
         }
 
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)

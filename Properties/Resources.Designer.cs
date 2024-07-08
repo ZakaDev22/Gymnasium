@@ -363,6 +363,16 @@ namespace Gymnasium.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Graphicloads_Polygon_Cross_2_256 {
+            get {
+                object obj = ResourceManager.GetObject("Graphicloads-Polygon-Cross-2.256", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap group__1_ {
             get {
                 object obj = ResourceManager.GetObject("group (1)", resourceCulture);
@@ -616,6 +626,16 @@ namespace Gymnasium.Properties {
         internal static System.Drawing.Bitmap Phone_32 {
             get {
                 object obj = ResourceManager.GetObject("Phone 32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap professional_services_icon_cancel_sign_260nw_2345962497 {
+            get {
+                object obj = ResourceManager.GetObject("professional-services-icon-cancel-sign-260nw-2345962497", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

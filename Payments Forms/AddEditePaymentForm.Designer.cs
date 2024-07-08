@@ -32,8 +32,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtAmount = new System.Windows.Forms.TextBox();
-            this.ctrlMemberCardInfoWithFilter1 = new Gymnasium.Member_Forms.ctrlMemberCardInfoWithFilter();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lbPaymentDate = new System.Windows.Forms.Label();
             this.gbPeriodMonths = new System.Windows.Forms.GroupBox();
             this.rbThreeMonths = new System.Windows.Forms.RadioButton();
             this.rbOneMonth = new System.Windows.Forms.RadioButton();
@@ -43,6 +44,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.ctrlMemberCardInfoWithFilter1 = new Gymnasium.Member_Forms.ctrlMemberCardInfoWithFilter();
             this.groupBox1.SuspendLayout();
             this.gbPeriodMonths.SuspendLayout();
             this.SuspendLayout();
@@ -88,18 +90,10 @@
             this.txtAmount.Size = new System.Drawing.Size(159, 26);
             this.txtAmount.TabIndex = 25;
             // 
-            // ctrlMemberCardInfoWithFilter1
-            // 
-            this.ctrlMemberCardInfoWithFilter1.FilterEnabled = true;
-            this.ctrlMemberCardInfoWithFilter1.Location = new System.Drawing.Point(2, 1);
-            this.ctrlMemberCardInfoWithFilter1.Name = "ctrlMemberCardInfoWithFilter1";
-            this.ctrlMemberCardInfoWithFilter1.Size = new System.Drawing.Size(847, 516);
-            this.ctrlMemberCardInfoWithFilter1.TabIndex = 26;
-            this.ctrlMemberCardInfoWithFilter1.OnMemberSelected += new System.Action<int>(this.ctrlMemberCardInfoWithFilter1_OnMemberSelected);
-            this.ctrlMemberCardInfoWithFilter1.OntxtFilterValueEmpty += new System.Action<bool>(this.ctrlMemberCardInfoWithFilter1_OntxtFilterValueEmpty);
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.lbPaymentDate);
             this.groupBox1.Controls.Add(this.gbPeriodMonths);
             this.groupBox1.Controls.Add(this.txtAmount);
             this.groupBox1.Controls.Add(this.label2);
@@ -112,6 +106,28 @@
             this.groupBox1.TabIndex = 27;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Payment Informations";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.label3.Location = new System.Drawing.Point(37, 77);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(150, 24);
+            this.label3.TabIndex = 28;
+            this.label3.Text = "Payment Date :";
+            // 
+            // lbPaymentDate
+            // 
+            this.lbPaymentDate.AutoSize = true;
+            this.lbPaymentDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbPaymentDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.lbPaymentDate.Location = new System.Drawing.Point(196, 77);
+            this.lbPaymentDate.Name = "lbPaymentDate";
+            this.lbPaymentDate.Size = new System.Drawing.Size(55, 24);
+            this.lbPaymentDate.TabIndex = 27;
+            this.lbPaymentDate.Text = "[???]";
             // 
             // gbPeriodMonths
             // 
@@ -220,6 +236,16 @@
             this.panel4.Size = new System.Drawing.Size(841, 10);
             this.panel4.TabIndex = 167;
             // 
+            // ctrlMemberCardInfoWithFilter1
+            // 
+            this.ctrlMemberCardInfoWithFilter1.FilterEnabled = true;
+            this.ctrlMemberCardInfoWithFilter1.Location = new System.Drawing.Point(2, 1);
+            this.ctrlMemberCardInfoWithFilter1.Name = "ctrlMemberCardInfoWithFilter1";
+            this.ctrlMemberCardInfoWithFilter1.Size = new System.Drawing.Size(847, 516);
+            this.ctrlMemberCardInfoWithFilter1.TabIndex = 26;
+            this.ctrlMemberCardInfoWithFilter1.OnMemberSelected += new System.Action<int>(this.ctrlMemberCardInfoWithFilter1_OnMemberSelected);
+            this.ctrlMemberCardInfoWithFilter1.OntxtFilterValueEmpty += new System.Action<bool>(this.ctrlMemberCardInfoWithFilter1_OntxtFilterValueEmpty);
+            // 
             // AddEditePaymentForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,5 +288,7 @@
         private System.Windows.Forms.GroupBox gbPeriodMonths;
         private System.Windows.Forms.RadioButton rbThreeMonths;
         private System.Windows.Forms.RadioButton rbOneMonth;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lbPaymentDate;
     }
 }

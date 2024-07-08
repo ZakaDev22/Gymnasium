@@ -54,7 +54,7 @@ namespace Gymnasium.Subscription_Peroids
             {
                 _SubscriptionPeriod = new clsSubscriptionPeriods();
 
-                lbisPaid.Text = _MemberID.ToString();
+                lbMemberID.Text = _MemberID.ToString();
                 lbPaymentID.Text = _PaymentID.ToString();
                 lbSubscriptionFees.Text = _Amount.ToString();
                 lbStartDate.Text = DateTime.Now.ToShortDateString();
@@ -73,7 +73,7 @@ namespace Gymnasium.Subscription_Peroids
             }
 
             lbSubPeriodID.Text = _SubscriptionPeriod.PeriodID.ToString();
-            lbisPaid.Text = _SubscriptionPeriod.MemberID.ToString();
+            lbMemberID.Text = _SubscriptionPeriod.MemberID.ToString();
             lbPaymentID.Text = _SubscriptionPeriod.PaymentID.ToString();
             lbSubscriptionFees.Text = _SubscriptionPeriod.Fees.ToString();
             lbStartDate.Text = _SubscriptionPeriod.StartDate.ToShortDateString();
@@ -81,7 +81,7 @@ namespace Gymnasium.Subscription_Peroids
             chkIsPaid.Checked = _SubscriptionPeriod.Paid;
 
             chkIsPaid.Enabled = false;
-            lbisPaid.Visible = true;
+            lbIsPaid.Visible = true;
 
             btnSave.Enabled = false;
         }
