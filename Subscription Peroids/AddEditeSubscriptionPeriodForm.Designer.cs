@@ -45,11 +45,11 @@
             this.lbEndDate = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.lbIsPaid = new System.Windows.Forms.Label();
             this.lbMemberID = new System.Windows.Forms.Label();
             this.lbStartDate = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbPaymentID = new System.Windows.Forms.Label();
-            this.lbIsPaid = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -259,6 +259,18 @@
             this.label5.TabIndex = 26;
             this.label5.Text = "End Date :";
             // 
+            // lbIsPaid
+            // 
+            this.lbIsPaid.AutoSize = true;
+            this.lbIsPaid.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbIsPaid.ForeColor = System.Drawing.Color.Black;
+            this.lbIsPaid.Location = new System.Drawing.Point(300, 192);
+            this.lbIsPaid.Name = "lbIsPaid";
+            this.lbIsPaid.Size = new System.Drawing.Size(63, 24);
+            this.lbIsPaid.TabIndex = 25;
+            this.lbIsPaid.Text = ":  Yes";
+            this.lbIsPaid.Visible = false;
+            // 
             // lbMemberID
             // 
             this.lbMemberID.AutoSize = true;
@@ -269,7 +281,6 @@
             this.lbMemberID.Size = new System.Drawing.Size(55, 24);
             this.lbMemberID.TabIndex = 25;
             this.lbMemberID.Text = "[???]";
-            this.lbMemberID.Visible = false;
             // 
             // lbStartDate
             // 
@@ -303,18 +314,6 @@
             this.lbPaymentID.Size = new System.Drawing.Size(55, 24);
             this.lbPaymentID.TabIndex = 25;
             this.lbPaymentID.Text = "[???]";
-            // 
-            // lbIsPaid
-            // 
-            this.lbIsPaid.AutoSize = true;
-            this.lbIsPaid.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbIsPaid.ForeColor = System.Drawing.Color.Black;
-            this.lbIsPaid.Location = new System.Drawing.Point(300, 192);
-            this.lbIsPaid.Name = "lbIsPaid";
-            this.lbIsPaid.Size = new System.Drawing.Size(63, 24);
-            this.lbIsPaid.TabIndex = 25;
-            this.lbIsPaid.Text = ":  Yes";
-            this.lbIsPaid.Visible = false;
             // 
             // AddEditeSubscriptionPeriodForm
             // 

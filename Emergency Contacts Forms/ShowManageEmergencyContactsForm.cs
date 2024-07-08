@@ -232,6 +232,8 @@ namespace Gymnasium.Emergency_Contacts_Forms
         {
             AddEditeEmergencyContactForm frm = new AddEditeEmergencyContactForm((int)dataGridView1.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
+
+            LoadPagedData();
         }
     }
 }

@@ -45,11 +45,16 @@ namespace Gymnasium.Emergency_Contacts_Forms
             }
             else
             {
-                if (clsEmergencyContacts.ExistsByIDPersonID(Convert.ToInt32(txtPersonID.Text.Trim())))
+                if (_Mode == enMode.AddNew)
                 {
-                    errorProvider1.SetError(txtPersonID, "Person ID already exists!");
-                    txtPersonID.Focus();
-                    e.Cancel = true;
+                    if (clsEmergencyContacts.ExistsByIDPersonID(Convert.ToInt32(txtPersonID.Text.Trim())))
+                    {
+                        errorProvider1.SetError(txtPersonID, "Person ID already exists!");
+                        txtPersonID.Focus();
+                        e.Cancel = true;
+                    }
+                    else
+                        errorProvider1.SetError(txtPersonID, "");
                 }
                 else
                     errorProvider1.SetError(txtPersonID, "");
@@ -150,10 +155,16 @@ namespace Gymnasium.Emergency_Contacts_Forms
 
             if (_EmergencyContact.Save())
             {
-                MessageBox.Show("Emergency Contact Saved Successfully, \ntap Ok To Close This Form", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // rise the event
-                OnEmergencyDataBack?.Invoke(this, _EmergencyContact.EmergencyContactID);
-                this.Close();
+
+                if (_Mode == enMode.AddNew)
+                {
+                    MessageBox.Show("Emergency Contact Saved Successfully, \ntap Ok To Close This Form", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // rise the event
+                    OnEmergencyDataBack?.Invoke(this, _EmergencyContact.EmergencyContactID);
+                    this.Close();
+                }
+
+                MessageBox.Show("Emergency Contact Updated Successfully,", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -165,6 +176,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
         {
             if (_Mode == enMode.AddNew)
             {
+                lblTitle.Text = "Add New Emergency Contact";
                 _EmergencyContact = new clsEmergencyContacts();
                 return;
             }
@@ -177,18 +189,18 @@ namespace Gymnasium.Emergency_Contacts_Forms
                 this.Close();
             }
 
-            btnSave.Enabled = false;
+            lblTitle.Text = $"Edit Emergency Contact With ID {_EmergencyContact.EmergencyContactID}";
             txtPersonID.Text = _EmergencyContact.PersonID.ToString();
             txtName.Text = _EmergencyContact.Name;
             txtRelationship.Text = _EmergencyContact.Relationship;
             txtPhone.Text = _EmergencyContact.Phone;
             txtEmail.Text = _EmergencyContact.Email;
 
-            txtPersonID.Enabled = false;
-            txtName.Enabled = false;
-            txtRelationship.Enabled = false;
-            txtPhone.Enabled = false;
-            txtEmail.Enabled = false;
+            txtPersonID.Enabled = true;
+            txtName.Enabled = true;
+            txtRelationship.Enabled = true;
+            txtPhone.Enabled = true;
+            txtEmail.Enabled = true;
         }
     }
 }

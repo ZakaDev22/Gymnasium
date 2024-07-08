@@ -47,7 +47,7 @@ namespace Gymnasium.Payments_Forms
             txtAmount.Text = _Amount.ToString();
             txtAmount.Enabled = false;
 
-            lbPaymentDate.Text = DateTime.Now.ToString();
+            lbPaymentDate.Text = DateTime.Now.ToShortDateString();
 
         }
 
@@ -62,7 +62,7 @@ namespace Gymnasium.Payments_Forms
             txtAmount.Enabled = false;
 
             lbPaymentID.Text = _Payment.PaymentID.ToString();
-            lbPaymentDate.Text = _Payment.Date.ToString();
+            lbPaymentDate.Text = _Payment.Date.ToShortDateString();
 
             if (_Payment.Amount < 150)
                 rbOneMonth.Checked = true;
