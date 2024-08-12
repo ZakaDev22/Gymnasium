@@ -47,6 +47,7 @@
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.txtFilterValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnLeft = new System.Windows.Forms.Button();
             this.btnRight = new System.Windows.Forms.Button();
             this.btnAddMember = new System.Windows.Forms.Button();
@@ -55,6 +56,7 @@
             this.addMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SetMemberToBlackList = new System.Windows.Forms.ToolStripMenuItem();
             this.SetMemberToActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetMemberToInActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showMemberPeriodsHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -228,12 +230,14 @@
             this.updateMemberToolStripMenuItem,
             this.deleteMemberToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.SetMemberToBlackList,
+            this.toolStripMenuItem4,
             this.SetMemberToActiveMenuItem,
             this.SetMemberToInActiveMenuItem,
             this.toolStripSeparator1,
             this.showMemberPeriodsHistoryToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(301, 246);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(301, 284);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // toolStripMenuItem1
@@ -291,6 +295,11 @@
             this.label1.Size = new System.Drawing.Size(80, 20);
             this.label1.TabIndex = 116;
             this.label1.Text = "Filter By:";
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(297, 6);
             // 
             // btnLeft
             // 
@@ -391,6 +400,14 @@
             this.deleteMemberToolStripMenuItem.Text = "Delete Member";
             this.deleteMemberToolStripMenuItem.Click += new System.EventHandler(this.deleteMemberToolStripMenuItem_Click);
             // 
+            // SetMemberToBlackList
+            // 
+            this.SetMemberToBlackList.Image = global::Gymnasium.Properties.Resources.on_off;
+            this.SetMemberToBlackList.Name = "SetMemberToBlackList";
+            this.SetMemberToBlackList.Size = new System.Drawing.Size(300, 32);
+            this.SetMemberToBlackList.Text = "Set Member To Black List";
+            this.SetMemberToBlackList.Click += new System.EventHandler(this.toolStripMenuItem3_Click_1);
+            // 
             // SetMemberToActiveMenuItem
             // 
             this.SetMemberToActiveMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
@@ -481,5 +498,7 @@
         private System.Windows.Forms.ToolStripMenuItem SetMemberToActiveMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SetMemberToInActiveMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem SetMemberToBlackList;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
     }
 }

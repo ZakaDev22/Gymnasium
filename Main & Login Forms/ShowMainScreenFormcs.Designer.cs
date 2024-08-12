@@ -73,6 +73,7 @@
             this.btnDeletedMembers = new System.Windows.Forms.Button();
             this.btnExpiredSubscriptions = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnCLose = new System.Windows.Forms.Button();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -238,10 +239,11 @@
             this.chkQueckSearch.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.chkQueckSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Lime;
             this.chkQueckSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkQueckSearch.Font = new System.Drawing.Font("Dungeon", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkQueckSearch.ForeColor = System.Drawing.Color.Red;
-            this.chkQueckSearch.Location = new System.Drawing.Point(626, 339);
+            this.chkQueckSearch.Location = new System.Drawing.Point(616, 337);
             this.chkQueckSearch.Name = "chkQueckSearch";
-            this.chkQueckSearch.Size = new System.Drawing.Size(117, 17);
+            this.chkQueckSearch.Size = new System.Drawing.Size(174, 19);
             this.chkQueckSearch.TabIndex = 2;
             this.chkQueckSearch.Text = "Queck Search Is Of";
             this.chkQueckSearch.UseVisualStyleBackColor = false;
@@ -284,6 +286,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.Gold;
+            this.splitContainer2.Panel2.Controls.Add(this.button1);
             this.splitContainer2.Panel2.Controls.Add(this.btnAddNewMember);
             this.splitContainer2.Panel2.Controls.Add(this.btnFindMember);
             this.splitContainer2.Panel2.Controls.Add(this.btnFindUser);
@@ -294,7 +297,7 @@
             this.splitContainer2.Panel2.Font = new System.Drawing.Font("Cambria Math", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.splitContainer2.Panel2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.splitContainer2.Size = new System.Drawing.Size(830, 335);
-            this.splitContainer2.SplitterDistance = 539;
+            this.splitContainer2.SplitterDistance = 537;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.MouseLeave += new System.EventHandler(this.splitContainer2_MouseLeave);
             // 
@@ -623,8 +626,8 @@
             this.btnAddNewMember.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.btnAddNewMember.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAddNewMember.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddNewMember.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnAddNewMember.Location = new System.Drawing.Point(37, 145);
+            this.btnAddNewMember.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.btnAddNewMember.Location = new System.Drawing.Point(43, 149);
             this.btnAddNewMember.Name = "btnAddNewMember";
             this.btnAddNewMember.Size = new System.Drawing.Size(222, 37);
             this.btnAddNewMember.TabIndex = 1;
@@ -642,7 +645,7 @@
             this.btnFindMember.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFindMember.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFindMember.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnFindMember.Location = new System.Drawing.Point(37, 200);
+            this.btnFindMember.Location = new System.Drawing.Point(43, 208);
             this.btnFindMember.Name = "btnFindMember";
             this.btnFindMember.Size = new System.Drawing.Size(222, 37);
             this.btnFindMember.TabIndex = 1;
@@ -660,7 +663,7 @@
             this.btnFindUser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFindUser.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFindUser.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnFindUser.Location = new System.Drawing.Point(37, 284);
+            this.btnFindUser.Location = new System.Drawing.Point(43, 290);
             this.btnFindUser.Name = "btnFindUser";
             this.btnFindUser.Size = new System.Drawing.Size(222, 37);
             this.btnFindUser.TabIndex = 1;
@@ -678,7 +681,7 @@
             this.btnFindPerson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFindPerson.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFindPerson.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnFindPerson.Location = new System.Drawing.Point(37, 242);
+            this.btnFindPerson.Location = new System.Drawing.Point(43, 250);
             this.btnFindPerson.Name = "btnFindPerson";
             this.btnFindPerson.Size = new System.Drawing.Size(222, 37);
             this.btnFindPerson.TabIndex = 1;
@@ -695,8 +698,8 @@
             this.btnDeletedMembers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.btnDeletedMembers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDeletedMembers.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDeletedMembers.ForeColor = System.Drawing.Color.Tomato;
-            this.btnDeletedMembers.Location = new System.Drawing.Point(37, 102);
+            this.btnDeletedMembers.ForeColor = System.Drawing.Color.Sienna;
+            this.btnDeletedMembers.Location = new System.Drawing.Point(43, 63);
             this.btnDeletedMembers.Name = "btnDeletedMembers";
             this.btnDeletedMembers.Size = new System.Drawing.Size(222, 37);
             this.btnDeletedMembers.TabIndex = 1;
@@ -714,7 +717,7 @@
             this.btnExpiredSubscriptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExpiredSubscriptions.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExpiredSubscriptions.ForeColor = System.Drawing.Color.Red;
-            this.btnExpiredSubscriptions.Location = new System.Drawing.Point(37, 59);
+            this.btnExpiredSubscriptions.Location = new System.Drawing.Point(43, 20);
             this.btnExpiredSubscriptions.Name = "btnExpiredSubscriptions";
             this.btnExpiredSubscriptions.Size = new System.Drawing.Size(222, 37);
             this.btnExpiredSubscriptions.TabIndex = 1;
@@ -725,12 +728,30 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Digital-7 Mono", 20.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(54, 14);
+            this.label3.Font = new System.Drawing.Font("Digital-7 Mono", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(5, 6);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(194, 28);
+            this.label3.Size = new System.Drawing.Size(89, 11);
             this.label3.TabIndex = 0;
             this.label3.Text = "Quick Search :";
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.button1.FlatAppearance.BorderSize = 3;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Lime;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.Snow;
+            this.button1.Location = new System.Drawing.Point(43, 106);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(222, 37);
+            this.button1.TabIndex = 2;
+            this.button1.Text = " Black List";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnCLose
             // 
@@ -1282,5 +1303,6 @@
         private System.Windows.Forms.Button btnCLose;
         private System.Windows.Forms.CheckBox chkQueckSearch;
         private System.Windows.Forms.Button btnDeletedMembers;
+        private System.Windows.Forms.Button button1;
     }
 }

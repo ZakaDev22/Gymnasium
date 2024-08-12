@@ -377,55 +377,38 @@ namespace GymnasiumDataAccess
         public static bool PersonExists(string nationalNo)
         {
 
-
-            // Implement logic to check if person exists by national number in the database
-
-            bool exists = false;
-
-            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            try
             {
-                //SqlCommand command = new SqlCommand("sp_People_CheckPersonExistsByNationalNo", connection);
-                //command.CommandType = CommandType.StoredProcedure;
-                //command.Parameters.AddWithValue("@NationalNo", nationalNo);
 
-                //SqlParameter existsParam = new SqlParameter("@Exists", SqlDbType.Bit);
-                //existsParam.Direction = ParameterDirection.Output;
-                //command.Parameters.Add(existsParam);
-
-                //try
-                //{
-                //    connection.Open();
-                //    command.ExecuteNonQuery();
-                //    exists = (bool)existsParam.Value;
-                //}
-                //catch (Exception ex)
-                //{
-                //    // Handle exception
-
-                //    clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
-                //}
-
-                connection.Open();
-
-                using (SqlCommand command = new SqlCommand("sp_People_CheckPersonExistsByNationalNo", connection))
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@NationalNo", nationalNo);
+                    connection.Open();
 
-                    SqlParameter returnParameter = new SqlParameter("@ReturnVal", SqlDbType.Int)
+                    using (SqlCommand command = new SqlCommand("sp_People_CheckPersonExistsByNationalNo", connection))
                     {
-                        Direction = ParameterDirection.ReturnValue
-                    };
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(returnParameter);
-                    command.ExecuteNonQuery();
+                        command.Parameters.AddWithValue("@NationalNo", nationalNo);
 
-                    exists = (int)returnParameter.Value == 1;
+                        SqlParameter returnParameter = new SqlParameter("@ReturnVal", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.ReturnValue
+                        };
+
+                        command.Parameters.Add(returnParameter);
+                        command.ExecuteNonQuery();
+
+                        return (int)returnParameter.Value == 1;
+                    }
                 }
             }
-
-            return exists;
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
+            }
         }
 
         public static DataTable GetAllPeople()

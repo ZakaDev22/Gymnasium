@@ -349,8 +349,10 @@ namespace Gymnasium
         {
             if (chkQueckSearch.Checked)
             {
-                btnFindPerson.Location = new Point(275, 73);
-                btnFindUser.Location = new Point(275, 124);
+                btnExpiredSubscriptions.Location = new Point(160, 20);
+                btnFindPerson.Location = new Point(284, 63);
+                btnFindUser.Location = new Point(284, 147);
+                btnFindMember.Location = new Point(284, 105);
 
                 splitContainer2.SplitterDistance = 317;
 
@@ -358,8 +360,11 @@ namespace Gymnasium
             }
             else
             {
-                btnFindPerson.Location = new Point(37, 242);
-                btnFindUser.Location = new Point(37, 284);
+                btnExpiredSubscriptions.Location = new Point(43, 20);
+                btnFindPerson.Location = new Point(43, 250);
+                btnFindUser.Location = new Point(43, 292);
+                btnFindMember.Location = new Point(43, 208);
+
 
                 splitContainer2.SplitterDistance = 530;
 
@@ -377,6 +382,12 @@ namespace Gymnasium
         {
             ShowFindUserForm showFindUserForm = new ShowFindUserForm();
             showFindUserForm.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ShowManageBlackListMembersForm showManageBlackListMembersForm = new ShowManageBlackListMembersForm();
+            showManageBlackListMembersForm.ShowDialog();
         }
     }
 }

@@ -172,5 +172,30 @@ namespace GymnasiumLogicLayer
         {
             return clsMembersData.IsMemberActive(memberID);
         }
+
+        public static DataTable GetAllBlackListMembers()
+        {
+            return clsMembersData.GetAllBlackListMembers();
+        }
+
+        public static DataTable GetPagedBlackListMembers(int pageNumber, int pageSize, out int totalCount)
+        {
+            return clsMembersData.GetBlackListPagedMembers(pageNumber, pageSize, out totalCount);
+        }
+
+        public static bool SetMemberInBlackList(int memberID)
+        {
+            return clsMembersData.SetMemberInBlackList(memberID);
+        }
+
+        public static bool SetMemberToNormalList(int memberID)
+        {
+            return clsMembersData.SetMemberToNormalList(memberID);
+        }
+
+        public static bool IsMemberInBlackList(int memberID)
+        {
+            return clsMembersData.IsMemberInBlackList(memberID);
+        }
     }
 }

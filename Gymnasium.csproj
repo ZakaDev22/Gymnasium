@@ -115,6 +115,12 @@
     <Compile Include="Member Forms\ShowFindMemberForm.Designer.cs">
       <DependentUpon>ShowFindMemberForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Member Forms\ShowManageBlackListMembersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Member Forms\ShowManageBlackListMembersForm.Designer.cs">
+      <DependentUpon>ShowManageBlackListMembersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Member Forms\ShowManageMembersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -299,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Member Forms\ShowFindMemberForm.resx">
       <DependentUpon>ShowFindMemberForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Member Forms\ShowManageBlackListMembersForm.resx">
+      <DependentUpon>ShowManageBlackListMembersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Member Forms\ShowManageMembersForm.resx">
       <DependentUpon>ShowManageMembersForm.cs</DependentUpon>
@@ -637,6 +646,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Graphicloads-Polygon-Cross-2.256.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\on_off.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

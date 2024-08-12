@@ -408,6 +408,33 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
+        public static DataTable GetAllBlackListMembers()
+        {
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("sp_Members_GetAllBlackListMembers", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                        dataTable.Load(reader);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return dataTable;
+        }
+
 
         // New method to get paged members
         public static DataTable GetPagedMembers(int pageNumber, int pageSize, out int totalCount)
@@ -491,6 +518,131 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
+        public static DataTable GetBlackListPagedMembers(int pageNumber, int pageSize, out int totalCount)
+        {
+            DataTable dataTable = new DataTable();
+            totalCount = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_Members_GetBlackListPagedMembers", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                        command.Parameters.AddWithValue("@PageSize", pageSize);
+
+                        SqlParameter totalParam = new SqlParameter("@TotalCount", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(totalParam);
+
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                                dataTable.Load(reader);
+                        }
+
+                        totalCount = (int)totalParam.Value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return dataTable;
+        }
+
+        public static bool SetMemberInBlackList(int memberID)
+        {
+            int rowsAffected = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("sp_Members_SetMemberInBlackList", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@MemberID", memberID);
+
+                    connection.Open();
+                    rowsAffected = command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return rowsAffected > 0;
+        }
+
+        public static bool SetMemberToNormalList(int memberID)
+        {
+            int rowsAffected = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("sp_Members_SetMemberToNormalList", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@MemberID", memberID);
+
+                    connection.Open();
+                    rowsAffected = command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return rowsAffected > 0;
+        }
+
+        public static bool IsMemberInBlackList(int memberID)
+        {
+
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_Members_IsMemberInBlackList", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@MemberID", memberID);
+
+                        connection.Open();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            return reader.HasRows;
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return false;
+        }
 
     }
 

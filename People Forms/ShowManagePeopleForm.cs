@@ -194,7 +194,7 @@ namespace Gymnasium.People_Forms
             }
 
 
-            if (FilterColumn == "PersonID")
+            if (FilterColumn == "PersonID" || FilterColumn == "Phone")
                 //in this case we deal with integer not string.
 
                 dt.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, txtFilterValue.Text.Trim());
