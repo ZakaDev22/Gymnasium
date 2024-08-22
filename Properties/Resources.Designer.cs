@@ -153,6 +153,16 @@ namespace Gymnasium.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Aha_Soft_Large_Seo_SEO_32 {
+            get {
+                object obj = ResourceManager.GetObject("Aha-Soft-Large-Seo-SEO.32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32 {
             get {
                 object obj = ResourceManager.GetObject("Aniket-Suvarna-Box-Regular-Bx-checkbox-checked.32", resourceCulture);
@@ -706,6 +716,16 @@ namespace Gymnasium.Properties {
         internal static System.Drawing.Bitmap SearchPerson {
             get {
                 object obj = ResourceManager.GetObject("SearchPerson", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SearchPerson1 {
+            get {
+                object obj = ResourceManager.GetObject("SearchPerson1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

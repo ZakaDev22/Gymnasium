@@ -274,5 +274,40 @@ namespace GymnasiumDataAccess
             }
             return false;
         }
+
+        public static DataTable GetAllPaymentsPerEachMonth(int Year)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                using (SqlConnection cnn = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sp_Paymnets_GetToTalPaymentsPerMonth", cnn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Year", Year);
+
+
+                        cnn.Open();
+                        using (SqlDataReader da = cmd.ExecuteReader())
+                        {
+                            if (da.HasRows)
+                            {
+                                dt.Load(da);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return dt;
+        }
     }
 }

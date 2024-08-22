@@ -37,7 +37,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.showPaymentDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTitle = new System.Windows.Forms.Label();
             this.btnPageNumber = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -45,13 +44,15 @@
             this.rbAllPeople = new System.Windows.Forms.RadioButton();
             this.lbSize = new System.Windows.Forms.Label();
             this.cbPageSize = new System.Windows.Forms.ComboBox();
+            this.cbFilterBy = new System.Windows.Forms.ComboBox();
+            this.txtFilterValue = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnReports = new System.Windows.Forms.Button();
             this.btnLeft = new System.Windows.Forms.Button();
             this.btnRight = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.cbFilterBy = new System.Windows.Forms.ComboBox();
-            this.txtFilterValue = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.showPaymentDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -138,14 +139,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(290, 36);
             // 
-            // showPaymentDetailsToolStripMenuItem
-            // 
-            this.showPaymentDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.showPaymentDetailsToolStripMenuItem.Name = "showPaymentDetailsToolStripMenuItem";
-            this.showPaymentDetailsToolStripMenuItem.Size = new System.Drawing.Size(289, 32);
-            this.showPaymentDetailsToolStripMenuItem.Text = "Show Payment Details";
-            this.showPaymentDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymentDetailsToolStripMenuItem_Click);
-            // 
             // lblTitle
             // 
             this.lblTitle.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -220,7 +213,7 @@
             this.lbSize.BackColor = System.Drawing.Color.Gold;
             this.lbSize.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbSize.ForeColor = System.Drawing.Color.Brown;
-            this.lbSize.Location = new System.Drawing.Point(476, 198);
+            this.lbSize.Location = new System.Drawing.Point(171, 123);
             this.lbSize.Name = "lbSize";
             this.lbSize.Size = new System.Drawing.Size(97, 22);
             this.lbSize.TabIndex = 148;
@@ -242,11 +235,69 @@
             "500",
             "1000",
             "1500"});
-            this.cbPageSize.Location = new System.Drawing.Point(579, 198);
+            this.cbPageSize.Location = new System.Drawing.Point(274, 123);
             this.cbPageSize.Name = "cbPageSize";
             this.cbPageSize.Size = new System.Drawing.Size(83, 21);
             this.cbPageSize.TabIndex = 147;
             this.cbPageSize.SelectedIndexChanged += new System.EventHandler(this.cbPageSize_SelectedIndexChanged);
+            // 
+            // cbFilterBy
+            // 
+            this.cbFilterBy.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cbFilterBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFilterBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbFilterBy.FormattingEnabled = true;
+            this.cbFilterBy.Items.AddRange(new object[] {
+            "None",
+            "Member ID",
+            "Payment ID"});
+            this.cbFilterBy.Location = new System.Drawing.Point(113, 198);
+            this.cbFilterBy.Name = "cbFilterBy";
+            this.cbFilterBy.Size = new System.Drawing.Size(155, 23);
+            this.cbFilterBy.TabIndex = 151;
+            this.cbFilterBy.SelectedIndexChanged += new System.EventHandler(this.cbFilterBy_SelectedIndexChanged);
+            // 
+            // txtFilterValue
+            // 
+            this.txtFilterValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFilterValue.Location = new System.Drawing.Point(275, 201);
+            this.txtFilterValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtFilterValue.Name = "txtFilterValue";
+            this.txtFilterValue.Size = new System.Drawing.Size(148, 20);
+            this.txtFilterValue.TabIndex = 150;
+            this.txtFilterValue.TextChanged += new System.EventHandler(this.txtFilterValue_TextChanged);
+            this.txtFilterValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFilterValue_KeyPress);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(28, 198);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 20);
+            this.label1.TabIndex = 149;
+            this.label1.Text = "Filter By:";
+            // 
+            // btnReports
+            // 
+            this.btnReports.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReports.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnReports.FlatAppearance.BorderColor = System.Drawing.Color.Chartreuse;
+            this.btnReports.FlatAppearance.BorderSize = 3;
+            this.btnReports.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Lime;
+            this.btnReports.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.btnReports.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReports.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReports.ForeColor = System.Drawing.Color.Red;
+            this.btnReports.Image = global::Gymnasium.Properties.Resources.Aha_Soft_Large_Seo_SEO_32;
+            this.btnReports.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnReports.Location = new System.Drawing.Point(546, 171);
+            this.btnReports.Name = "btnReports";
+            this.btnReports.Size = new System.Drawing.Size(135, 50);
+            this.btnReports.TabIndex = 189;
+            this.btnReports.Text = "  Reports";
+            this.btnReports.UseVisualStyleBackColor = true;
+            this.btnReports.Click += new System.EventHandler(this.btnReports_Click);
             // 
             // btnLeft
             // 
@@ -307,48 +358,20 @@
             this.pictureBox1.TabIndex = 138;
             this.pictureBox1.TabStop = false;
             // 
-            // cbFilterBy
+            // showPaymentDetailsToolStripMenuItem
             // 
-            this.cbFilterBy.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cbFilterBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbFilterBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFilterBy.FormattingEnabled = true;
-            this.cbFilterBy.Items.AddRange(new object[] {
-            "None",
-            "Member ID",
-            "Payment ID"});
-            this.cbFilterBy.Location = new System.Drawing.Point(113, 198);
-            this.cbFilterBy.Name = "cbFilterBy";
-            this.cbFilterBy.Size = new System.Drawing.Size(155, 23);
-            this.cbFilterBy.TabIndex = 151;
-            this.cbFilterBy.SelectedIndexChanged += new System.EventHandler(this.cbFilterBy_SelectedIndexChanged);
-            // 
-            // txtFilterValue
-            // 
-            this.txtFilterValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFilterValue.Location = new System.Drawing.Point(275, 201);
-            this.txtFilterValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtFilterValue.Name = "txtFilterValue";
-            this.txtFilterValue.Size = new System.Drawing.Size(148, 20);
-            this.txtFilterValue.TabIndex = 150;
-            this.txtFilterValue.TextChanged += new System.EventHandler(this.txtFilterValue_TextChanged);
-            this.txtFilterValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFilterValue_KeyPress);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(28, 198);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 20);
-            this.label1.TabIndex = 149;
-            this.label1.Text = "Filter By:";
+            this.showPaymentDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.showPaymentDetailsToolStripMenuItem.Name = "showPaymentDetailsToolStripMenuItem";
+            this.showPaymentDetailsToolStripMenuItem.Size = new System.Drawing.Size(289, 32);
+            this.showPaymentDetailsToolStripMenuItem.Text = "Show Payment Details";
+            this.showPaymentDetailsToolStripMenuItem.Click += new System.EventHandler(this.showPaymentDetailsToolStripMenuItem_Click);
             // 
             // ShowManagePaymentsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 552);
+            this.Controls.Add(this.btnReports);
             this.Controls.Add(this.cbFilterBy);
             this.Controls.Add(this.txtFilterValue);
             this.Controls.Add(this.label1);
@@ -408,5 +431,6 @@
         private System.Windows.Forms.ComboBox cbFilterBy;
         private System.Windows.Forms.TextBox txtFilterValue;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnReports;
     }
 }

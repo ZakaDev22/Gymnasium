@@ -126,5 +126,15 @@ namespace GymnasiumLogicLayer
         {
             return clsPaymentsData.GetPagedPayments(pageNumber, pageSize, out totalCount);
         }
+
+
+        // New method to get all payments per each month
+        public static DataTable GetAllPaymentsPerEachMonth(int Year)
+        {
+            return clsPaymentsData.GetAllPaymentsPerEachMonth(Year);
+        }
+
+
+
     }
 }

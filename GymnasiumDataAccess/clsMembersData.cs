@@ -558,7 +558,7 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static bool SetMemberInBlackList(int memberID)
+        public static bool SetMemberInBlackList(int memberID, bool IsExeste)
         {
             int rowsAffected = 0;
 
@@ -570,6 +570,7 @@ namespace GymnasiumDataAccess
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@MemberID", memberID);
+                    command.Parameters.AddWithValue("@IsExist", IsExeste);
 
                     connection.Open();
                     rowsAffected = command.ExecuteNonQuery();
@@ -642,6 +643,109 @@ namespace GymnasiumDataAccess
             }
 
             return false;
+        }
+
+        public static bool IsMemberInBlackListHistory(int memberID)
+        {
+
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_Members_IsMemberInBlackListHistory", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@MemberID", memberID);
+
+                        connection.Open();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            return reader.HasRows;
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return false;
+        }
+
+        public static DataTable GetBlackListHistory()
+        {
+
+            DataTable dataTable;
+
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_Members_GetBlackListHistory", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        dataTable = new DataTable();
+
+                        if (reader.HasRows)
+                            dataTable.Load(reader);
+                    }
+                }
+
+            }
+
+
+            return dataTable;
+        }
+
+        // New method to get paged members
+        public static DataTable GetPagedBlackListHistory(int pageNumber, int pageSize, out int totalCount)
+        {
+            DataTable dataTable = new DataTable();
+            totalCount = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_Members_GetPagedBlackListHistory", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                        command.Parameters.AddWithValue("@PageSize", pageSize);
+
+                        SqlParameter totalParam = new SqlParameter("@TotalCount", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(totalParam);
+
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                                dataTable.Load(reader);
+                        }
+
+                        totalCount = (int)totalParam.Value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return dataTable;
         }
 
     }

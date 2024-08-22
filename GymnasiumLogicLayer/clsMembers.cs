@@ -185,7 +185,14 @@ namespace GymnasiumLogicLayer
 
         public static bool SetMemberInBlackList(int memberID)
         {
-            return clsMembersData.SetMemberInBlackList(memberID);
+            bool IsExiste = false;
+
+            if (IsMemberInBlackListHistory(memberID))
+                IsExiste = true;
+            else
+                IsExiste = false;
+
+            return clsMembersData.SetMemberInBlackList(memberID, IsExiste);
         }
 
         public static bool SetMemberToNormalList(int memberID)
@@ -196,6 +203,21 @@ namespace GymnasiumLogicLayer
         public static bool IsMemberInBlackList(int memberID)
         {
             return clsMembersData.IsMemberInBlackList(memberID);
+        }
+
+        public static bool IsMemberInBlackListHistory(int memberID)
+        {
+            return clsMembersData.IsMemberInBlackListHistory(memberID);
+        }
+
+        public static DataTable GetBlackListHistory()
+        {
+            return clsMembersData.GetBlackListHistory();
+        }
+
+        public static DataTable GetPagedBlackListHistory(int pageNumber, int pageSize, out int totalCount)
+        {
+            return clsMembersData.GetPagedBlackListHistory(pageNumber, pageSize, out totalCount);
         }
     }
 }

@@ -103,6 +103,12 @@
     <Compile Include="Member Forms\ShowAddEditeMembersForm.Designer.cs">
       <DependentUpon>ShowAddEditeMembersForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Member Forms\ShowBlackListHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Member Forms\ShowBlackListHistoryForm.Designer.cs">
+      <DependentUpon>ShowBlackListHistoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Member Forms\ShowDeletedMembersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,12 @@
     </Compile>
     <Compile Include="Payments Forms\ShowManagePaymentsForm.Designer.cs">
       <DependentUpon>ShowManagePaymentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Payments Forms\ShowReportsPerEachYearForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Payments Forms\ShowReportsPerEachYearForm.Designer.cs">
+      <DependentUpon>ShowReportsPerEachYearForm.cs</DependentUpon>
     </Compile>
     <Compile Include="People Forms\ctrlPersonInfoCard.cs">
       <SubType>UserControl</SubType>
@@ -300,6 +312,9 @@
     <EmbeddedResource Include="Member Forms\ShowAddEditeMembersForm.resx">
       <DependentUpon>ShowAddEditeMembersForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Member Forms\ShowBlackListHistoryForm.resx">
+      <DependentUpon>ShowBlackListHistoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Member Forms\ShowDeletedMembersForm.resx">
       <DependentUpon>ShowDeletedMembersForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -329,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Payments Forms\ShowManagePaymentsForm.resx">
       <DependentUpon>ShowManagePaymentsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Payments Forms\ShowReportsPerEachYearForm.resx">
+      <DependentUpon>ShowReportsPerEachYearForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="People Forms\ctrlPersonInfoCard.resx">
       <DependentUpon>ctrlPersonInfoCard.cs</DependentUpon>
@@ -649,6 +667,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\on_off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Aha-Soft-Large-Seo-SEO.32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SearchPerson1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

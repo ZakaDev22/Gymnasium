@@ -7,19 +7,19 @@ using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
 {
-    public partial class ShowManageBlackListMembersForm : Form
+    public partial class ShowBlackListHistoryForm : Form
     {
-        public ShowManageBlackListMembersForm()
+        private int currentPage = 1;
+        private int pageSize = 10;
+        private int totalRecords = 0;
+        private DataTable dt;
+
+        public ShowBlackListHistoryForm()
         {
             InitializeComponent();
 
             rbByPages.Checked = true;
         }
-
-        private int currentPage = 1;
-        private int pageSize = 10;
-        private int totalRecords = 0;
-        private DataTable dt;
 
         private void LoadPagedData()
         {
@@ -27,7 +27,7 @@ namespace Gymnasium.Member_Forms
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsMembers.GetPagedBlackListMembers(currentPage, pageSize, out totalRecords);
+                dt = clsMembers.GetPagedBlackListHistory(currentPage, pageSize, out totalRecords);
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +35,7 @@ namespace Gymnasium.Member_Forms
             else
             {
                 // Load all data
-                dt = clsMembers.GetAllBlackListMembers();
+                dt = clsMembers.GetBlackListHistory();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -61,13 +61,11 @@ namespace Gymnasium.Member_Forms
             btnRight.BackColor = btnRight.Enabled ? Color.GreenYellow : Color.Red;
         }
 
-
-
-        private void rbByPages_CheckedChanged(object sender, System.EventArgs e)
+        private void rbByPages_CheckedChanged(object sender, EventArgs e)
         {
+
             if (rbByPages.Checked)
             {
-                cbPageSize.SelectedIndex = 0;
                 lbSize.Visible = true;
                 cbPageSize.Visible = true;
                 btnLeft.Visible = true;
@@ -86,28 +84,28 @@ namespace Gymnasium.Member_Forms
             LoadPagedData();
         }
 
-        private void cbPageSize_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             pageSize = Convert.ToInt32(cbPageSize.SelectedItem);
             LoadPagedData();
         }
 
-        private void cbFilterBy_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbFilterBy.SelectedIndex == 0)
-            {
                 txtFilterValue.Visible = false;
-            }
             else
             {
 
                 txtFilterValue.Visible = true;
                 txtFilterValue.Clear();
                 txtFilterValue.Focus();
+
+
             }
         }
 
-        private void txtFilterValue_TextChanged(object sender, System.EventArgs e)
+        private void txtFilterValue_TextChanged(object sender, EventArgs e)
         {
             string FilterColumn = "";
             //Map Selected Filter to real Column name 
@@ -118,16 +116,14 @@ namespace Gymnasium.Member_Forms
                     FilterColumn = "MemberID";
                     break;
 
-                case "Person ID":
-                    FilterColumn = "PersonID";
+                case "Black List History ID":
+                    FilterColumn = "BlackListHistoryID";
                     break;
 
 
                 case "Full Name":
                     FilterColumn = "FullName";
                     break;
-
-
 
                 case "Sport Name":
                     FilterColumn = "SportName";
@@ -148,7 +144,7 @@ namespace Gymnasium.Member_Forms
             }
 
 
-            if (FilterColumn == "PersonID" || FilterColumn == "MemberID")
+            if (FilterColumn == "BlackListHistoryID" || FilterColumn == "MemberID")
                 //in this case we deal with integer not string.
 
                 dt.DefaultView.RowFilter = string.Format("[{0}] = {1}", FilterColumn, txtFilterValue.Text.Trim());
@@ -158,13 +154,7 @@ namespace Gymnasium.Member_Forms
             lbRecords.Text = dataGridView1.Rows.Count.ToString();
         }
 
-        private void txtFilterValue_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (cbFilterBy.SelectedIndex == 1 || cbFilterBy.SelectedIndex == 2)
-                e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-        }
-
-        private void btnRight_Click(object sender, System.EventArgs e)
+        private void btnRight_Click(object sender, EventArgs e)
         {
             if (currentPage * pageSize < totalRecords)
             {
@@ -173,7 +163,7 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void btnLeft_Click(object sender, System.EventArgs e)
+        private void btnLeft_Click(object sender, EventArgs e)
         {
             if (currentPage > 1)
             {
@@ -182,50 +172,31 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void btnClose_Click(object sender, System.EventArgs e)
+        private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void ShowManageBlackListMembersForm_Load(object sender, EventArgs e)
+        private void ShowBlackListHistoryForm_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex = 0;
         }
 
         private void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPersonDetailsForm frm = new ShowPersonDetailsForm((int)dataGridView1.CurrentRow.Cells[1].Value);
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[1].Value).PersonID);
             frm.ShowDialog();
         }
 
-        private void updateMemberToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cntxMemberInformations_Click(object sender, EventArgs e)
         {
-            ShowAddEditeMembersForm frm = new ShowAddEditeMembersForm((int)dataGridView1.CurrentRow.Cells[0].Value);
+            ShowMemberInformationForm frm = new ShowMemberInformationForm((int)dataGridView1.CurrentRow.Cells[1].Value);
             frm.ShowDialog();
         }
-
-        private void deleteMemberToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to delete this member?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
-            {
-                if (clsMembers.DeleteMember((int)dataGridView1.CurrentRow.Cells[0].Value))
-                {
-                    MessageBox.Show("Member was deleted successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPagedData();
-                }
-                else
-                    MessageBox.Show("Error, Member was not deleted", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show("Member was Canceled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
 
         private void SetMemberToActiveMenuItem_Click(object sender, EventArgs e)
         {
-            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+            int MemberID = (int)dataGridView1.CurrentRow.Cells[1].Value;
 
             if (MessageBox.Show("Are you sure you want to Set this member to Active AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
@@ -245,7 +216,7 @@ namespace Gymnasium.Member_Forms
 
         private void SetMemberToInActiveMenuItem_Click(object sender, EventArgs e)
         {
-            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
+            int MemberID = (int)dataGridView1.CurrentRow.Cells[1].Value;
 
             if (MessageBox.Show("Are you sure you want to Set this member to InActive AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
@@ -265,42 +236,13 @@ namespace Gymnasium.Member_Forms
 
         private void showMemberPeriodsHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SHowMemberPeriodsHistoryForm frm = new SHowMemberPeriodsHistoryForm((int)dataGridView1.CurrentRow.Cells[0].Value);
-            frm.ShowDialog();
-        }
 
-        private void addMemberToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowAddEditeMembersForm frm = new ShowAddEditeMembersForm();
+            SHowMemberPeriodsHistoryForm frm = new SHowMemberPeriodsHistoryForm((int)dataGridView1.CurrentRow.Cells[1].Value);
             frm.ShowDialog();
-            LoadPagedData();
-        }
-
-        private void SetMemberToNormalList_Click(object sender, EventArgs e)
-        {
-            int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
-            if (MessageBox.Show($"Are You Sure You Want To Set Member With ID {MemberID} In Normal List Members Again", "Confirm",
-                                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
-            {
-                if (clsMembers.SetMemberToNormalList(MemberID))
-                {
-                    MessageBox.Show($"Member With ID {MemberID} Was Set In Normal List Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPagedData();
-                }
-                else
-                {
-                    MessageBox.Show($"Error, Member With ID {MemberID} Was Not Set In Normal List", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show($"Setting Member With ID {MemberID} Was Canceled ", "Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
 
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // check if The DataGrid View has Any Row, if not Then This Code Will Not Implemented
             if (dataGridView1.Rows.Count > 0)
             {
                 // Set The Enabled Property Of The Context Menu Strip To True
@@ -313,17 +255,9 @@ namespace Gymnasium.Member_Forms
                 SetMemberToInActiveMenuItem.Enabled = MemberActive;
 
                 SetMemberToActiveMenuItem.Enabled = MemberActive == false;
-
-                SetMemberToNormalList.Enabled = clsMembers.IsMemberInBlackList(MemberID);
             }
             else
                 contextMenuStrip1.Enabled = false;
-        }
-
-        private void btnHistory_Click(object sender, EventArgs e)
-        {
-            ShowBlackListHistoryForm frm = new ShowBlackListHistoryForm();
-            frm.ShowDialog();
         }
     }
 }

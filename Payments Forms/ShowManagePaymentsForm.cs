@@ -198,5 +198,11 @@ namespace Gymnasium.Payments_Forms
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
+
+        private void btnReports_Click(object sender, EventArgs e)
+        {
+            ShowReportsPerEachYearForm showReportsPerEachYearForm = new ShowReportsPerEachYearForm();
+            showReportsPerEachYearForm.ShowDialog();
+        }
     }
 }
