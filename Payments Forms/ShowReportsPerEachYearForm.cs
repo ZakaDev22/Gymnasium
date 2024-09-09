@@ -18,7 +18,8 @@ namespace Gymnasium.Payments_Forms
 
         private void _LoadData()
         {
-            djvReports.DataSource = clsPayments.GetAllPaymentsPerEachMonth(Year);
+            dt = clsPayments.GetAllPaymentsPerEachMonth(Year);
+            djvReports.DataSource = dt;
 
             if (djvReports.RowCount > 0)
             {

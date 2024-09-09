@@ -1,106 +1,56 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsPeopleData
     {
-        public static int AddNewPerson(string firstName, string lastName, string address, string email,
-                                   string phone, string nationalNo, DateTime dateOfBirth, short gender,
-                                   string imagePath, int countryID)
-        {
-            // Implement logic to add new person to the database
 
+        public static async Task<int> AddNewPersonAsync(string firstName, string lastName, string address, string email,
+                                    string phone, string nationalNo, DateTime dateOfBirth, short gender,
+                                    string imagePath, int countryID)
+        {
             int personId = -1;
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
-                SqlCommand command = new SqlCommand("sp_People_AddNewPerson", connection);
-                command.CommandType = CommandType.StoredProcedure;
+                SqlCommand command = new SqlCommand("sp_People_AddNewPerson", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
 
                 command.Parameters.AddWithValue("@FirstName", firstName);
                 command.Parameters.AddWithValue("@LastName", lastName);
 
-                if (!string.IsNullOrEmpty(address))
-                {
-                    command.Parameters.AddWithValue("@Address", address);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Address", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(address))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Email", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(phone))
-                {
-                    command.Parameters.AddWithValue("@Phone", phone);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Phone", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(nationalNo))
-                {
-                    command.Parameters.AddWithValue("@NationalNo", nationalNo);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@NationalNo", DBNull.Value);
-                }
-
-
+                command.Parameters.AddWithValue("@Address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
+                command.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                command.Parameters.AddWithValue("@Phone", string.IsNullOrEmpty(phone) ? (object)DBNull.Value : phone);
+                command.Parameters.AddWithValue("@NationalNo", string.IsNullOrEmpty(nationalNo) ? (object)DBNull.Value : nationalNo);
                 command.Parameters.AddWithValue("@DateOfBirth", dateOfBirth);
-
-                if (!string.IsNullOrEmpty(imagePath))
-                {
-                    command.Parameters.AddWithValue("@ImagePath", imagePath);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@ImagePath", DBNull.Value);
-                }
-
+                command.Parameters.AddWithValue("@ImagePath", string.IsNullOrEmpty(imagePath) ? (object)DBNull.Value : imagePath);
                 command.Parameters.AddWithValue("@Gender", gender);
-
-                if (countryID != -1)
-                {
-                    command.Parameters.AddWithValue("@CountryID", countryID);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@CountryID", DBNull.Value);
-                }
+                command.Parameters.AddWithValue("@CountryID", countryID == -1 ? (object)DBNull.Value : countryID);
 
                 SqlParameter returnParam = command.Parameters.Add("@NewPersonID", SqlDbType.Int);
                 returnParam.Direction = ParameterDirection.Output;
 
                 try
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                     personId = (int)returnParam.Value;
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
 
             return personId;
         }
-
-        public static bool UpdatePerson(int personId, string firstName, string lastName, string address, string email,
+        public async static Task<bool> UpdatePerson(int personId, string firstName, string lastName, string address, string email,
                                     string phone, string nationalNo, DateTime dateOfBirth, short gender,
                                     string imagePath, int countryID)
         {
@@ -117,74 +67,23 @@ namespace GymnasiumDataAccess
                 command.Parameters.AddWithValue("@FirstName", firstName);
                 command.Parameters.AddWithValue("@LastName", lastName);
 
-                if (!string.IsNullOrEmpty(address))
-                {
-                    command.Parameters.AddWithValue("@Address", address);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Address", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(address))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Email", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(phone))
-                {
-                    command.Parameters.AddWithValue("@Phone", phone);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@Phone", DBNull.Value);
-                }
-
-                if (!string.IsNullOrEmpty(nationalNo))
-                {
-                    command.Parameters.AddWithValue("@NationalNo", nationalNo);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@NationalNo", DBNull.Value);
-                }
-
+                command.Parameters.AddWithValue("@Address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
+                command.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                command.Parameters.AddWithValue("@Phone", string.IsNullOrEmpty(phone) ? (object)DBNull.Value : phone);
+                command.Parameters.AddWithValue("@NationalNo", string.IsNullOrEmpty(nationalNo) ? (object)DBNull.Value : nationalNo);
 
                 command.Parameters.AddWithValue("@DateOfBirth", dateOfBirth);
-
-                if (!string.IsNullOrEmpty(imagePath))
-                {
-                    command.Parameters.AddWithValue("@ImagePath", imagePath);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@ImagePath", DBNull.Value);
-                }
-
+                command.Parameters.AddWithValue("@ImagePath", string.IsNullOrEmpty(imagePath) ? (object)DBNull.Value : imagePath);
                 command.Parameters.AddWithValue("@Gender", gender);
-
-                if (countryID != -1)
-                {
-                    command.Parameters.AddWithValue("@CountryID", countryID);
-                }
-                else
-                {
-                    command.Parameters.AddWithValue("@CountryID", DBNull.Value);
-                }
+                command.Parameters.AddWithValue("@CountryID", countryID != -1 ? (object)countryID : DBNull.Value);
 
                 try
                 {
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
-
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
@@ -192,73 +91,50 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool GetPersonInfoByID(int personId, ref string firstName, ref string lastName, ref string address, ref string email,
-                                  ref string phone, ref string nationalNo, ref DateTime dateOfBirth, ref short gender,
-                                   ref string imagePath, ref int countryID)
+        // finish the people methos to accept the async await concepts
+
+        public static async Task<DataTable> GetPersonInfoByID(int personId)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
-                SqlCommand command = new SqlCommand("sp_GetPersonInfoByID", connection);
-                command.CommandType = CommandType.StoredProcedure;
-
-                command.Parameters.AddWithValue("@PersonID", personId);
-
-                try
+                using (SqlCommand command = new SqlCommand("sp_GetPersonInfoByID", connection))
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    if (reader.Read())
+                    command.Parameters.AddWithValue("@PersonID", personId);
+
+                    try
                     {
-                        // the Bug Is Her To Update => Null Validation. 
-                        firstName = (string)reader["FirstName"];
+                        await connection.OpenAsync();
 
-                        lastName = (string)reader["LastName"];
-                        nationalNo = reader["NationalNo"] == DBNull.Value ? string.Empty : (string)reader["NationalNo"];
-                        dateOfBirth = (DateTime)reader["DateOfBirth"];
-
-                        address = reader["Address"] == DBNull.Value ? string.Empty : (string)reader["Address"];
-                        phone = reader["Phone"] == DBNull.Value ? string.Empty : (string)reader["Phone"];
-                        email = reader["Email"] == DBNull.Value ? string.Empty : (string)reader["Email"];
-                        imagePath = reader["ImagePath"] == DBNull.Value ? string.Empty : (string)reader["ImagePath"];
-                        countryID = reader["CountryID"] == DBNull.Value ? -1 : (int)reader["CountryID"];
-
-                        if (reader["Gendor"] != DBNull.Value)
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            bool IsMaleOrfemale = Convert.ToBoolean(reader["Gendor"]);
 
-                            gender = IsMaleOrfemale ? (short)1 : (short)0;
-                        }
-                        else
-                        {
-                            gender = 2;
+                            if (reader.HasRows)
+                            {
+                                dt.Load(reader);
+                            }
                         }
 
-                        isSuccess = true;
                     }
+                    catch (Exception ex)
+                    {
+                        // Handle exception
 
-                    reader.Close();
-                }
-                catch (Exception ex)
-                {
-                    // Handle exception
-
-                    clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                        clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    }
                 }
             }
 
-            return isSuccess;
+            return dt;
         }
 
 
-        public static bool GetPersonInfoByNationalNo(string nationalNo, ref int personId, ref string firstName, ref string lastName, ref string address, ref string email,
-                                  ref string phone, ref DateTime dateOfBirth, ref short gender,
-                                   ref string imagePath, ref int countryID)
+        public static async Task<DataTable> GetPersonInfoByNationalNo(string nationalNo)
         {
-            bool isSuccess = false;
-
+            DataTable dt = new DataTable();
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
                 SqlCommand command = new SqlCommand("sp_GetPersonInfoByNationalNo", connection);
@@ -268,35 +144,12 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    if (reader.Read())
+                    if (reader.HasRows)
                     {
-                        personId = (int)reader["PersonID"];
-                        firstName = (string)reader["FirstName"];
-
-                        lastName = (string)reader["LastName"];
-                        dateOfBirth = (DateTime)reader["DateOfBirth"];
-
-                        address = reader["Address"] == DBNull.Value ? string.Empty : (string)reader["Address"];
-                        phone = reader["Phone"] == DBNull.Value ? string.Empty : (string)reader["Phone"];
-                        email = reader["Email"] == DBNull.Value ? string.Empty : (string)reader["Email"];
-                        imagePath = reader["ImagePath"] == DBNull.Value ? string.Empty : (string)reader["ImagePath"];
-                        countryID = reader["CountryID"] == DBNull.Value ? -1 : (int)reader["CountryID"];
-
-                        if (reader["Gendor"] != DBNull.Value)
-                        {
-                            bool IsMaleOrfemale = Convert.ToBoolean(reader["Gendor"]);
-
-                            gender = IsMaleOrfemale ? (short)1 : (short)0;
-                        }
-                        else
-                        {
-                            gender = 2;
-                        }
-
-                        isSuccess = true;
+                        dt.Load(reader);
                     }
 
                     reader.Close();
@@ -309,11 +162,11 @@ namespace GymnasiumDataAccess
                 }
             }
 
-            return isSuccess;
+            return dt;
         }
 
 
-        public static bool DeletePerson(int PersonID)
+        public static async Task<bool> DeletePerson(int PersonID)
         {
             // Implement logic to delete person from the database
 
@@ -328,20 +181,19 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    return (rowsAffected = await command.ExecuteNonQueryAsync()) > 0;
                 }
                 catch (Exception ex)
                 {
                     // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    return false;
                 }
             }
-
-            return rowsAffected > 0;
         }
 
-        public static bool PersonExists(int PersonID)
+        public static async Task<bool> PersonExists(int PersonID)
         {
             // Implement logic to check if person exists by ID in the database
 
@@ -356,8 +208,8 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    object result = command.ExecuteScalar();
+                    await connection.OpenAsync();
+                    object result = await command.ExecuteScalarAsync();
 
                     if (result != null && Convert.ToInt32(result) > 0)
                     {
@@ -374,7 +226,7 @@ namespace GymnasiumDataAccess
             return isExist;
         }
 
-        public static bool PersonExists(string nationalNo)
+        public static async Task<bool> PersonExists(string nationalNo)
         {
 
             try
@@ -383,7 +235,7 @@ namespace GymnasiumDataAccess
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
 
-                    connection.Open();
+
 
                     using (SqlCommand command = new SqlCommand("sp_People_CheckPersonExistsByNationalNo", connection))
                     {
@@ -397,9 +249,19 @@ namespace GymnasiumDataAccess
                         };
 
                         command.Parameters.Add(returnParameter);
-                        command.ExecuteNonQuery();
 
-                        return (int)returnParameter.Value == 1;
+                        try
+                        {
+                            await connection.OpenAsync();
+                            await command.ExecuteNonQueryAsync();
+
+                            return (int)returnParameter.Value == 1;
+                        }
+                        catch (Exception ex)
+                        {
+                            clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                            return false;
+                        }
                     }
                 }
             }
@@ -411,7 +273,7 @@ namespace GymnasiumDataAccess
             }
         }
 
-        public static DataTable GetAllPeople()
+        public static async Task<DataTable> GetAllPeople()
         {
             // Implement logic to retrieve all people from the database
 
@@ -424,8 +286,8 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
                     {
@@ -444,10 +306,10 @@ namespace GymnasiumDataAccess
         }
 
         // New method to get paged people
-        public static DataTable GetPagedPeople(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedPeople(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -465,8 +327,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -481,7 +343,7 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
     }
 

@@ -14,6 +14,7 @@ using Gymnasium.User_Forms;
 using GymnasiumLogicLayer;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -26,22 +27,38 @@ namespace Gymnasium
         public ShowMainScreenFormcs(LoginForm loginForm)
         {
             InitializeComponent();
+
+            _RefreshDashboard();
+
             _loginForm = loginForm;
+
         }
 
         // Refreshes the dashboard by updating the text of various labels to display
         // the count of different entities retrieved from data access classes.
-        private void _RefreshDashboard()
+        private async void _RefreshDashboard()
         {
-            lbPeople.Text = clsPeople.GetAllPeople().Rows.Count.ToString();
-            lbMembers.Text = clsMembers.GetAllMembers().Rows.Count.ToString();
-            lbUsers.Text = clsUsers.GetAllUsers().Rows.Count.ToString();
-            lbPayments.Text = clsPayments.GetAllPayments().Rows.Count.ToString();
-            lbMembersInstructors.Text = clsMemberInstructor.GetAllAssignments().Rows.Count.ToString();
-            lbBeltTests.Text = clsBeltTest.GetAllBeltTests().Rows.Count.ToString();
-            lbSports.Text = clsSports.GetAllSports().Rows.Count.ToString();
-            lbSubPeriods.Text = clsSubscriptionPeriods.GetAllPeriods().Rows.Count.ToString();
-            lbInstructors.Text = clsInstructors.GetAllInstructors().Rows.Count.ToString();
+            var PeopleTask = await clsPeople.GetAllPeople(); // Done
+
+            var MembersTask = Task.Run(() => clsMembers.GetAllMembers().Rows.Count.ToString());
+            var userstask = Task.Run(() => clsUsers.GetAllUsers().Rows.Count.ToString());
+            var paymentstask = Task.Run(() => clsPayments.GetAllPayments().Rows.Count.ToString());
+            var MembersInstructortask = Task.Run(() => clsMemberInstructor.GetAllAssignments().Rows.Count.ToString());
+            var BeltTesttask = Task.Run(() => clsBeltTest.GetAllBeltTests().Rows.Count.ToString());
+            var Sportstask = Task.Run(() => clsSports.GetAllSports().Rows.Count.ToString());
+            var SubPeriodstask = Task.Run(() => clsSubscriptionPeriods.GetAllPeriods().Rows.Count.ToString());
+            var Instructorstask = Task.Run(() => clsInstructors.GetAllInstructors().Rows.Count.ToString());
+
+
+            lbPeople.Text = PeopleTask.Rows.Count.ToString();
+            lbMembers.Text = MembersTask.Result;
+            lbUsers.Text = userstask.Result;
+            lbPayments.Text = paymentstask.Result;
+            lbMembersInstructors.Text = MembersInstructortask.Result;
+            lbBeltTests.Text = BeltTesttask.Result;
+            lbSports.Text = Sportstask.Result;
+            lbSubPeriods.Text = SubPeriodstask.Result;
+            lbInstructors.Text = Instructorstask.Result;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -263,7 +280,7 @@ namespace Gymnasium
 
         private void ShowMainScreenFormcs_Load(object sender, EventArgs e)
         {
-            btnDashboard.PerformClick();
+
         }
 
         private void btnInstructors_Click(object sender, EventArgs e)

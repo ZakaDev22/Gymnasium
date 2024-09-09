@@ -22,13 +22,15 @@ namespace Gymnasium.People_Forms
         private int totalRecords = 0;
         private DataTable dt;
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsPeople.GetPagedPeople(currentPage, pageSize, out totalRecords);
+                var tuple1 = await clsPeople.GetPagedPeople(currentPage, pageSize);
+                totalRecords = tuple1.totalCount;
+                dt = tuple1.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -36,7 +38,7 @@ namespace Gymnasium.People_Forms
             else
             {
                 // Load all data
-                dt = clsPeople.GetAllPeople();
+                dt = await clsPeople.GetAllPeople();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -265,7 +267,7 @@ namespace Gymnasium.People_Forms
             LoadPagedData();
         }
 
-        private void deletePersonToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deletePersonToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int PersonID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
@@ -279,7 +281,7 @@ namespace Gymnasium.People_Forms
             if (MessageBox.Show($"Are You Sure You Want To Delete This Person", "Confirm",
                  MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsPeople.Delete(PersonID))
+                if (await clsPeople.Delete(PersonID))
                 {
                     MessageBox.Show($"Person With ID {PersonID} Was Deleted", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

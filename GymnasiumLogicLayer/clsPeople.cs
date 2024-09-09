@@ -1,6 +1,8 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -25,10 +27,11 @@ namespace GymnasiumLogicLayer
 
         public clsCountries _CountryInfo;
 
+        private StringBuilder fullName = new StringBuilder();
+
         public string FullName
         {
-            get { return FirstName + " " + LastName; }
-
+            get { return (fullName.Append(FirstName).Append(" ").Append(LastName)).ToString(); }
         }
 
 
@@ -63,30 +66,45 @@ namespace GymnasiumLogicLayer
         }
 
         // New method to add
-        private bool _AddNewPerson()
+        private async Task<bool> _AddNewPerson()
         {
-            this.PersonID = clsPeopleData.AddNewPerson(this.FirstName,
-                                                 this.LastName, this.Address, this.Email,
-                                                 this.Phone, this.NationalNo, this.DateOfBirth, this.Gender, this.ImagePath, this.CountryID);
-            return (this.PersonID != -1);
+            // Await the asynchronous method to get the PersonID
+            int personId = await clsPeopleData.AddNewPersonAsync(
+                this.FirstName,
+                this.LastName,
+                this.Address,
+                this.Email,
+                this.Phone,
+                this.NationalNo,
+                this.DateOfBirth,
+                this.Gender,
+                this.ImagePath,
+                this.CountryID
+            );
+
+            // Assign the PersonID to the instance variable
+            this.PersonID = personId;
+
+            // Return true if the PersonID is not -1, indicating a successful addition
+            return this.PersonID != -1;
         }
 
         // New method to update
-        private bool _UpdatePerson()
+        private async Task<bool> _UpdatePerson()
         {
-            return clsPeopleData.UpdatePerson(this.PersonID, this.FirstName,
+            return await clsPeopleData.UpdatePerson(this.PersonID, this.FirstName,
                                                  this.LastName, this.Address, this.Email,
                                                  this.Phone, this.NationalNo, this.DateOfBirth, this.Gender, this.ImagePath, this.CountryID);
         }
 
         // New method to save
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (Mode)
             {
                 case enMode.AddNew:
 
-                    if (_AddNewPerson())
+                    if (await _AddNewPerson())
                     {
                         Mode = enMode.Update;
                         return true;
@@ -98,7 +116,7 @@ namespace GymnasiumLogicLayer
 
                 case enMode.Update:
 
-                    return _UpdatePerson();
+                    return await _UpdatePerson();
 
 
             }
@@ -107,88 +125,89 @@ namespace GymnasiumLogicLayer
         }
 
         // New method to find person by ID
-        public static clsPeople FindByID(int personID)
+        public static async Task<clsPeople> FindByID(int personID)
         {
-            string firstName = string.Empty;
-            string lastName = string.Empty;
-            string nationalNo = string.Empty;
-            DateTime dateOfBirth = DateTime.Now;
-            short gender = 0;
-            string address = string.Empty;
-            string phone = string.Empty, email = string.Empty;
-            string imagePath = string.Empty;
-            int countryID = 0;
 
+            DataTable dt = await clsPeopleData.GetPersonInfoByID(personID);
 
-
-            bool isfound = clsPeopleData.GetPersonInfoByID(personID, ref firstName, ref lastName,
-                     ref address, ref email, ref phone, ref nationalNo, ref dateOfBirth, ref gender, ref imagePath, ref countryID);
-
-            if (isfound)
+            if (dt.Rows.Count == 0)
             {
-                return new clsPeople(personID, firstName, lastName, nationalNo, dateOfBirth, gender, address, phone, email, imagePath, countryID);
+                return null;
             }
             else
             {
-                return null;
+                DataRow Row = dt.Rows[0];
+
+                return new clsPeople(Convert.ToInt32(Row["PersonID"]),
+                                     Convert.ToString(Row["FirstName"]),
+                                     Convert.ToString(Row["LastName"]),
+                                     Convert.ToString(Row["NationalNo"]),
+                                     Convert.ToDateTime(Row["DateOfBirth"]),
+                                     Convert.ToInt16(Row["Gendor"]),
+                                     Convert.ToString(Row["Address"]),
+                                     Convert.ToString(Row["Phone"]),
+                                     Convert.ToString(Row["Email"]),
+                                     Convert.ToString(Row["ImagePath"]),
+                                     Convert.ToInt16(Row["CountryID"]));
             }
         }
         // New method to find person by national number
-        public static clsPeople FindByNationalNo(string nationalNo)
+        public static async Task<clsPeople> FindByNationalNo(string nationalNo)
         {
-            string firstName = string.Empty;
-            string lastName = string.Empty;
-            int Personid = -1;
-            DateTime dateOfBirth = DateTime.Now;
-            short gender = 0;
-            string address = string.Empty;
-            string phone = string.Empty, email = string.Empty;
-            string imagePath = string.Empty;
-            int countryID = 0;
 
 
+            DataTable dt = await clsPeopleData.GetPersonInfoByNationalNo(nationalNo);
 
-            bool isfound = clsPeopleData.GetPersonInfoByNationalNo(nationalNo, ref Personid, ref firstName, ref lastName,
-                     ref address, ref email, ref phone, ref dateOfBirth, ref gender, ref imagePath, ref countryID);
-
-            if (isfound)
+            if (dt.Rows.Count == 0)
             {
-                return new clsPeople(Personid, firstName, lastName, nationalNo, dateOfBirth, gender, address, phone, email, imagePath, countryID);
+                return null;
             }
             else
             {
-                return null;
+                DataRow Row = dt.Rows[0];
+
+                return new clsPeople(Convert.ToInt32(Row["PersonID"]),
+                                     Convert.ToString(Row["FirstName"]),
+                                     Convert.ToString(Row["LastName"]),
+                                     Convert.ToString(Row["NationalNo"]),
+                                     Convert.ToDateTime(Row["DateOfBirth"]),
+                                     Convert.ToInt16(Row["Gendor"]),
+                                     Convert.ToString(Row["Address"]),
+                                     Convert.ToString(Row["Phone"]),
+                                     Convert.ToString(Row["Email"]),
+                                     Convert.ToString(Row["ImagePath"]),
+                                     Convert.ToInt16(Row["CountryID"]));
             }
         }
 
         // New method to delete person
-        public static bool Delete(int personID)
+        public static async Task<bool> Delete(int personID)
         {
-            return clsPeopleData.DeletePerson(personID);
+            return await clsPeopleData.DeletePerson(personID);
         }
 
         // New method to check if person exists
-        public static bool ExistsByID(int personID)
+        public static async Task<bool> ExistsByID(int personID)
         {
-            return clsPeopleData.PersonExists(personID);
+            return await clsPeopleData.PersonExists(personID);
         }
 
         // New method to check if national no exists
-        public static bool ExistsByNationalNo(string nationalNo)
+        public static async Task<bool> ExistsByNationalNo(string nationalNo)
         {
-            return clsPeopleData.PersonExists(nationalNo);
+            return await clsPeopleData.PersonExists(nationalNo);
         }
 
         // New method to get all people
-        public static DataTable GetAllPeople()
+        public static async Task<DataTable> GetAllPeople()
         {
-            return clsPeopleData.GetAllPeople();
+            return await clsPeopleData.GetAllPeople();
         }
 
         // New method to get paged people
-        public static DataTable GetPagedPeople(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedPeople(int pageNumber, int pageSize)
         {
-            return clsPeopleData.GetPagedPeople(pageNumber, pageSize, out totalCount);
+            return await clsPeopleData.GetPagedPeople(pageNumber, pageSize);
         }
     }
 }

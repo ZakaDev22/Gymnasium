@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsMembersData
     {
 
-        public static int AddNewMember(int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
+        public static async Task<int> AddNewMember(int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
         {
             int memberID = -1;
 
@@ -15,21 +16,23 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_AddNewMember", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_AddNewMember", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@PersonID", personID);
-                    command.Parameters.AddWithValue("@SportID", sportID);
-                    command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
-                    command.Parameters.AddWithValue("@JoinDate", joinDate);
-                    command.Parameters.AddWithValue("@IsActive", isActive);
+                        command.Parameters.AddWithValue("@PersonID", personID);
+                        command.Parameters.AddWithValue("@SportID", sportID);
+                        command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
+                        command.Parameters.AddWithValue("@JoinDate", joinDate);
+                        command.Parameters.AddWithValue("@IsActive", isActive);
 
-                    SqlParameter returnParam = command.Parameters.Add("@MemberID", SqlDbType.Int);
-                    returnParam.Direction = ParameterDirection.Output;
+                        SqlParameter returnParam = command.Parameters.Add("@MemberID", SqlDbType.Int);
+                        returnParam.Direction = ParameterDirection.Output;
 
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    memberID = (int)returnParam.Value;
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
+                        memberID = (int)returnParam.Value;
+                    }
                 }
             }
             catch (Exception ex)
@@ -42,80 +45,81 @@ namespace GymnasiumDataAccess
         }
 
 
-        public static bool UpdateMember(int memberID, int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
+        public static async Task<bool> UpdateMember(int memberID, int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
         {
-            int rowsAffected = 0;
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_UpdateMember", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_UpdateMember", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@MemberID", memberID);
-                    command.Parameters.AddWithValue("@PersonID", personID);
-                    command.Parameters.AddWithValue("@SportID", sportID);
-                    command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
-                    command.Parameters.AddWithValue("@JoinDate", joinDate);
-                    command.Parameters.AddWithValue("@IsActive", isActive);
+                        command.Parameters.AddWithValue("@MemberID", memberID);
+                        command.Parameters.AddWithValue("@PersonID", personID);
+                        command.Parameters.AddWithValue("@SportID", sportID);
+                        command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
+                        command.Parameters.AddWithValue("@JoinDate", joinDate);
+                        command.Parameters.AddWithValue("@IsActive", isActive);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        var obj = command.ExecuteScalarAsync().Result;// command.ExecuteNonQueryAsync().Result;
+
+                        return (int)obj > 0;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
+
         }
 
-        public static bool GetMemberInfoByID(int memberID, ref int personID, ref int sportID, ref int emergencyContactID, ref DateTime joinDate, ref bool isActive)
+        public static async Task<DataTable> GetMemberInfoByID(int memberID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
-                SqlCommand command = new SqlCommand("sp_Members_GetMemberByID", connection);
-                command.CommandType = CommandType.StoredProcedure;
-
-                command.Parameters.AddWithValue("@MemberID", memberID);
-
-                try
+                using (SqlCommand command = new SqlCommand("sp_Members_GetMemberByID", connection))
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    if (reader.Read())
+                    command.Parameters.AddWithValue("@MemberID", memberID);
+
+                    try
                     {
-                        personID = Convert.ToInt32(reader["PersonID"]);
-                        sportID = Convert.ToInt32(reader["SportID"]);
-                        emergencyContactID = Convert.ToInt32(reader["EmergencyContactID"]);
-                        joinDate = Convert.ToDateTime(reader["JoinDate"]);
-                        isActive = Convert.ToBoolean(reader["IsActive"]);
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
 
-                        isSuccess = true;
+                            if (reader.HasRows)
+                            {
+                                dt.Load(reader);
+                            }
+                        }
+
                     }
+                    catch (Exception ex)
+                    {
+                        // Handle exception
 
-                    reader.Close();
-                }
-                catch (Exception ex)
-                {
-                    // Handle exception
-
-                    clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                        clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    }
                 }
             }
 
-            return isSuccess;
+            return dt;
         }
 
-        public static bool FindMemberByPersonID(int personID, ref int memberID, ref int sportID, ref int emergencyContactID, ref DateTime joinDate, ref bool isActive)
+        public static async Task<DataTable> FindMemberByPersonID(int personID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
@@ -126,21 +130,15 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.Read())
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        memberID = Convert.ToInt32(reader["MemberID"]);
-                        sportID = Convert.ToInt32(reader["SportID"]);
-                        emergencyContactID = Convert.ToInt32(reader["EmergencyContactID"]);
-                        joinDate = Convert.ToDateTime(reader["JoinDate"]);
-                        isActive = Convert.ToBoolean(reader["IsActive"]);
 
-                        isSuccess = true;
+                        if (reader.HasRows)
+                        {
+                            dt.Load(reader);
+                        }
                     }
-
-                    reader.Close();
                 }
                 catch (Exception ex)
                 {
@@ -150,11 +148,11 @@ namespace GymnasiumDataAccess
                 }
             }
 
-            return isSuccess;
+            return dt;
         }
 
 
-        public static bool DeleteMember(int memberID)
+        public static async Task<bool> DeleteMember(int memberID)
         {
             int rowsAffected = 0;
 
@@ -167,8 +165,8 @@ namespace GymnasiumDataAccess
 
                     command.Parameters.AddWithValue("@MemberID", memberID);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
@@ -181,7 +179,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool SetMemberToInDeleted(int memberID)
+        public static async Task<bool> SetMemberToInDeleted(int memberID)
         {
             int rowsAffected = 0;
 
@@ -189,13 +187,15 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_SetToInDeleted", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_SetToInDeleted", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@MemberID", memberID);
+                        command.Parameters.AddWithValue("@MemberID", memberID);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -208,7 +208,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool SetMemberAsActiveOrInactive(int memberID, bool isActiveOrNot)
+        public static async Task<bool> SetMemberAsActiveOrInactive(int memberID, bool isActiveOrNot)
         {
             int rowsAffected = 0;
 
@@ -216,15 +216,17 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_SetMemberAsActiveOrInactive", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_SetMemberAsActiveOrInactive", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@MemberID", memberID);
+                        command.Parameters.AddWithValue("@MemberID", memberID);
 
-                    command.Parameters.AddWithValue("@Result", isActiveOrNot);
+                        command.Parameters.AddWithValue("@Result", isActiveOrNot);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -236,7 +238,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool IsMemberActive(int memberID)
+        public static async Task<bool> IsMemberActive(int memberID)
         {
 
 
@@ -250,9 +252,9 @@ namespace GymnasiumDataAccess
 
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             return reader.HasRows;
                         }
@@ -265,9 +267,10 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
         // Checks if a member exists by the provided PersonID.
@@ -277,15 +280,13 @@ namespace GymnasiumDataAccess
         //
         // Returns:
         //   True if the member exists, otherwise false.
-        public static bool IsMemberExistsByID(int memberID)
+        public static async Task<bool> IsMemberExistsByID(int memberID)
         {
-            bool isExist = false;
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    connection.Open();
 
                     using (SqlCommand command = new SqlCommand("sp_Members_IsMemberExistsByID", connection))
                     {
@@ -296,8 +297,11 @@ namespace GymnasiumDataAccess
                         SqlParameter returnParam = command.Parameters.Add("@IsExiste", SqlDbType.Bit);
                         returnParam.Direction = ParameterDirection.Output;
 
-                        command.ExecuteNonQuery();
-                        isExist = Convert.ToBoolean(returnParam.Value);
+                        await connection.OpenAsync();
+
+                        await command.ExecuteNonQueryAsync();
+
+                        return Convert.ToBoolean(returnParam.Value);
                     }
 
                 }
@@ -306,9 +310,9 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return isExist;
         }
 
 
@@ -319,7 +323,7 @@ namespace GymnasiumDataAccess
         //
         // Returns:
         //   True if the member exists, otherwise false.
-        public static bool IsMemberExistsByPersonID(int PersonID)
+        public static async Task<bool> IsMemberExistsByPersonID(int PersonID)
         {
             bool isExist = false;
 
@@ -327,7 +331,6 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    connection.Open();
 
                     SqlCommand command = new SqlCommand("sp_Members_IsMemberExistsByPersonID", connection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -337,8 +340,11 @@ namespace GymnasiumDataAccess
                     SqlParameter returnParam = command.Parameters.Add("@IsExiste", SqlDbType.Bit);
                     returnParam.Direction = ParameterDirection.Output;
 
-                    command.ExecuteNonQuery();
-                    isExist = Convert.ToBoolean(returnParam.Value);
+                    await connection.OpenAsync();
+
+                    await command.ExecuteNonQueryAsync();
+
+                    return Convert.ToBoolean(returnParam.Value);
 
                 }
             }
@@ -346,13 +352,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return isExist;
         }
 
 
-        public static DataTable GetAllMembers()
+        public static async Task<DataTable> GetAllMembers()
         {
             DataTable dataTable = new DataTable();
 
@@ -360,15 +366,19 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_GetAllMembers", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
+                    using (SqlCommand command = new SqlCommand("sp_Members_GetAllMembers", connection))
                     {
-                        dataTable.Load(reader);
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+
+                            if (reader.HasRows)
+                            {
+                                dataTable.Load(reader);
+                            }
+                        }
                     }
                 }
             }
@@ -381,7 +391,7 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static DataTable GetAllDeletedMembers()
+        public static async Task<DataTable> GetAllDeletedMembers()
         {
             DataTable dataTable = new DataTable();
 
@@ -389,14 +399,18 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_GetAllDeletedMembers", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_GetAllDeletedMembers", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
 
-                    if (reader.HasRows)
-                        dataTable.Load(reader);
+                            if (reader.HasRows)
+                                dataTable.Load(reader);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -408,7 +422,7 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static DataTable GetAllBlackListMembers()
+        public static async Task<DataTable> GetAllBlackListMembers()
         {
             DataTable dataTable = new DataTable();
 
@@ -416,14 +430,18 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_GetAllBlackListMembers", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_GetAllBlackListMembers", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
 
-                    if (reader.HasRows)
-                        dataTable.Load(reader);
+                            if (reader.HasRows)
+                                dataTable.Load(reader);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -437,10 +455,10 @@ namespace GymnasiumDataAccess
 
 
         // New method to get paged members
-        public static DataTable GetPagedMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedMembers(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -458,8 +476,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -474,14 +492,14 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
         // New method to get paged Deleted members
-        public static DataTable GetPagedDeletedMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedDeletedMembers(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -499,8 +517,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -515,13 +533,13 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
-        public static DataTable GetBlackListPagedMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetBlackListPagedMembers(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -539,8 +557,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -555,10 +573,10 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
-        public static bool SetMemberInBlackList(int memberID, bool IsExeste)
+        public static async Task<bool> SetMemberInBlackList(int memberID, bool IsExeste)
         {
             int rowsAffected = 0;
 
@@ -566,14 +584,16 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_SetMemberInBlackList", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_SetMemberInBlackList", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@MemberID", memberID);
-                    command.Parameters.AddWithValue("@IsExist", IsExeste);
+                        command.Parameters.AddWithValue("@MemberID", memberID);
+                        command.Parameters.AddWithValue("@IsExist", IsExeste);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -585,7 +605,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool SetMemberToNormalList(int memberID)
+        public static async bool SetMemberToNormalList(int memberID)
         {
             int rowsAffected = 0;
 
@@ -593,13 +613,15 @@ namespace GymnasiumDataAccess
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Members_SetMemberToNormalList", connection);
-                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand command = new SqlCommand("sp_Members_SetMemberToNormalList", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@MemberID", memberID);
+                        command.Parameters.AddWithValue("@MemberID", memberID);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -611,7 +633,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool IsMemberInBlackList(int memberID)
+        public static async Task<bool> IsMemberInBlackList(int memberID)
         {
 
 
@@ -625,9 +647,9 @@ namespace GymnasiumDataAccess
 
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             return reader.HasRows;
                         }
@@ -640,12 +662,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
-        public static bool IsMemberInBlackListHistory(int memberID)
+        public static async Task<bool> IsMemberInBlackListHistory(int memberID)
         {
 
 
@@ -659,9 +682,9 @@ namespace GymnasiumDataAccess
 
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             return reader.HasRows;
                         }
@@ -674,12 +697,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
-        public static DataTable GetBlackListHistory()
+        public static async Task<DataTable> GetBlackListHistory()
         {
 
             DataTable dataTable;
@@ -691,8 +715,8 @@ namespace GymnasiumDataAccess
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    connection.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         dataTable = new DataTable();
 
@@ -708,10 +732,10 @@ namespace GymnasiumDataAccess
         }
 
         // New method to get paged members
-        public static DataTable GetPagedBlackListHistory(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable DataTable, int totalCount)> GetPagedBlackListHistory(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -729,8 +753,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -745,7 +769,7 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
     }

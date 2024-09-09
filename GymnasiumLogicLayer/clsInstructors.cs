@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -17,7 +18,7 @@ namespace GymnasiumLogicLayer
         public decimal Salary { get; set; }
         public bool IsActive { get; set; }
 
-        public clsPeople _PersonInfo;
+        public Task<clsPeople> _PersonInfo;
 
         public clsInstructors()
         {
@@ -34,9 +35,15 @@ namespace GymnasiumLogicLayer
             Salary = salary;
             IsActive = isActive;
 
-            _PersonInfo = clsPeople.FindByID(personID);
+            _PersonInfo = LoadPersonInfoAsync(PersonID);
 
             Mode = enMode.Update;
+        }
+
+        // Separate async method to load the person info
+        public async Task<clsPeople> LoadPersonInfoAsync(int personID)
+        {
+            return await clsPeople.FindByID(personID);
         }
 
         private bool _AddNewInstructor()

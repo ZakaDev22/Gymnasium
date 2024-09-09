@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -16,9 +17,10 @@ namespace GymnasiumLogicLayer
         public DateTime JoinDate { get; set; }
         public bool IsActive { get; set; }
 
-        public clsPeople _PersonInfo;
+        public Task<clsPeople> _PersonInfo;
 
         public clsSports _SportInfo;
+        // public Task<clsSports> _SportInfo;
 
         // Empty constructor
         public clsMembers()
@@ -38,6 +40,7 @@ namespace GymnasiumLogicLayer
 
             _PersonInfo = clsPeople.FindByID(PersonID);
             _SportInfo = clsSports.FindByID(SportID);
+
 
             Mode = enMode.Update;
         }

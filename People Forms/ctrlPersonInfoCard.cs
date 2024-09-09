@@ -28,9 +28,9 @@ namespace Gymnasium.People_Forms
         }
 
 
-        public void LoadPersonInfo(int PersonID)
+        public async void LoadPersonInfo(int PersonID)
         {
-            _Person = clsPeople.FindByID(PersonID);
+            _Person = await clsPeople.FindByID(PersonID);
             if (_Person == null)
             {
                 ResetPersonInfo();
@@ -41,9 +41,9 @@ namespace Gymnasium.People_Forms
             _FillPersonInfo();
         }
 
-        public void LoadPersonInfo(string NationalNo)
+        public async void LoadPersonInfo(string NationalNo)
         {
-            _Person = clsPeople.FindByNationalNo(NationalNo);
+            _Person = await clsPeople.FindByNationalNo(NationalNo);
             if (_Person == null)
             {
                 ResetPersonInfo();
