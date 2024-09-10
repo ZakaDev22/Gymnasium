@@ -48,7 +48,7 @@ namespace Gymnasium.Subscription_Peroids
             this.Close();
         }
 
-        private void AddEditeSubscriptionPeriodForm_Load(object sender, System.EventArgs e)
+        private async void AddEditeSubscriptionPeriodForm_Load(object sender, System.EventArgs e)
         {
             if (_Mode == enMode.AddNew)
             {
@@ -64,7 +64,7 @@ namespace Gymnasium.Subscription_Peroids
 
             }
 
-            _SubscriptionPeriod = clsSubscriptionPeriods.FindByID(_SubscriptionPeriodID);
+            _SubscriptionPeriod = await clsSubscriptionPeriods.FindByID(_SubscriptionPeriodID);
 
             if (_SubscriptionPeriod == null)
             {
@@ -86,7 +86,7 @@ namespace Gymnasium.Subscription_Peroids
             btnSave.Enabled = false;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -101,7 +101,7 @@ namespace Gymnasium.Subscription_Peroids
             _SubscriptionPeriod.EndDate = DateTime.Now.AddMonths(_SubMonths);
             _SubscriptionPeriod.Paid = chkIsPaid.Checked;
 
-            if (_SubscriptionPeriod.Save())
+            if (await _SubscriptionPeriod.Save())
             {
 
                 MessageBox.Show("Subscription Period Added Successfully \n tap Ok To Close The Form Directly", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

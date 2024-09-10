@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsPaymentsData
     {
-        public static int AddNewPayment(decimal amount, DateTime date, int memberID)
+
+        public static async Task<int> AddNewPayment(decimal amount, DateTime date, int memberID)
         {
             int paymentID = -1;
             try
@@ -20,31 +22,17 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Date", date);
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        // fix the bug is her Data Error Nvarchar To int
-                        // Add The Parameter for New Payment ID Her Out Put Parameter
-
                         SqlParameter returnParam = command.Parameters.Add("@NewPaymentID", SqlDbType.Int);
                         returnParam.Direction = ParameterDirection.Output;
 
-                        try
-                        {
-                            connection.Open();
-                            command.ExecuteNonQuery();
-                            paymentID = (int)returnParam.Value;
-                        }
-                        catch (Exception ex)
-                        {
-                            // Handle exception
-                            clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
-                        }
-
-
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
+                        paymentID = (int)returnParam.Value;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
@@ -52,7 +40,7 @@ namespace GymnasiumDataAccess
         }
 
         // Get All Payments
-        public static DataTable GetAllPayments()
+        public static async Task<DataTable> GetAllPayments()
         {
             DataTable dataTable = new DataTable();
             try
@@ -63,8 +51,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -74,17 +62,15 @@ namespace GymnasiumDataAccess
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
             return dataTable;
         }
-
         // New method to get paged payments
-        public static DataTable GetPagedPayments(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedPayments(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -102,8 +88,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -118,12 +104,13 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
-        public static bool GetPaymentInfoByID(int paymentID, ref decimal amount, ref DateTime date, ref int memberID)
+        public static async Task<DataTable> GetPaymentInfoByID(int paymentID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
+
 
             try
             {
@@ -134,17 +121,12 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
-
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                amount = (decimal)reader["Amount"];
-                                date = (DateTime)reader["Date"];
-                                memberID = (int)reader["MemberID"];
-
-                                isSuccess = true;
+                                dt.Load(reader);
                             }
                         }
                     }
@@ -152,16 +134,16 @@ namespace GymnasiumDataAccess
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dt;
         }
 
-        public static bool GetPaymentInfoByMemberID(int memberID, ref decimal amount, ref DateTime date, ref int paymentID)
+
+        public static async Task<DataTable> GetPaymentInfoByMemberID(int memberID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -176,13 +158,9 @@ namespace GymnasiumDataAccess
                         connection.Open();
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                amount = (decimal)reader["Amount"];
-                                date = (DateTime)reader["Date"];
-                                paymentID = (int)reader["PaymentID"];
-
-                                isSuccess = true;
+                                dt.Load(reader);
                             }
                         }
                     }
@@ -194,11 +172,11 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dt;
         }
 
 
-        public static bool UpdatePayment(int paymentID, decimal amount, DateTime date, int memberID)
+        public static async Task<bool> UpdatePayment(int paymentID, decimal amount, DateTime date, int memberID)
         {
             try
             {
@@ -212,21 +190,22 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Date", date);
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
+
         }
 
-        public static bool DeletePayment(int paymentID)
+
+        public static async Task<bool> DeletePayment(int paymentID)
         {
             try
             {
@@ -237,21 +216,22 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
+
         }
 
-        public static bool IsPaymentExistByID(int paymentID)
+
+        public static async Task<bool> IsPaymentExistByID(int paymentID)
         {
             try
             {
@@ -262,20 +242,20 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
+
         }
 
-        public static DataTable GetAllPaymentsPerEachMonth(int Year)
+        public static async Task<DataTable> GetAllPaymentsPerEachMonth(int Year)
         {
             DataTable dt = new DataTable();
 
@@ -286,12 +266,10 @@ namespace GymnasiumDataAccess
                     using (SqlCommand cmd = new SqlCommand("sp_Paymnets_GetToTalPaymentsPerMonth", cnn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-
                         cmd.Parameters.AddWithValue("@Year", Year);
 
-
-                        cnn.Open();
-                        using (SqlDataReader da = cmd.ExecuteReader())
+                        await cnn.OpenAsync();
+                        using (SqlDataReader da = await cmd.ExecuteReaderAsync())
                         {
                             if (da.HasRows)
                             {
@@ -303,7 +281,6 @@ namespace GymnasiumDataAccess
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 

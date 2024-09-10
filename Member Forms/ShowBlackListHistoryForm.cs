@@ -3,6 +3,7 @@ using GymnasiumLogicLayer;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
@@ -21,13 +22,15 @@ namespace Gymnasium.Member_Forms
             rbByPages.Checked = true;
         }
 
-        private void LoadPagedData()
+        private async Task LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsMembers.GetPagedBlackListHistory(currentPage, pageSize, out totalRecords);
+                var tuple = await clsMembers.GetPagedBlackListHistory(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +38,7 @@ namespace Gymnasium.Member_Forms
             else
             {
                 // Load all data
-                dt = clsMembers.GetBlackListHistory();
+                dt = await clsMembers.GetBlackListHistory();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -61,7 +64,7 @@ namespace Gymnasium.Member_Forms
             btnRight.BackColor = btnRight.Enabled ? Color.GreenYellow : Color.Red;
         }
 
-        private void rbByPages_CheckedChanged(object sender, EventArgs e)
+        private async void rbByPages_CheckedChanged(object sender, EventArgs e)
         {
 
             if (rbByPages.Checked)
@@ -81,13 +84,13 @@ namespace Gymnasium.Member_Forms
                 btnPageNumber.Visible = false;
             }
 
-            LoadPagedData();
+            await LoadPagedData();
         }
 
-        private void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cbPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             pageSize = Convert.ToInt32(cbPageSize.SelectedItem);
-            LoadPagedData();
+            await LoadPagedData();
         }
 
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -154,21 +157,21 @@ namespace Gymnasium.Member_Forms
             lbRecords.Text = dataGridView1.Rows.Count.ToString();
         }
 
-        private void btnRight_Click(object sender, EventArgs e)
+        private async void btnRight_Click(object sender, EventArgs e)
         {
             if (currentPage * pageSize < totalRecords)
             {
                 currentPage++;
-                LoadPagedData();
+                await LoadPagedData();
             }
         }
 
-        private void btnLeft_Click(object sender, EventArgs e)
+        private async void btnLeft_Click(object sender, EventArgs e)
         {
             if (currentPage > 1)
             {
                 currentPage--;
-                LoadPagedData();
+                await LoadPagedData();
             }
         }
 
@@ -182,9 +185,10 @@ namespace Gymnasium.Member_Forms
             cbFilterBy.SelectedIndex = 0;
         }
 
-        private void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[1].Value).PersonID);
+            clsPeople Person = await clsPeople.FindByID((int)dataGridView1.CurrentRow.Cells[1].Value);
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(Person.PersonID);
             frm.ShowDialog();
         }
 
@@ -194,16 +198,16 @@ namespace Gymnasium.Member_Forms
             frm.ShowDialog();
         }
 
-        private void SetMemberToActiveMenuItem_Click(object sender, EventArgs e)
+        private async void SetMemberToActiveMenuItem_Click(object sender, EventArgs e)
         {
             int MemberID = (int)dataGridView1.CurrentRow.Cells[1].Value;
 
             if (MessageBox.Show("Are you sure you want to Set this member to Active AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
+                if (await clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
                 {
                     MessageBox.Show("Member was  Set To Active  successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPagedData();
+                    await LoadPagedData();
                 }
                 else
                     MessageBox.Show("Error, Member was not Set To Active", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -214,16 +218,16 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void SetMemberToInActiveMenuItem_Click(object sender, EventArgs e)
+        private async void SetMemberToInActiveMenuItem_Click(object sender, EventArgs e)
         {
             int MemberID = (int)dataGridView1.CurrentRow.Cells[1].Value;
 
             if (MessageBox.Show("Are you sure you want to Set this member to InActive AGain?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
+                if (await clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
                 {
                     MessageBox.Show("Member was  Set To InActive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPagedData();
+                    await LoadPagedData();
                 }
                 else
                     MessageBox.Show("Error, Member was not Set To InActive", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -241,7 +245,7 @@ namespace Gymnasium.Member_Forms
             frm.ShowDialog();
         }
 
-        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (dataGridView1.Rows.Count > 0)
             {
@@ -250,7 +254,7 @@ namespace Gymnasium.Member_Forms
 
                 int MemberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
-                bool MemberActive = clsMembers.IsMemberActive(MemberID);
+                bool MemberActive = await clsMembers.IsMemberActive(MemberID);
 
                 SetMemberToInActiveMenuItem.Enabled = MemberActive;
 

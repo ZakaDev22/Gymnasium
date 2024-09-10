@@ -37,7 +37,7 @@ namespace Gymnasium.Member_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -47,7 +47,7 @@ namespace Gymnasium.Member_Forms
             }
 
             // CHeck If The Selected Member Already Has A Memmbership With The Same PersonID
-            if (_Mode == enMode.AddNew && clsMembers.IsMemberExistsByPersnonID(ctrlPersonInfoCardWithFilter1.PersonID) == true)
+            if (_Mode == enMode.AddNew && await clsMembers.IsMemberExistsByPersnonID(ctrlPersonInfoCardWithFilter1.PersonID) == true)
             {
                 MessageBox.Show("Selected Person already has a member, choose another one.", "Select another Person", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ctrlPersonInfoCardWithFilter1.FilterFocus();
@@ -66,7 +66,7 @@ namespace Gymnasium.Member_Forms
 
             _Member.JoinDate = DateTime.Now;
 
-            if (_Member.Save())
+            if (await _Member.Save())
             {
                 MessageBox.Show("Success, saving member Was DOne Successfully. \n Now Add Payment For The New Member", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -103,7 +103,7 @@ namespace Gymnasium.Member_Forms
         }
 
 
-        private void ShowAddEditeForm_Load(object sender, EventArgs e)
+        private async void ShowAddEditeForm_Load(object sender, EventArgs e)
         {
             _FillSportComboBoxWithData();
             cbSports.SelectedIndex = 2;
@@ -117,7 +117,8 @@ namespace Gymnasium.Member_Forms
                 return;
             }
 
-            _Member = clsMembers.GetMemberByID(MemberID);
+            _Member = await clsMembers.GetMemberByID(MemberID);
+            await _Member.FillPersonANdSportInformationAsync();
 
             if (_Member == null)
             {

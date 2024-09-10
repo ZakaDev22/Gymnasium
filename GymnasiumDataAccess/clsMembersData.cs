@@ -47,7 +47,7 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> UpdateMember(int memberID, int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
         {
-
+            int rowsAffected = 0;
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -64,9 +64,9 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@IsActive", isActive);
 
                         await connection.OpenAsync();
-                        var obj = command.ExecuteScalarAsync().Result;// command.ExecuteNonQueryAsync().Result;
+                        rowsAffected = await command.ExecuteNonQueryAsync();// command.ExecuteNonQueryAsync().Result;
 
-                        return (int)obj > 0;
+                        return rowsAffected > 0;
                     }
                 }
             }
@@ -605,7 +605,7 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static async bool SetMemberToNormalList(int memberID)
+        public static async Task<bool> SetMemberToNormalList(int memberID)
         {
             int rowsAffected = 0;
 

@@ -39,25 +39,26 @@ namespace Gymnasium
         private async void _RefreshDashboard()
         {
             var PeopleTask = await clsPeople.GetAllPeople(); // Done
+            var MembersTask = await clsMembers.GetAllMembers(); // done
+            var SubPeriodstask = await clsSubscriptionPeriods.GetAllPeriods(); // done
+            var userstask = await clsUsers.GetAllUsers(); // done
+            var paymentstask = await clsPayments.GetAllPayments(); // done
 
-            var MembersTask = Task.Run(() => clsMembers.GetAllMembers().Rows.Count.ToString());
-            var userstask = Task.Run(() => clsUsers.GetAllUsers().Rows.Count.ToString());
-            var paymentstask = Task.Run(() => clsPayments.GetAllPayments().Rows.Count.ToString());
             var MembersInstructortask = Task.Run(() => clsMemberInstructor.GetAllAssignments().Rows.Count.ToString());
             var BeltTesttask = Task.Run(() => clsBeltTest.GetAllBeltTests().Rows.Count.ToString());
             var Sportstask = Task.Run(() => clsSports.GetAllSports().Rows.Count.ToString());
-            var SubPeriodstask = Task.Run(() => clsSubscriptionPeriods.GetAllPeriods().Rows.Count.ToString());
             var Instructorstask = Task.Run(() => clsInstructors.GetAllInstructors().Rows.Count.ToString());
 
 
             lbPeople.Text = PeopleTask.Rows.Count.ToString();
-            lbMembers.Text = MembersTask.Result;
-            lbUsers.Text = userstask.Result;
-            lbPayments.Text = paymentstask.Result;
+            lbMembers.Text = MembersTask.Rows.Count.ToString();
+            lbSubPeriods.Text = SubPeriodstask.Rows.Count.ToString();
+            lbUsers.Text = userstask.Rows.Count.ToString();
+            lbPayments.Text = paymentstask.Rows.Count.ToString();
+
             lbMembersInstructors.Text = MembersInstructortask.Result;
             lbBeltTests.Text = BeltTesttask.Result;
             lbSports.Text = Sportstask.Result;
-            lbSubPeriods.Text = SubPeriodstask.Result;
             lbInstructors.Text = Instructorstask.Result;
         }
 

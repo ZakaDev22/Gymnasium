@@ -31,7 +31,7 @@ namespace Gymnasium
                 chkRememberMe.Checked = false;
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -46,11 +46,11 @@ namespace Gymnasium
             // Check If The Lenght Is 64 To Know If The Current User Has Remember Me or He Want To Write The Password By Himself
             if (txtPassword.Text.Length != 64)
             {
-                User = clsUsers.IsUserExiste(txtUserName.Text, clsUtil.ComputeHash(txtPassword.Text));
+                User = await clsUsers.IsUserExiste(txtUserName.Text, clsUtil.ComputeHash(txtPassword.Text));
             }
             else
             {
-                User = clsUsers.IsUserExiste(txtUserName.Text, txtPassword.Text);
+                User = await clsUsers.IsUserExiste(txtUserName.Text, txtPassword.Text);
             }
 
             //User = clsUsers.IsUserExiste(txtUserName.Text, txtPassword.Text);
@@ -63,8 +63,7 @@ namespace Gymnasium
 
                     if (chkRememberMe.Checked)
                     {
-                        //store username and password
-                        //  clsGlobal.RememberUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
+
 
                         if (txtPassword.Text.Length != 64)
                             clsGlobal.RememberUsernameAndPasswordUsingRegistry(txtUserName.Text.Trim(), clsUtil.ComputeHash(txtPassword.Text.Trim()));
@@ -74,8 +73,6 @@ namespace Gymnasium
                     }
                     else
                     {
-                        //store empty username and password
-                        //   clsGlobal.RememberUsernameAndPassword("", "");
 
                         clsGlobal.RememberUsernameAndPasswordUsingRegistry("", "");
 

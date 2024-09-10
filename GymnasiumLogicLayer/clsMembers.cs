@@ -38,35 +38,38 @@ namespace GymnasiumLogicLayer
             JoinDate = joinDate;
             IsActive = isActive;
 
-            _PersonInfo = clsPeople.FindByID(PersonID);
-            _SportInfo = clsSports.FindByID(SportID);
+
 
 
             Mode = enMode.Update;
         }
 
-
+        public async Task FillPersonANdSportInformationAsync()
+        {
+            _PersonInfo = clsPeople.FindByID(this.PersonID);
+            _SportInfo = clsSports.FindByID(this.SportID);
+        }
 
         // Data Access Methods
-        private bool _AddNewMember()
+        private async Task<bool> _AddNewMember()
         {
-            this.MemberID = clsMembersData.AddNewMember(this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
+            this.MemberID = await clsMembersData.AddNewMember(this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
 
             return this.MemberID != -1;
         }
 
-        private bool _UpdateMember()
+        private async Task<bool> _UpdateMember()
         {
-            return clsMembersData.UpdateMember(this.MemberID, this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
+            return await clsMembersData.UpdateMember(this.MemberID, this.PersonID, this.SportID, this.EmergencyContactID, this.JoinDate, this.IsActive);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (Mode)
             {
                 case enMode.AddNew:
 
-                    if (_AddNewMember())
+                    if (await _AddNewMember())
                     {
                         Mode = enMode.Update;
                         return true;
@@ -78,7 +81,7 @@ namespace GymnasiumLogicLayer
 
                 case enMode.Update:
 
-                    return _UpdateMember();
+                    return await _UpdateMember();
 
 
             }
@@ -87,140 +90,146 @@ namespace GymnasiumLogicLayer
         }
 
 
-        public static bool DeleteMember(int memberID)
+        public static async Task<bool> DeleteMember(int memberID)
         {
-            return clsMembersData.DeleteMember(memberID);
+            return await clsMembersData.DeleteMember(memberID);
         }
 
         // Set The Old Member To In Deleted In Case He Return To The Gym After  Months
-        public static bool SetMemberToInDeleted(int memberID)
+        public static async Task<bool> SetMemberToInDeleted(int memberID)
         {
-            return clsMembersData.SetMemberToInDeleted(memberID);
+            return await clsMembersData.SetMemberToInDeleted(memberID);
         }
 
-        public static DataTable GetAllMembers()
+        public static async Task<DataTable> GetAllMembers()
         {
-            return clsMembersData.GetAllMembers();
+            return await clsMembersData.GetAllMembers();
         }
 
         // New method to get paged members
-        public static DataTable GetPagedMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedMembers(int pageNumber, int pageSize)
         {
-            return clsMembersData.GetPagedMembers(pageNumber, pageSize, out totalCount);
+            return await clsMembersData.GetPagedMembers(pageNumber, pageSize);
         }
 
         // Get Deleted Members
-        public static DataTable GetAllDeletedMembers()
+        public static async Task<DataTable> GetAllDeletedMembers()
         {
-            return clsMembersData.GetAllDeletedMembers();
+            return await clsMembersData.GetAllDeletedMembers();
         }
 
         // New method to get paged Deleted members
-        public static DataTable GetPagedDeletedMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedDeletedMembers(int pageNumber, int pageSize)
         {
-            return clsMembersData.GetPagedDeletedMembers(pageNumber, pageSize, out totalCount);
+            return await clsMembersData.GetPagedDeletedMembers(pageNumber, pageSize);
         }
 
-        public static bool IsMemberExistsByID(int memberID)
+        public static async Task<bool> IsMemberExistsByID(int memberID)
         {
-            return clsMembersData.IsMemberExistsByID(memberID);
+            return await clsMembersData.IsMemberExistsByID(memberID);
         }
 
-        public static bool IsMemberExistsByPersnonID(int PersonID)
+        public static async Task<bool> IsMemberExistsByPersnonID(int PersonID)
         {
-            return clsMembersData.IsMemberExistsByPersonID(PersonID);
+            return await clsMembersData.IsMemberExistsByPersonID(PersonID);
         }
 
-        public static clsMembers GetMemberByID(int MemberID)
+        public static async Task<clsMembers> GetMemberByID(int MemberID)
         {
-            int personID = -1;
-            int sportID = -1;
-            int emergencyContactID = -1;
-            DateTime joinDate = DateTime.Now;
-            bool isActive = false;
 
-            bool isfound = clsMembersData.GetMemberInfoByID(MemberID, ref personID, ref sportID,
-                          ref emergencyContactID, ref joinDate, ref isActive);
+            DataTable dt = await clsMembersData.GetMemberInfoByID(MemberID);
 
-            if (isfound)
-                return new clsMembers(MemberID, personID, sportID, emergencyContactID, joinDate, isActive);
-            else
+            if (dt.Rows.Count == 0)
                 return null;
-        }
 
-        public static clsMembers FindMemberByPersonID(int PersonID)
-        {
-            int Memberid = -1;
-            int sportID = -1;
-            int emergencyContactID = -1;
-            DateTime joinDate = DateTime.Now;
-            bool isActive = false;
-
-            bool isfound = clsMembersData.FindMemberByPersonID(PersonID, ref Memberid, ref sportID,
-                          ref emergencyContactID, ref joinDate, ref isActive);
-
-            if (isfound)
-                return new clsMembers(Memberid, PersonID, sportID, emergencyContactID, joinDate, isActive);
             else
-                return null;
+            {
+                DataRow dr = dt.Rows[0];
+
+                return new clsMembers(Convert.ToInt32(dr["MemberID"]),
+                                      Convert.ToInt32(dr["PersonID"]),
+                                      Convert.ToInt32(dr["SportID"]),
+                                      Convert.ToInt32(dr["EmergencyContactID"]),
+                                      Convert.ToDateTime(dr["JoinDate"]),
+                                      Convert.ToBoolean(dr["IsActive"]));
+            }
+
         }
 
-        public static bool SetMemberAsActiveOrInactive(int memberID, bool ActiveOrNot)
+        public static async Task<clsMembers> FindMemberByPersonID(int PersonID)
         {
-            return clsMembersData.SetMemberAsActiveOrInactive(memberID, ActiveOrNot);
+
+            DataTable dt = await clsMembersData.FindMemberByPersonID(PersonID);
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            else
+            {
+                DataRow dr = dt.Rows[0];
+
+                return new clsMembers(Convert.ToInt32(dr["MemberID"]),
+                                      Convert.ToInt32(dr["PersonID"]),
+                                      Convert.ToInt32(dr["SportID"]),
+                                      Convert.ToInt32(dr["EmergencyContactID"]),
+                                      Convert.ToDateTime(dr["JoinDate"]),
+                                      Convert.ToBoolean(dr["IsActive"]));
+            }
+        }
+
+        public static async Task<bool> SetMemberAsActiveOrInactive(int memberID, bool ActiveOrNot)
+        {
+            return await clsMembersData.SetMemberAsActiveOrInactive(memberID, ActiveOrNot);
         }
 
         // New method to check if member is active
-        public static bool IsMemberActive(int memberID)
+        public static async Task<bool> IsMemberActive(int memberID)
         {
-            return clsMembersData.IsMemberActive(memberID);
+            return await clsMembersData.IsMemberActive(memberID);
         }
 
-        public static DataTable GetAllBlackListMembers()
+        public static async Task<DataTable> GetAllBlackListMembers()
         {
-            return clsMembersData.GetAllBlackListMembers();
+            return await clsMembersData.GetAllBlackListMembers();
         }
 
-        public static DataTable GetPagedBlackListMembers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedBlackListMembers(int pageNumber, int pageSize)
         {
-            return clsMembersData.GetBlackListPagedMembers(pageNumber, pageSize, out totalCount);
+            return await clsMembersData.GetBlackListPagedMembers(pageNumber, pageSize);
         }
 
-        public static bool SetMemberInBlackList(int memberID)
+        public static async Task<bool> SetMemberInBlackList(int memberID)
         {
-            bool IsExiste = false;
+            // check if The Member Is Already In Black List history if no then we have
+            // to put him in Black List History Or Update hi In Black List History If its true
+            bool IsExist = await IsMemberInBlackListHistory(memberID);
 
-            if (IsMemberInBlackListHistory(memberID))
-                IsExiste = true;
-            else
-                IsExiste = false;
-
-            return clsMembersData.SetMemberInBlackList(memberID, IsExiste);
+            return await clsMembersData.SetMemberInBlackList(memberID, IsExist);
         }
 
-        public static bool SetMemberToNormalList(int memberID)
+        public static async Task<bool> SetMemberToNormalList(int memberID)
         {
-            return clsMembersData.SetMemberToNormalList(memberID);
+            return await clsMembersData.SetMemberToNormalList(memberID);
         }
 
-        public static bool IsMemberInBlackList(int memberID)
+        public static async Task<bool> IsMemberInBlackList(int memberID)
         {
-            return clsMembersData.IsMemberInBlackList(memberID);
+            return await clsMembersData.IsMemberInBlackList(memberID);
         }
 
-        public static bool IsMemberInBlackListHistory(int memberID)
+        public static async Task<bool> IsMemberInBlackListHistory(int memberID)
         {
-            return clsMembersData.IsMemberInBlackListHistory(memberID);
+            return await clsMembersData.IsMemberInBlackListHistory(memberID);
         }
 
-        public static DataTable GetBlackListHistory()
+        public static async Task<DataTable> GetBlackListHistory()
         {
-            return clsMembersData.GetBlackListHistory();
+            return await clsMembersData.GetBlackListHistory();
         }
 
-        public static DataTable GetPagedBlackListHistory(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedBlackListHistory(int pageNumber, int pageSize)
         {
-            return clsMembersData.GetPagedBlackListHistory(pageNumber, pageSize, out totalCount);
+            return await clsMembersData.GetPagedBlackListHistory(pageNumber, pageSize);
         }
     }
 }

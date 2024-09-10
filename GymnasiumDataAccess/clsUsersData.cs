@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
@@ -8,11 +9,11 @@ namespace GymnasiumDataAccess
     {
 
         // Create a new user
-        public static int AddNewUser(int personID, string userName, string passwordHash, bool isActive, int permissions)
+
+        public static async Task<int> AddNewUser(int personID, string userName, string passwordHash, bool isActive, int permissions)
         {
             try
             {
-
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
                     using (SqlCommand command = new SqlCommand("sp_Users_AddNewUser", connection))
@@ -24,20 +25,20 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@IsActive", isActive);
                         command.Parameters.AddWithValue("@Permissions", permissions);
 
-                        connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToInt32(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return -1;
             }
-            return -1;
         }
 
         // Read all users
-        public static DataTable GetAllUsers()
+        public static async Task<DataTable> GetAllUsers()
         {
             DataTable dataTable = new DataTable();
             try
@@ -48,9 +49,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -65,11 +65,12 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
+
         // get paged users
-        public static DataTable GetPagedUsers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedUsers(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -87,8 +88,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -103,16 +104,15 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
 
         // Read user by UserID
 
-        public static bool GetUserInfoByUserID(int userID, ref int personID, ref string userName,
-                                                    ref string password, ref bool isActive, ref int permissions)
+        public static async Task<DataTable> GetUserInfoByUserID(int userID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -123,20 +123,11 @@ namespace GymnasiumDataAccess
 
                     command.Parameters.AddWithValue("@userID", userID);
 
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
-                        {
-                            personID = (int)reader["PersonID"];
-
-                            userName = (string)reader["UserName"];
-                            password = (string)reader["Password"];
-                            isActive = (bool)reader["IsActive"];
-                            permissions = (int)reader["Permissions"];
-
-                            isSuccess = true;
-                        }
+                        if (reader.HasRows)
+                            dt.Load(reader);
                     }
 
                 }
@@ -146,13 +137,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dt;
         }
 
-        public static bool GetUserInfoByPersonID(int personID, ref int userID, ref string userName,
-                                                  ref string password, ref bool isActive, ref int permissions)
+        public static async Task<DataTable> GetUserInfoByPersonID(int personID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -164,20 +154,11 @@ namespace GymnasiumDataAccess
                     command.Parameters.AddWithValue("@PersonID", personID);
 
 
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
-                        {
-                            userID = (int)reader["UserID"];
-
-                            userName = (string)reader["UserName"];
-                            password = (string)reader["Password"];
-                            isActive = (bool)reader["IsActive"];
-                            permissions = (int)reader["Permissions"];
-
-                            isSuccess = true;
-                        }
+                        if (reader.HasRows)
+                            dt.Load(reader);
                     }
 
                 }
@@ -187,12 +168,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dt;
         }
 
 
         // Update an existing user
-        public static bool UpdateUser(int userID, int personID, string userName, string passwordHash, bool isActive, int permissions)
+        public static async Task<bool> UpdateUser(int userID, int personID, string userName, string passwordHash, bool isActive, int permissions)
         {
             short RowEffected = 0;
 
@@ -211,24 +192,24 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@IsActive", isActive);
                         command.Parameters.AddWithValue("@Permissions", permissions);
 
-                        connection.Open();
-
-                        RowEffected = (short)command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
-            }
 
-            return RowEffected > 0;
+                return false;
+            }
         }
 
         // Delete a user by UserID
-        public static bool DeleteUser(int userID)
+        public static async Task<bool> DeleteUser(int userID)
         {
-            short RowEffected = 0;
+            int RowEffected = 0;
 
             try
             {
@@ -239,8 +220,8 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@UserID", userID);
 
-                        connection.Open();
-                        RowEffected = (short)command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        RowEffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -254,7 +235,7 @@ namespace GymnasiumDataAccess
         }
 
         // Check if user exists by UserID
-        public static bool IsUserExistByUserID(int userID)
+        public static async Task<bool> IsUserExistByUserID(int userID)
         {
             try
             {
@@ -265,103 +246,55 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@UserID", userID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
-        //public static bool IsUserExist(string UserName, string Password, ref int UserID, ref int PersonID, ref bool IsActived, ref int Permissions)
-        //{
-
-        //    try
-        //    {
-        //        using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
-        //        {
-        //            connection.Open();
-
-        //            // the bug is in This code in the stored procedure
-        //            using (SqlCommand command = new SqlCommand("sp_Users_IsUserExistByUserNameAndPassword", connection))
-        //            {
-        //                command.CommandType = CommandType.StoredProcedure;
-
-        //                command.Parameters.AddWithValue("@UserName", UserName);
-        //                command.Parameters.AddWithValue("@Password", Password);
-
-        //                using (SqlDataReader Reader = command.ExecuteReader())
-        //                {
-
-        //                    if (Reader.Read())
-        //                    {
-
-        //                        UserID = (int)Reader["UserID"];
-        //                        PersonID = (int)Reader["PersonID"];
-        //                        IsActived = Convert.ToBoolean(Reader["IsActive"]);
-        //                        Permissions = (int)Reader["Permissions"];
-
-        //                        return true;
-        //                    }
-
-
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
-        //    }
-
-        //    return false;
-        //}
 
         // Check if user exists by UserID
 
-        public static bool IsUserExist(string UserName, string Password, ref int UserID, ref int PersonID, ref bool IsActived, ref int Permissions)
+        public static async Task<DataTable> IsUserExist(string UserName, string Password)
         {
+            DataTable dt = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    connection.Open();
+
 
                     // i use The Old Pattern In This Example Cuz The Stored Procedure is not working Right Now Fix It Latter !!!
 
-                    string query = @"SELECT UserID, PersonID, IsActive, Permissions
-                                            FROM Users
-                                             WHERE UserName = @UserName AND Password = @Password";
+                    //string query = @"SELECT UserID, PersonID, IsActive, Permissions
+                    //                        FROM Users
+                    //                         WHERE UserName = @UserName AND Password = @Password";
 
                     // "sp_Users_IsUserExistByUserNameAndPassword"
-                    using (SqlCommand command = new SqlCommand(query, connection))
+
+                    using (SqlCommand command = new SqlCommand("sp_Users_IsUserExistByUserNameAndPassword", connection))
                     {
-                        // command.CommandType = CommandType.StoredProcedure;
+                        command.CommandType = CommandType.StoredProcedure;
 
                         command.Parameters.AddWithValue("@UserName", UserName);
                         command.Parameters.AddWithValue("@Password", Password);
 
-                        using (SqlDataReader Reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader Reader = await command.ExecuteReaderAsync())
                         {
-                            if (Reader.Read())
+                            if (Reader.HasRows)
                             {
-                                UserID = (int)Reader["UserID"];
-                                PersonID = (int)Reader["PersonID"];
-                                IsActived = Convert.ToBoolean(Reader["IsActive"]);
-                                Permissions = (int)Reader["Permissions"];
+                                dt.Load(Reader);
+                            }
 
-                                return true;
-                            }
-                            else
-                            {
-                                // Log to understand why Reader.Read() returned false
-                                clsGlobalForDataAccess.LogExseptionsToLogerViewr("No rows found", System.Diagnostics.EventLogEntryType.Warning);
-                            }
                         }
                     }
                 }
@@ -371,11 +304,11 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return false;
+            return dt;
         }
 
 
-        public static bool ExistsByUserName(string UserName)
+        public static async Task<bool> ExistsByUserName(string UserName)
         {
             try
             {
@@ -386,23 +319,24 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@UserName", UserName);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
 
 
         // Check if user exists by PersonID
-        public static bool IsUserExistByPersonID(int personID)
+        public static async Task<bool> IsUserExistByPersonID(int personID)
         {
             try
             {
@@ -413,20 +347,21 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PersonID", personID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
+
         }
 
 
-        public static bool IsUserActive(int UserID)
+        public static async Task<bool> IsUserActive(int UserID)
         {
 
 
@@ -440,9 +375,9 @@ namespace GymnasiumDataAccess
 
                         command.Parameters.AddWithValue("@UserID", UserID);
 
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             return reader.HasRows;
                         }
@@ -455,12 +390,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
 
-        public static bool SetUserAsActiveOrInactive(int UserID, bool isActiveOrNot)
+        public static async Task<bool> SetUserAsActiveOrInactive(int UserID, bool isActiveOrNot)
         {
             int rowsAffected = 0;
 
@@ -475,17 +411,19 @@ namespace GymnasiumDataAccess
 
                     command.Parameters.AddWithValue("@Result", isActiveOrNot);
 
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
                 }
             }
             catch (Exception ex)
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
+
         }
     }
 }

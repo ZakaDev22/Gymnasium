@@ -201,9 +201,10 @@ namespace Gymnasium.Member_Instructor_Forms
             LoadPagedData();
         }
 
-        private void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[0].Value).PersonID);
+            var Member = await clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[0].Value);
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(Member.PersonID);
             frm.ShowDialog();
         }
 

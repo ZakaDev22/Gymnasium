@@ -21,13 +21,15 @@ namespace Gymnasium.Subscription_Peroids
         private int totalRecords = 0;
         private DataTable dt;
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsSubscriptionPeriods.GetPagedSubscriptionPeriods(currentPage, pageSize, out totalRecords);
+                var tuple = await clsSubscriptionPeriods.GetPagedSubscriptionPeriods(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +37,7 @@ namespace Gymnasium.Subscription_Peroids
             else
             {
                 // Load all data
-                dt = clsSubscriptionPeriods.GetAllPeriods();
+                dt = await clsSubscriptionPeriods.GetAllPeriods();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }

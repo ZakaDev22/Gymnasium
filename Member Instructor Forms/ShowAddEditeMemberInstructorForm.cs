@@ -60,7 +60,7 @@ namespace Gymnasium.Member_Instructor_Forms
 
 
 
-        private void btnSave_Click(object sender, System.EventArgs e)
+        private async void btnSave_Click(object sender, System.EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -69,7 +69,7 @@ namespace Gymnasium.Member_Instructor_Forms
                 return;
             }
 
-            if (!clsMembers.IsMemberExistsByID(Convert.ToInt32(txtMemberID.Text)))
+            if (!await clsMembers.IsMemberExistsByID(Convert.ToInt32(txtMemberID.Text)))
             {
                 MessageBox.Show("No Member with ID = " + txtMemberID.Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

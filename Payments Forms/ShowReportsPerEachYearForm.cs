@@ -1,6 +1,7 @@
 ﻿using GymnasiumLogicLayer;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.Payments_Forms
@@ -16,9 +17,9 @@ namespace Gymnasium.Payments_Forms
 
         }
 
-        private void _LoadData()
+        private async Task _LoadData()
         {
-            dt = clsPayments.GetAllPaymentsPerEachMonth(Year);
+            dt = await clsPayments.GetAllPaymentsPerEachMonth(Year);
             djvReports.DataSource = dt;
 
             if (djvReports.RowCount > 0)
@@ -53,23 +54,23 @@ namespace Gymnasium.Payments_Forms
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private async void btnSearch_Click(object sender, EventArgs e)
         {
-            _LoadData();
+            await _LoadData();
         }
 
-        private void ShowReportsPerEachYearForm_Load(object sender, EventArgs e)
+        private async void ShowReportsPerEachYearForm_Load(object sender, EventArgs e)
         {
             txtFilterValue.Text = Year.ToString();
 
-            _LoadData();
+            await _LoadData();
         }
 
-        private void txtFilterValue_TextChanged(object sender, EventArgs e)
+        private async void txtFilterValue_TextChanged(object sender, EventArgs e)
         {
             Year = Convert.ToInt32(txtFilterValue.Text);
 
-            _LoadData();
+            await _LoadData();
         }
     }
 }

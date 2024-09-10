@@ -18,12 +18,12 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
 
         private DataTable dt;
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
 
             // Load all data
-            dt = clsSubscriptionPeriods.GetAllExpiredSubscriptions();
+            dt = await clsSubscriptionPeriods.GetAllExpiredSubscriptions();
             dataGridView1.DataSource = dt;
             lbRecords.Text = dataGridView1.RowCount.ToString();
 
@@ -216,7 +216,7 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
         // checks if the member is active using clsMembers.IsMemberActive method,
         // sets the setMemberInActiveToolStripMenuItem.Enabled property based on the MemberActive status,
         // and sets the renweMemberSubscriptionToolStripMenuItem.Enabled property accordingly.
-        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
             // check if The DataGrid View has Any Row, if not Then This Code Will Not Implemented
@@ -237,7 +237,7 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
 
                 int MemberID = (int)dataGridView1.CurrentRow.Cells[5].Value;
 
-                bool MemberActive = clsMembers.IsMemberActive(MemberID);
+                bool MemberActive = await clsMembers.IsMemberActive(MemberID);
 
                 setMemberInActiveToolStripMenuItem.Enabled = MemberActive;
 
@@ -262,16 +262,20 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
         // If confirmed, sets the member as active, shows success message, opens a payment form,
         // Sets the old subscription period to inactive, shows appropriate messages,
         // Otherwise, shows cancellation message.
-        private void renweMemberSubscriptionToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void renweMemberSubscriptionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int MemberID = (int)dataGridView1.CurrentRow.Cells[5].Value;
 
             // Get The Sport Fees That The Member Should Pay
-            float Fess = clsMembers.GetMemberByID(MemberID)._SportInfo.Fees;
+            var Member = await clsMembers.GetMemberByID(MemberID);
+
+            await Member.FillPersonANdSportInformationAsync();
+
+            float Fess = Member._SportInfo.Fees;
 
             if (MessageBox.Show("Are you sure you want to set this member as Active Again ?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
+                if (await clsMembers.SetMemberAsActiveOrInactive(MemberID, true))
                 {
                     MessageBox.Show("Member was set to active successfully,\n Complete The New Payment And Renew The Subscription.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -281,7 +285,7 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
 
                     // Set The Old Period To InActive
 
-                    if (clsSubscriptionPeriods.SetPeriodInActive((int)dataGridView1.CurrentRow.Cells[0].Value))
+                    if (await clsSubscriptionPeriods.SetPeriodInActive((int)dataGridView1.CurrentRow.Cells[0].Value))
 
                         MessageBox.Show("The Old Period Is Now Inactive.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     else
@@ -302,13 +306,13 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
             }
         }
 
-        private void setMemberInActiveToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void setMemberInActiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int MemberID = (int)dataGridView1.CurrentRow.Cells[5].Value;
 
             if (MessageBox.Show("Are you sure you want to set this member as inactive?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
+                if (await clsMembers.SetMemberAsActiveOrInactive(MemberID, false))
                 {
                     MessageBox.Show("Member was set to inactive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();
