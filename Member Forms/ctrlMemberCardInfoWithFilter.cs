@@ -1,6 +1,7 @@
 ﻿using GymnasiumLogicLayer;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
@@ -57,28 +58,28 @@ namespace Gymnasium.Member_Forms
         }
 
 
-        public void LoadMemberInfo(int MemberID)
+        public async void LoadMemberInfo(int MemberID)
         {
 
             cbFilterBy.SelectedIndex = 0;
             txtFilterValue.Text = MemberID.ToString();
-            FindNow();
+            await FindNow();
 
         }
 
-        private void FindNow()
+        private async Task FindNow()
         {
 
             switch (cbFilterBy.Text)
             {
 
                 case "Member ID":
-                    _Member = clsMembers.GetMemberByID(int.Parse(txtFilterValue.Text));
+                    _Member = await clsMembers.GetMemberByID(int.Parse(txtFilterValue.Text));
                     break;
 
                 case "Person ID":
 
-                    _Member = clsMembers.FindMemberByPersonID(int.Parse(txtFilterValue.Text));
+                    _Member = await clsMembers.FindMemberByPersonID(int.Parse(txtFilterValue.Text));
 
                     break;
 
@@ -99,9 +100,10 @@ namespace Gymnasium.Member_Forms
                 return;
             }
 
-            ctrlPersonInfoCard1.LoadPersonInfo(_Member.PersonID);
+            await ctrlPersonInfoCard1.LoadPersonInfo(_Member.PersonID);
 
-            lbSportName.Text = clsSports.FindByID(_Member.SportID).SportName;
+            clsSports _SportInfo = await clsSports.FindByID(_Member.SportID);
+            lbSportName.Text = _SportInfo.SportName;
             lbMemberID.Text = _Member.MemberID.ToString();
             lbEmergencyContact.Text = _Member.EmergencyContactID.ToString();
             lbJoinDate.Text = _Member.JoinDate.ToShortDateString();
@@ -121,7 +123,7 @@ namespace Gymnasium.Member_Forms
 
 
 
-        private void txtFilterValue_TextChanged(object sender, EventArgs e)
+        private async void txtFilterValue_TextChanged(object sender, EventArgs e)
         {
 
             if (string.IsNullOrEmpty(txtFilterValue.Text.Trim()))
@@ -138,7 +140,7 @@ namespace Gymnasium.Member_Forms
             }
             else
             {
-                if (!clsMembers.IsMemberExistsByID(int.Parse(txtFilterValue.Text)))
+                if (!await clsMembers.IsMemberExistsByID(int.Parse(txtFilterValue.Text)))
                 {
                     errorProvider1.SetError(txtFilterValue, "Member Not Found! , Find A member First");
 
@@ -157,7 +159,7 @@ namespace Gymnasium.Member_Forms
         }
 
 
-        private void btnFind_Click(object sender, EventArgs e)
+        private async void btnFind_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -167,7 +169,7 @@ namespace Gymnasium.Member_Forms
 
             }
 
-            FindNow();
+            await FindNow();
         }
 
         private void ctrlMemberCardInfoWithFilter_Load(object sender, EventArgs e)
@@ -211,9 +213,5 @@ namespace Gymnasium.Member_Forms
             }
         }
 
-        private void lbSportName_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

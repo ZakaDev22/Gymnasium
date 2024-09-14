@@ -1,6 +1,8 @@
 ﻿using GymnasiumDataAccess;
+using System;
 using System.Data;
 
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -16,7 +18,10 @@ namespace GymnasiumLogicLayer
         public string Phone { get; set; }
         public string Email { get; set; }
 
-        public clsPeople _PersonInfo;
+        /// <summary>
+        /// if You Want To Use Person Info Directly You Can Use This Property After You Call The Load Person Info Method
+        /// </summary>
+        public Task<clsPeople> _PersonInfo;
 
         public clsEmergencyContacts()
         {
@@ -39,28 +44,34 @@ namespace GymnasiumLogicLayer
             this.Phone = phone;
             this.Email = email;
 
-            _PersonInfo = clsPeople.FindByID(personID);
+            _PersonInfo = LoadPersonInfo(personID);
 
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewEmergencyContact()
+        // Separate async method to load the person info
+        public async Task<clsPeople> LoadPersonInfo(int personID)
         {
-            this.EmergencyContactID = clsEmergencyContactsData.AddNewEmergencyContact(this.PersonID, this.Name, this.Relationship, this.Phone, this.Email);
+            return await clsPeople.FindByID(personID);
+        }
+
+        private async Task<bool> _AddNewEmergencyContact()
+        {
+            this.EmergencyContactID = await clsEmergencyContactsData.AddNewEmergencyContact(this.PersonID, this.Name, this.Relationship, this.Phone, this.Email);
             return (this.EmergencyContactID != -1);
         }
 
-        private bool _UpdateEmergencyContact()
+        private async Task<bool> _UpdateEmergencyContact()
         {
-            return clsEmergencyContactsData.UpdateEmergencyContact(this.EmergencyContactID, this.PersonID, this.Name, this.Relationship, this.Phone, this.Email);
+            return await clsEmergencyContactsData.UpdateEmergencyContact(this.EmergencyContactID, this.PersonID, this.Name, this.Relationship, this.Phone, this.Email);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewEmergencyContact())
+                    if (await _AddNewEmergencyContact())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -71,56 +82,55 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateEmergencyContact();
+                    return await _UpdateEmergencyContact();
             }
             return false;
         }
 
-        public static clsEmergencyContacts FindByID(int emergencyContactID)
+
+        public static async Task<clsEmergencyContacts> FindByID(int emergencyContactID)
         {
-            int personID = -1;
-            string name = string.Empty;
-            string relationship = string.Empty;
-            string phone = string.Empty;
-            string email = string.Empty;
+            DataTable result = await clsEmergencyContactsData.GetEmergencyContactInfoByID(emergencyContactID);
 
-            bool isFound = clsEmergencyContactsData.GetEmergencyContactInfoByID(emergencyContactID, ref personID, ref name, ref relationship, ref phone, ref email);
-
-            if (isFound)
-            {
-                return new clsEmergencyContacts(emergencyContactID, personID, name, relationship, phone, email);
-            }
+            if (result.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow dr = result.Rows[0];
+
+                return new clsEmergencyContacts(Convert.ToInt32(dr["EmergencyContactID"]),
+                                                Convert.ToInt32(dr["PersonID"]),
+                                                Convert.ToString(dr["Name"]),
+                                                Convert.ToString(dr["Relationship"]),
+                                                Convert.ToString(dr["Phone"]),
+                                                Convert.ToString(dr["Email"]));
             }
         }
 
-        public static bool Delete(int emergencyContactID)
+        public static async Task<bool> Delete(int emergencyContactID)
         {
-            return clsEmergencyContactsData.DeleteEmergencyContact(emergencyContactID);
+            return await clsEmergencyContactsData.DeleteEmergencyContact(emergencyContactID);
         }
 
-        public static bool ExistsByID(int emergencyContactID)
+        public static async Task<bool> ExistsByID(int emergencyContactID)
         {
-            return clsEmergencyContactsData.IsEmergencyContactExistByID(emergencyContactID);
+            return await clsEmergencyContactsData.IsEmergencyContactExistByID(emergencyContactID);
         }
 
-        public static bool ExistsByIDPersonID(int PersonID)
+        public static async Task<bool> ExistsByPersonID(int personID)
         {
-            return clsEmergencyContactsData.IsEmergencyContactExistByPersonID(PersonID);
+            return await clsEmergencyContactsData.IsEmergencyContactExistByPersonID(personID);
         }
 
-
-        public static DataTable GetAllEmergencyContacts()
+        public static async Task<DataTable> GetAllEmergencyContacts()
         {
-            return clsEmergencyContactsData.GetAllEmergencyContacts();
+            return await clsEmergencyContactsData.GetAllEmergencyContacts();
         }
 
         // New method to get paged emergency contacts
-        public static DataTable GetPagedEmergencyContacts(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedEmergencyContacts(int pageNumber, int pageSize)
         {
-            return clsEmergencyContactsData.GetPagedEmergencyContacts(pageNumber, pageSize, out totalCount);
+            return await clsEmergencyContactsData.GetPagedEmergencyContacts(pageNumber, pageSize);
         }
     }
 }

@@ -21,13 +21,15 @@ namespace Gymnasium.Payments_Forms
         private DataTable dt;
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsPayments.GetPagedPayments(currentPage, pageSize, out totalRecords);
+                var tuple = await clsPayments.GetPagedPayments(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +37,7 @@ namespace Gymnasium.Payments_Forms
             else
             {
                 // Load all data
-                dt = clsPayments.GetAllPayments();
+                dt = await clsPayments.GetAllPayments();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }

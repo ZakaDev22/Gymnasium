@@ -78,7 +78,7 @@ namespace Gymnasium.Instructors_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -93,8 +93,9 @@ namespace Gymnasium.Instructors_Forms
             _instructor.Specialization = txtSpecialization.Text;
             _instructor.Qualification = txtQualification.Text;
             _instructor.IsActive = chkIsActive.Checked;
+            _instructor.HireDate = DateTime.Now;
 
-            if (_instructor.Save())
+            if (await _instructor.Save())
             {
                 MessageBox.Show("Instructor Saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -111,7 +112,7 @@ namespace Gymnasium.Instructors_Forms
         }
 
 
-        private void ShowAddEditeInstructorForm_Load(object sender, EventArgs e)
+        private async void ShowAddEditeInstructorForm_Load(object sender, EventArgs e)
         {
             if (_Mode == enMode.AddNew)
             {
@@ -120,7 +121,7 @@ namespace Gymnasium.Instructors_Forms
                 return;
             }
 
-            _instructor = clsInstructors.FindByID(InstructorID);
+            _instructor = await clsInstructors.FindByID(InstructorID);
 
             if (_instructor == null)
             {
@@ -129,9 +130,11 @@ namespace Gymnasium.Instructors_Forms
                 return;
             }
 
+            btnSave.Enabled = true;
             ctrlPersonInfoCardWithFilter1.LoadPersonInfo(_instructor.PersonID);
             ctrlPersonInfoCardWithFilter1.FilterEnabled = false;
 
+            lbInstructorID.Text = _instructor.InstructorID.ToString();
             txtSalary.Text = _instructor.Salary.ToString();
             txtSpecialization.Text = _instructor.Specialization;
             txtQualification.Text = _instructor.Qualification;

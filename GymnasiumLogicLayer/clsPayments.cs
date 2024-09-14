@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -34,23 +35,23 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewPayment()
+        private async Task<bool> _AddNewPayment()
         {
-            this.PaymentID = clsPaymentsData.AddNewPayment(this.Amount, this.Date, this.MemberID);
+            this.PaymentID = await clsPaymentsData.AddNewPayment(this.Amount, this.Date, this.MemberID);
             return (this.PaymentID != -1);
         }
 
-        private bool _UpdatePayment()
+        private async Task<bool> _UpdatePayment()
         {
-            return clsPaymentsData.UpdatePayment(this.PaymentID, this.Amount, this.Date, this.MemberID);
+            return await clsPaymentsData.UpdatePayment(this.PaymentID, this.Amount, this.Date, this.MemberID);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewPayment())
+                    if (await _AddNewPayment())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -61,77 +62,77 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdatePayment();
+                    return await _UpdatePayment();
             }
             return false;
         }
 
         // New method to find payment by ID
-        public static clsPayments FindByID(int paymentID)
+        public static async Task<clsPayments> FindByID(int paymentID)
         {
-            decimal amount = 0;
-            DateTime date = DateTime.MinValue;
-            int memberID = -1;
 
-            bool isFound = clsPaymentsData.GetPaymentInfoByID(paymentID, ref amount, ref date, ref memberID);
+            DataTable dt = await clsPaymentsData.GetPaymentInfoByID(paymentID);
 
-            if (isFound)
-            {
-                return new clsPayments(paymentID, amount, date, memberID);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow dr = dt.Rows[0];
+
+                return new clsPayments(Convert.ToInt32(dr["PaymentID"]),
+                                       Convert.ToDecimal(dr["Amount"]),
+                                       Convert.ToDateTime(dr["Date"]),
+                                       Convert.ToInt32(dr["MemberID"]));
             }
+
         }
 
-        public static clsPayments FindByMemberID(int MemberID)
+        public static async Task<clsPayments> FindByMemberID(int MemberID)
         {
-            decimal amount = 0;
-            DateTime date = DateTime.MinValue;
-            int PaymentID = -1;
+            DataTable dt = await clsPaymentsData.GetPaymentInfoByMemberID(MemberID);
 
-            bool isFound = clsPaymentsData.GetPaymentInfoByMemberID(MemberID, ref amount, ref date, ref PaymentID);
-
-            if (isFound)
-            {
-                return new clsPayments(PaymentID, amount, date, MemberID);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow dr = dt.Rows[0];
+
+                return new clsPayments(Convert.ToInt32(dr["PaymentID"]),
+                                       Convert.ToDecimal(dr["Amount"]),
+                                       Convert.ToDateTime(dr["Date"]),
+                                       Convert.ToInt32(dr["MemberID"]));
             }
         }
 
         // New method to delete payment
-        public static bool Delete(int paymentID)
+        public static async Task<bool> Delete(int paymentID)
         {
-            return clsPaymentsData.DeletePayment(paymentID);
+            return await clsPaymentsData.DeletePayment(paymentID);
         }
 
         // New method to check if payment exists by ID
-        public static bool ExistsByID(int paymentID)
+        public static async Task<bool> ExistsByID(int paymentID)
         {
-            return clsPaymentsData.IsPaymentExistByID(paymentID);
+            return await clsPaymentsData.IsPaymentExistByID(paymentID);
         }
 
         // New method to get all payments
-        public static DataTable GetAllPayments()
+        public static async Task<DataTable> GetAllPayments()
         {
-            return clsPaymentsData.GetAllPayments();
+            return await clsPaymentsData.GetAllPayments();
         }
 
         // New method to get paged payments
-        public static DataTable GetPagedPayments(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedPayments(int pageNumber, int pageSize)
         {
-            return clsPaymentsData.GetPagedPayments(pageNumber, pageSize, out totalCount);
+            return await clsPaymentsData.GetPagedPayments(pageNumber, pageSize);
         }
 
 
         // New method to get all payments per each month
-        public static DataTable GetAllPaymentsPerEachMonth(int Year)
+        public static async Task<DataTable> GetAllPaymentsPerEachMonth(int Year)
         {
-            return clsPaymentsData.GetAllPaymentsPerEachMonth(Year);
+            return await clsPaymentsData.GetAllPaymentsPerEachMonth(Year);
         }
 
 

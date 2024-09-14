@@ -24,13 +24,15 @@ namespace Gymnasium
         private int totalRecords = 0;
         private DataTable dt;
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsUsers.GetPagedUsers(currentPage, pageSize, out totalRecords);
+                var tuple = await clsUsers.GetPagedUsers(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTab;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -38,7 +40,7 @@ namespace Gymnasium
             else
             {
                 // Load all data
-                dt = clsUsers.GetAllUsers();
+                dt = await clsUsers.GetAllUsers();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -346,7 +348,7 @@ namespace Gymnasium
             LoadPagedData();
         }
 
-        private void deleteUserToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deleteUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
@@ -360,7 +362,7 @@ namespace Gymnasium
 
             if (MessageBox.Show("Are You Sure You Want To Delete This User ??", "Info", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                if (clsUsers.Delete(UserID))
+                if (await clsUsers.Delete(UserID))
                 {
                     MessageBox.Show($"Success, User With ID {UserID} Was Deleted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();
@@ -397,7 +399,7 @@ namespace Gymnasium
             frm.ShowDialog();
         }
 
-        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        private async void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
 
             int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
@@ -417,7 +419,8 @@ namespace Gymnasium
 
             if (MessageBox.Show("Are you sure you want to Set this User to InActive Again?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsUsers.SetUserAsActiveOrInactive(UserID, false))
+                // if we send true then  the function will set ther user to active and if we send false it will be active
+                if (await clsUsers.SetUserAsActiveOrInactive(UserID, false))
                 {
                     MessageBox.Show("User was  Set To InActive successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();
@@ -431,13 +434,14 @@ namespace Gymnasium
             }
         }
 
-        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        private async void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
             int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
             if (MessageBox.Show("Are you sure you want to Set this User to Active Again?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsUsers.SetUserAsActiveOrInactive(UserID, true))
+                // if we send true then  the function will set ther user to active and if we send false it will be active
+                if (await clsUsers.SetUserAsActiveOrInactive(UserID, true))
                 {
                     MessageBox.Show("User was  Set To Active  successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();
@@ -452,7 +456,7 @@ namespace Gymnasium
 
         }
 
-        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // check if The DataGrid View has Any Row, if not Then This Code Will Not Implemented
             if (dataGridView1.Rows.Count > 0)
@@ -462,7 +466,7 @@ namespace Gymnasium
 
                 int UserID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
-                bool UserActive = clsUsers.IsUserActive(UserID);
+                bool UserActive = await clsUsers.IsUserActive(UserID);
 
                 SetUserToInActivetoolStripMenuItem.Enabled = UserActive;
 

@@ -1,5 +1,7 @@
 ﻿using GymnasiumDataAccess;
+using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -34,23 +36,23 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewSport()
+        private async Task<bool> _AddNewSport()
         {
-            this.SportID = clsSportsData.AddNewSport(this.SportName, this.Description, this.Fees);
+            this.SportID = await clsSportsData.AddNewSport(this.SportName, this.Description, this.Fees);
             return (this.SportID != -1);
         }
 
-        private bool _UpdateSport()
+        private async Task<bool> _UpdateSport()
         {
-            return clsSportsData.UpdateSport(this.SportID, this.SportName, this.Description, this.Fees);
+            return await clsSportsData.UpdateSport(this.SportID, this.SportName, this.Description, this.Fees);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewSport())
+                    if (await _AddNewSport())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -61,66 +63,64 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateSport();
+                    return await _UpdateSport();
             }
             return false;
         }
 
-        public static clsSports FindByID(int sportID)
+        public static async Task<clsSports> FindByID(int sportID)
         {
-            string sportName = string.Empty;
-            string description = string.Empty;
-            float fees = 0;
+            DataTable result = await clsSportsData.GetSportInfoByID(sportID);
 
-            bool isFound = clsSportsData.GetSportInfoByID(sportID, ref sportName, ref description, ref fees);
-
-            if (isFound)
-            {
-                return new clsSports(sportID, sportName, description, fees);
-            }
+            if (result.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow dr = result.Rows[0];
+
+                return new clsSports(Convert.ToInt32(dr["SportID"]),
+                                     Convert.ToString(dr["SportName"]),
+                                     Convert.ToString(dr["Description"]),
+                                     Convert.ToSingle(dr["Fees"]));
             }
         }
 
-        public static clsSports FindByName(string sportName)
+        public static async Task<clsSports> FindByName(string sportName)
         {
-            int SportID = -1;
-            string description = string.Empty;
-            float fees = 0;
+            DataTable result = await clsSportsData.FindByName(sportName);
 
-            bool isFound = clsSportsData.FindByName(sportName, ref SportID, ref description, ref fees);
-
-            if (isFound)
-            {
-                return new clsSports(SportID, sportName, description, fees);
-            }
+            if (result.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow dr = result.Rows[0];
+
+                return new clsSports(Convert.ToInt32(dr["SportID"]),
+                                     Convert.ToString(dr["SportName"]),
+                                     Convert.ToString(dr["Description"]),
+                                     Convert.ToSingle(dr["Fees"]));
             }
         }
 
-        public static bool Delete(int sportID)
+        public static async Task<bool> Delete(int sportID)
         {
-            return clsSportsData.DeleteSport(sportID);
+            return await clsSportsData.DeleteSport(sportID);
         }
 
-        public static bool ExistsByID(int sportID)
+        public static async Task<bool> ExistsByID(int sportID)
         {
-            return clsSportsData.IsSportExistByID(sportID);
+            return await clsSportsData.IsSportExistByID(sportID);
         }
 
-        public static DataTable GetAllSports()
+        public static async Task<DataTable> GetAllSports()
         {
-            return clsSportsData.GetAllSports();
+            return await clsSportsData.GetAllSports();
         }
 
         // New method to get paged sports
-        public static DataTable GetPagedSports(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedSports(int pageNumber, int pageSize)
         {
-            return clsSportsData.GetPagedSports(pageNumber, pageSize, out totalCount);
+            return await clsSportsData.GetPagedSports(pageNumber, pageSize);
         }
     }
 }

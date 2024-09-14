@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -43,23 +44,23 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewBeltTest()
+        private async Task<bool> _AddNewBeltTest()
         {
-            this.BeltTestID = clsBeltTestData.AddNewBeltTest(this.MemberID, this.RankID, this.Result, this.Date, this.TestedByInstructorID, this.PaymentID);
+            this.BeltTestID = await clsBeltTestData.AddNewBeltTestAsync(this.MemberID, this.RankID, this.Result, this.Date, this.TestedByInstructorID, this.PaymentID);
             return (this.BeltTestID != -1);
         }
 
-        private bool _UpdateBeltTest()
+        private async Task<bool> _UpdateBeltTest()
         {
-            return clsBeltTestData.UpdateBeltTest(this.BeltTestID, this.MemberID, this.RankID, this.Result, this.Date, this.TestedByInstructorID, this.PaymentID);
+            return await clsBeltTestData.UpdateBeltTestAsync(this.BeltTestID, this.MemberID, this.RankID, this.Result, this.Date, this.TestedByInstructorID, this.PaymentID);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewBeltTest())
+                    if (await _AddNewBeltTest())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -70,51 +71,50 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateBeltTest();
+                    return await _UpdateBeltTest();
             }
             return false;
         }
 
-        public static clsBeltTest FindByID(int beltTestID)
+        public static async Task<clsBeltTest> FindByIDAsync(int beltTestID)
         {
-            int memberID = -1;
-            int rankID = -1;
-            bool result = false;
-            DateTime date = DateTime.MinValue;
-            int testedByInstructorID = -1;
-            int paymentID = -1;
+            DataTable dt = await clsBeltTestData.GetBeltTestInfoByIDAsync(beltTestID);
 
-            bool isFound = clsBeltTestData.GetBeltTestInfoByID(beltTestID, ref memberID, ref rankID, ref result, ref date, ref testedByInstructorID, ref paymentID);
-
-            if (isFound)
-            {
-                return new clsBeltTest(beltTestID, memberID, rankID, result, date, testedByInstructorID, paymentID);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow row = dt.Rows[0];
+
+                return new clsBeltTest(Convert.ToInt32(row["TestID"]),
+                                        Convert.ToInt32(row["MemberID"]),
+                                        Convert.ToInt32(row["RankID"]),
+                                        Convert.ToBoolean(row["Result"]),
+                                        Convert.ToDateTime(row["Date"]),
+                                        Convert.ToInt32(row["TestedByInstructorID"]),
+                                        Convert.ToInt32(row["PaymentID"]));
             }
         }
 
-        public static bool Delete(int beltTestID)
+        public static async Task<bool> DeleteAsync(int beltTestID)
         {
-            return clsBeltTestData.DeleteBeltTest(beltTestID);
+            return await clsBeltTestData.DeleteBeltTestAsync(beltTestID);
         }
 
-        public static bool ExistsByID(int beltTestID)
+        public static async Task<bool> ExistsByIDAsync(int beltTestID)
         {
-            return clsBeltTestData.IsBeltTestExistByID(beltTestID);
+            return await clsBeltTestData.IsBeltTestExistByIDAsync(beltTestID);
         }
 
-        public static DataTable GetAllBeltTests()
+        public static async Task<DataTable> GetAllBeltTests()
         {
-            return clsBeltTestData.GetAllBeltTests();
+            return await clsBeltTestData.GetAllBeltTestsAsync();
         }
 
         // New method to get paged belt tests
-        public static DataTable GetPagedBeltTests(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int TotalCount)> GetPagedBeltTests(int pageNumber, int pageSize)
         {
-            return clsBeltTestData.GetPagedBeltTests(pageNumber, pageSize, out totalCount);
+            return await clsBeltTestData.GetPagedBeltTestsAsync(pageNumber, pageSize);
         }
     }
 

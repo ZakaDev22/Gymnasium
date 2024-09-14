@@ -21,13 +21,15 @@ namespace Gymnasium.Member_Instructor_Forms
         private int totalRecords = 0;
         private DataTable dt;
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsMemberInstructor.GetPagedMembersInstructors(currentPage, pageSize, out totalRecords);
+                var tuple = await clsMemberInstructor.GetPagedAssignments(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +37,7 @@ namespace Gymnasium.Member_Instructor_Forms
             else
             {
                 // Load all data
-                dt = clsMemberInstructor.GetAllAssignments();
+                dt = await clsMemberInstructor.GetAllAssignments();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -201,16 +203,19 @@ namespace Gymnasium.Member_Instructor_Forms
             LoadPagedData();
         }
 
-        private void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void memberPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[0].Value).PersonID);
+            var Member = await clsMembers.GetMemberByID((int)dataGridView1.CurrentRow.Cells[0].Value);
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(Member.PersonID);
             frm.ShowDialog();
         }
 
-        private void instructorPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void instructorPersonDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(clsInstructors.FindByID((int)dataGridView1.CurrentRow.Cells[1].Value).PersonID);
+            var Instructor = await clsInstructors.FindByID((int)dataGridView1.CurrentRow.Cells[1].Value);
+            ShowPersonDetailsForm frm = new ShowPersonDetailsForm(Instructor.PersonID);
             frm.ShowDialog();
+
         }
 
         private void addAssignmentToolStripMenuItem_Click(object sender, EventArgs e)
@@ -227,14 +232,14 @@ namespace Gymnasium.Member_Instructor_Forms
             frm.ShowDialog();
         }
 
-        private void deleteAssignmentToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deleteAssignmentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int memberID = (int)dataGridView1.CurrentRow.Cells[0].Value;
             int instructorID = (int)dataGridView1.CurrentRow.Cells[1].Value;
 
             if (MessageBox.Show("Are you sure you want to delete this Assignment?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if (clsMemberInstructor.Delete(instructorID, memberID))
+                if (await clsMemberInstructor.Delete(instructorID, memberID))
                 {
                     MessageBox.Show("Assignment was deleted successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();

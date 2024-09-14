@@ -1,5 +1,4 @@
-﻿using GymnasiumLogicLayer;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -93,33 +92,24 @@ namespace Gymnasium.People_Forms
             get { return ctrlPersonInfoCard1.PersonID; }
         }
 
-
-
-        public clsPeople SelectedPersonInfo
-        {
-            get { return ctrlPersonInfoCard1.SelectedPersonInfo; }
-        }
-
         public void LoadPersonInfo(int PersonID)
         {
-
             cbFilterBy.SelectedIndex = 1;
             txtFilterValue.Text = PersonID.ToString();
             FindNow();
-
         }
 
-        private void FindNow()
+        private async void FindNow()
         {
             switch (cbFilterBy.Text)
             {
                 case "Person ID":
-                    ctrlPersonInfoCard1.LoadPersonInfo(int.Parse(txtFilterValue.Text));
+                    await ctrlPersonInfoCard1.LoadPersonInfo(int.Parse(txtFilterValue.Text));
 
                     break;
 
                 case "National No.":
-                    ctrlPersonInfoCard1.LoadPersonInfo(txtFilterValue.Text);
+                    await ctrlPersonInfoCard1.LoadPersonInfo(txtFilterValue.Text);
                     break;
 
                 default:
@@ -132,13 +122,13 @@ namespace Gymnasium.People_Forms
         }
 
 
-        private void DataBackEvent(object sender, int PersonID)
+        private async void DataBackEvent(object sender, int PersonID)
         {
             // Handle the data received
 
             cbFilterBy.SelectedIndex = 1;
             txtFilterValue.Text = PersonID.ToString();
-            ctrlPersonInfoCard1.LoadPersonInfo(PersonID);
+            await ctrlPersonInfoCard1.LoadPersonInfo(PersonID);
 
             // rise The Event To Tell The Form That The Data Is Back 
             OnAddNewPerson?.Invoke(true);

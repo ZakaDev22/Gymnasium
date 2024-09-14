@@ -51,9 +51,9 @@ namespace Gymnasium.Payments_Forms
 
         }
 
-        private void SetFormForUpdatePayments()
+        private async void SetFormForUpdatePayments()
         {
-            _Payment = clsPayments.FindByID(_PaymentID);
+            _Payment = await clsPayments.FindByID(_PaymentID);
 
             ctrlMemberCardInfoWithFilter1.LoadMemberInfo(_Payment.MemberID);
             ctrlMemberCardInfoWithFilter1.FilterEnabled = false;
@@ -100,7 +100,7 @@ namespace Gymnasium.Payments_Forms
                 this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -114,7 +114,7 @@ namespace Gymnasium.Payments_Forms
             _FinalAmount = (Convert.ToDecimal(txtAmount.Text) * _SubMonths);
             _Payment.Amount = _FinalAmount;
 
-            if (_Payment.Save())
+            if (await _Payment.Save())
             {
 
                 lbPaymentID.Text = _Payment.PaymentID.ToString();

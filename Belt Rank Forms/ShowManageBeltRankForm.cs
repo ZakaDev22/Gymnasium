@@ -10,14 +10,12 @@ namespace Gymnasium.Belt_Rank_Forms
         {
             InitializeComponent();
             LoadPagedData();
-
-
         }
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
-            DataTable dt = clsBeltRanks.GetAllBeltRanks();
+            DataTable dt = await clsBeltRanks.GetAllBeltRanks();
             dataGridView1.DataSource = dt;
 
             if (dataGridView1.Rows.Count > 0)

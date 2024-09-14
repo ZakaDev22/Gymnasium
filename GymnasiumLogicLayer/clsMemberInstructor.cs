@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 
 namespace GymnasiumLogicLayer
@@ -23,31 +24,31 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.AddNew;
         }
 
-        private clsMemberInstructor(int instructorID, int memberID, DateTime assignDate)
+        public clsMemberInstructor(int instructorID, int memberID, DateTime assignDate)
         {
-            this.InstructorID = instructorID;
-            this.MemberID = memberID;
-            this.AssignDate = assignDate;
+            InstructorID = instructorID;
+            MemberID = memberID;
+            AssignDate = assignDate;
 
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewAssignment()
+        private async Task<bool> _AddNewAssignment()
         {
-            return clsMemberInstructorData.AddNewAssignment(this.InstructorID, this.MemberID, this.AssignDate);
+            return await clsMemberInstructorData.AddNewAssignment(this.InstructorID, this.MemberID, this.AssignDate);
         }
 
-        private bool _UpdateAssignment()
+        private async Task<bool> _UpdateAssignment()
         {
-            return clsMemberInstructorData.UpdateAssignment(this.InstructorID, this.MemberID, this.AssignDate);
+            return await clsMemberInstructorData.UpdateAssignment(this.InstructorID, this.MemberID, this.AssignDate);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewAssignment())
+                    if (await _AddNewAssignment())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -58,44 +59,44 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateAssignment();
+                    return await _UpdateAssignment();
             }
+
             return false;
         }
 
-        public static clsMemberInstructor FindByID(int instructorID, int memberID)
+        public static async Task<clsMemberInstructor> FindByID(int instructorID, int memberID)
         {
-            DateTime assignDate = DateTime.MinValue;
-            bool isFound = clsMemberInstructorData.GetAssignmentInfoByID(instructorID, memberID, ref assignDate);
-            if (isFound)
-            {
-                return new clsMemberInstructor(instructorID, memberID, assignDate);
-            }
-            else
-            {
+            DataTable dt = await clsMemberInstructorData.GetAssignmentInfoByID(instructorID, memberID);
+
+            if (dt.Rows.Count == 0)
                 return null;
-            }
+
+            DataRow dr = dt.Rows[0];
+            return new clsMemberInstructor(Convert.ToInt32(dr["InstructorID"]),
+                                           Convert.ToInt32(dr["MemberID"]),
+                                           Convert.ToDateTime(dr["AssignDate"]));
         }
 
-        public static bool Delete(int instructorID, int memberID)
+        public static async Task<bool> Delete(int instructorID, int memberID)
         {
-            return clsMemberInstructorData.DeleteAssignment(instructorID, memberID);
+            return await clsMemberInstructorData.DeleteAssignment(instructorID, memberID);
         }
 
-        public static bool ExistsByID(int instructorID, int memberID)
+        public static async Task<bool> ExistsByID(int instructorID, int memberID)
         {
-            return clsMemberInstructorData.IsAssignmentExistByID(instructorID, memberID);
+            return await clsMemberInstructorData.IsAssignmentExistByID(instructorID, memberID);
         }
 
-        public static DataTable GetAllAssignments()
+        public static async Task<DataTable> GetAllAssignments()
         {
-            return clsMemberInstructorData.GetAllAssignments();
+            return await clsMemberInstructorData.GetAllAssignments();
         }
 
-        // New method to get paged members instructors
-        public static DataTable GetPagedMembersInstructors(int pageNumber, int pageSize, out int totalCount)
+        // New method to get paged member-instructor assignments
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedAssignments(int pageNumber, int pageSize)
         {
-            return clsMemberInstructorData.GetPagedMembersInstructors(pageNumber, pageSize, out totalCount);
+            return await clsMemberInstructorData.GetPagedMembersInstructors(pageNumber, pageSize);
         }
     }
 }

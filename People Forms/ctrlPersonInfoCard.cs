@@ -2,6 +2,7 @@
 using Gymnasium.Properties;
 using GymnasiumLogicLayer;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.People_Forms
@@ -28,12 +29,13 @@ namespace Gymnasium.People_Forms
         }
 
 
-        public void LoadPersonInfo(int PersonID)
+        public async Task LoadPersonInfo(int PersonID)
         {
-            _Person = clsPeople.FindByID(PersonID);
+            _Person = await clsPeople.FindByID(PersonID);
             if (_Person == null)
             {
                 ResetPersonInfo();
+
                 MessageBox.Show("No Person with PersonID = " + PersonID.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -41,12 +43,13 @@ namespace Gymnasium.People_Forms
             _FillPersonInfo();
         }
 
-        public void LoadPersonInfo(string NationalNo)
+        public async Task LoadPersonInfo(string NationalNo)
         {
-            _Person = clsPeople.FindByNationalNo(NationalNo);
+            _Person = await clsPeople.FindByNationalNo(NationalNo);
             if (_Person == null)
             {
                 ResetPersonInfo();
+
                 MessageBox.Show("No Person with National No. = " + NationalNo.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -56,6 +59,7 @@ namespace Gymnasium.People_Forms
 
         private void _LoadPersonImage()
         {
+
             if (_Person.Gender == 0)
                 pbPersonImage.Image = Resources.Male_512;
             else
@@ -68,10 +72,13 @@ namespace Gymnasium.People_Forms
                 else
                     MessageBox.Show("Could not find this image: = " + ImagePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+
         }
 
-        private void _FillPersonInfo()
+        private async void _FillPersonInfo()
         {
+            _LoadPersonImage();
+
             llEditPersonInfo.Enabled = true;
             _PersonID = _Person.PersonID;
             lblPersonID.Text = _Person.PersonID.ToString();
@@ -81,17 +88,14 @@ namespace Gymnasium.People_Forms
             lblEmail.Text = _Person.Email;
             lblPhone.Text = _Person.Phone;
             lblDateOfBirth.Text = _Person.DateOfBirth.ToShortDateString();
-            lblCountry.Text = clsCountries.FindByID(_Person.CountryID).CountryName;
+            clsCountries _Country = await clsCountries.FindByID(_Person.CountryID);
+            lblCountry.Text = _Country.CountryName;
             lblAddress.Text = _Person.Address;
-            _LoadPersonImage();
-
-
-
-
         }
 
         public void ResetPersonInfo()
         {
+
             _PersonID = -1;
             lblPersonID.Text = "[????]";
             lblNationalNo.Text = "[????]";
@@ -109,8 +113,7 @@ namespace Gymnasium.People_Forms
         }
 
 
-
-        private void llEditPersonInfo_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        private async void llEditPersonInfo_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (_PersonID == 1 && clsGlobal._CurrentUser.UserID != 1)
             {
@@ -121,7 +124,7 @@ namespace Gymnasium.People_Forms
             ShowAddEditePersonForm frm = new ShowAddEditePersonForm(_PersonID);
             frm.ShowDialog();
 
-            LoadPersonInfo(_PersonID);
+            await LoadPersonInfo(_PersonID);
         }
     }
 }

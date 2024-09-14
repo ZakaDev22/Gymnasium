@@ -2,6 +2,7 @@
 using GymnasiumLogicLayer;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
@@ -18,6 +19,7 @@ namespace Gymnasium.Member_Forms
 
             ctrlMemberCardInfoWithFilter1.LoadMemberInfo(_memberId);
             ctrlMemberCardInfoWithFilter1.FilterEnabled = false;
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -25,9 +27,9 @@ namespace Gymnasium.Member_Forms
             this.Close();
         }
 
-        private void _RefreshDataGrideView()
+        private async Task _RefreshDataGrideView()
         {
-            dt = clsSubscriptionPeriods.GetAllMemberPeriodsByMemberID(_memberId);
+            dt = await clsSubscriptionPeriods.GetAllMemberPeriodsByMemberID(_memberId);
 
             dataGridView1.DataSource = dt;
 
@@ -63,9 +65,9 @@ namespace Gymnasium.Member_Forms
             lbRecords.Text = dt.Rows.Count.ToString();
         }
 
-        private void SHowMemberPeriodsHistoryForm_Load(object sender, EventArgs e)
+        private async void SHowMemberPeriodsHistoryForm_Load(object sender, EventArgs e)
         {
-            _RefreshDataGrideView();
+            await _RefreshDataGrideView();
         }
 
         private void showPaymentDetailsToolStripMenuItem_Click(object sender, EventArgs e)

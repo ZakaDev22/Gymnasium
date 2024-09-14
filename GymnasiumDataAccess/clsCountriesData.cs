@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsCountriesData
     {
 
-        // Create a new country
-        public static int AddNewCountry(string countryName, string iso3, string iso2)
+        // Create a new country asynchronously
+        public static async Task<int> AddNewCountryAsync(string countryName, string iso3, string iso2)
         {
             try
             {
@@ -22,7 +23,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@ISO2", iso2);
 
                         connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        return Convert.ToInt32(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -33,8 +34,8 @@ namespace GymnasiumDataAccess
             return -1;
         }
 
-        // Read all countries
-        public static DataTable GetAllCountries()
+        // Read all countries asynchronously
+        public static async Task<DataTable> GetAllCountriesAsync()
         {
             DataTable dataTable = new DataTable();
             try
@@ -46,7 +47,7 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
 
                         connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -61,30 +62,26 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        // Read country by CountryID
-        public static bool GetCountryInfoByID(int countryID, ref string countryName, ref string iso3, ref string iso2)
+        // Read country by CountryID asynchronously
+        public static async Task<DataTable> GetCountryInfoByIDAsync(int countryID)
         {
-            bool isSuccess = false;
-
+            DataTable dataTable = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Countries_GetCountryByID", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@CountryID", countryID);
-
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlCommand command = new SqlCommand("sp_Countries_GetCountryByID", connection))
                     {
-                        if (reader.Read())
-                        {
-                            countryName = (string)reader["CountryName"];
-                            iso3 = (string)reader["ISO3"];
-                            iso2 = (string)reader["ISO2"];
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@CountryID", countryID);
 
-                            isSuccess = true;
+                        connection.Open();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            if (reader.HasRows)
+                            {
+                                dataTable.Load(reader);
+                            }
                         }
                     }
                 }
@@ -94,35 +91,29 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dataTable;
         }
 
-
-
-        // Read country by CountryID
-        public static bool GetCountryInfoByName(string countryName, ref int countryID, ref string iso3, ref string iso2)
+        // Read country by CountryName asynchronously
+        public static async Task<DataTable> GetCountryInfoByNameAsync(string countryName)
         {
-            bool isSuccess = false;
-
+            DataTable dataTable = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("sp_Countries_GetCountryByName", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@countryName", countryName);
-
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlCommand command = new SqlCommand("sp_Countries_GetCountryByName", connection))
                     {
-                        if (reader.Read())
-                        {
-                            countryID = (int)reader["countryID"];
-                            iso3 = (string)reader["ISO3"];
-                            iso2 = (string)reader["ISO2"];
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@countryName", countryName);
 
-                            isSuccess = true;
+                        connection.Open();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            if (reader.HasRows)
+                            {
+                                dataTable.Load(reader);
+                            }
                         }
                     }
                 }
@@ -132,14 +123,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dataTable;
         }
 
-        // Update an existing country
-        public static bool UpdateCountry(int countryID, string countryName, string iso3, string iso2)
+        // Update an existing country asynchronously
+        public static async Task<bool> UpdateCountryAsync(int countryID, string countryName, string iso3, string iso2)
         {
-            short rowsAffected = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -147,15 +136,14 @@ namespace GymnasiumDataAccess
                     using (SqlCommand command = new SqlCommand("sp_Countries_UpdateCountry", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-
                         command.Parameters.AddWithValue("@CountryID", countryID);
                         command.Parameters.AddWithValue("@CountryName", countryName);
                         command.Parameters.AddWithValue("@ISO3", iso3);
                         command.Parameters.AddWithValue("@ISO2", iso2);
 
                         connection.Open();
-
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
                     }
                 }
             }
@@ -163,15 +151,12 @@ namespace GymnasiumDataAccess
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-
-            return rowsAffected > 0;
+            return false;
         }
 
-        // Delete a country by CountryID
-        public static bool DeleteCountry(int countryID)
+        // Delete a country by CountryID asynchronously
+        public static async Task<bool> DeleteCountryAsync(int countryID)
         {
-            short rowsAffected = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -182,7 +167,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@CountryID", countryID);
 
                         connection.Open();
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
                     }
                 }
             }
@@ -190,12 +176,11 @@ namespace GymnasiumDataAccess
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-
-            return rowsAffected > 0;
+            return false;
         }
 
-        // Check if country exists by CountryID
-        public static bool IsCountryExistByID(int countryID)
+        // Check if country exists by CountryID asynchronously
+        public static async Task<bool> IsCountryExistByIDAsync(int countryID)
         {
             try
             {
@@ -207,7 +192,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@CountryID", countryID);
 
                         connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -215,7 +200,6 @@ namespace GymnasiumDataAccess
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-
             return false;
         }
     }

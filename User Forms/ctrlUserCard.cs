@@ -1,4 +1,5 @@
 ﻿using GymnasiumLogicLayer;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.User_Forms
@@ -20,9 +21,9 @@ namespace Gymnasium.User_Forms
 
 
 
-        public void LoadUserInfo(int UserID)
+        public async void LoadUserInfo(int UserID)
         {
-            _User = clsUsers.FindByID(UserID);
+            _User = await clsUsers.FindByID(UserID);
             if (_User == null)
             {
                 _ResetUserInfo();
@@ -30,12 +31,12 @@ namespace Gymnasium.User_Forms
                 return;
             }
 
-            _FillUserInfo();
+            await _FillUserInfo();
         }
 
-        public void LoadUserInfoByPersonID(int PersonID)
+        public async void LoadUserInfoByPersonID(int PersonID)
         {
-            _User = clsUsers.FindUserByPersonID(PersonID);
+            _User = await clsUsers.FindUserByPersonID(PersonID);
             if (_User == null)
             {
                 _ResetUserInfo();
@@ -43,13 +44,13 @@ namespace Gymnasium.User_Forms
                 return;
             }
 
-            _FillUserInfo();
+            await _FillUserInfo();
         }
 
-        private void _FillUserInfo()
+        private async Task _FillUserInfo()
         {
 
-            ctrlPersonInfoCard1.LoadPersonInfo(_User.PersonID);
+            await ctrlPersonInfoCard1.LoadPersonInfo(_User.PersonID);
             lblUserID.Text = _User.UserID.ToString();
             lblUserName.Text = _User.UserName.ToString();
 
@@ -64,6 +65,7 @@ namespace Gymnasium.User_Forms
         {
 
             ctrlPersonInfoCard1.ResetPersonInfo();
+
             lblUserID.Text = "[???]";
             lblUserName.Text = "[???]";
             lblIsActive.Text = "[???]";

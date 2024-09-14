@@ -16,6 +16,7 @@ namespace Gymnasium.People_Forms
         private int _PersonID = -1;
 
         clsPeople _Person;
+        clsCountries _Countries;
 
         // Declare a delegate
         public delegate void DataBackEventHandler(object sender, int PersonID);
@@ -39,9 +40,9 @@ namespace Gymnasium.People_Forms
 
 
 
-        private void _FillCountriesInComboBox()
+        private async void _FillCountriesInComboBox()
         {
-            DataTable CountryTable = clsCountries.GetAllCountries();
+            DataTable CountryTable = await clsCountries.GetAllCountries();
 
             foreach (DataRow Row in CountryTable.Rows)
             {
@@ -49,7 +50,7 @@ namespace Gymnasium.People_Forms
             }
         }
 
-        private void ShowAddEditePersonForm_Load(object sender, EventArgs e)
+        private async void ShowAddEditePersonForm_Load(object sender, EventArgs e)
         {
             _FillCountriesInComboBox();
 
@@ -70,7 +71,7 @@ namespace Gymnasium.People_Forms
             }
 
             // the bag is here for update 
-            _Person = clsPeople.FindByID(_PersonID);
+            _Person = await clsPeople.FindByID(_PersonID);
 
             if (_Person == null)
             {
@@ -79,6 +80,11 @@ namespace Gymnasium.People_Forms
                 return;
             }
 
+            FillPersonInformation(_Person);
+        }
+
+        private void FillPersonInformation(clsPeople Person)
+        {
             lbAddEditePerson.Text = $"Edite Person With ID {_Person.PersonID} :-)";
             lbPersonID.Text = _PersonID.ToString();
 
@@ -128,7 +134,7 @@ namespace Gymnasium.People_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -136,7 +142,8 @@ namespace Gymnasium.People_Forms
                 return;
             }
 
-            int CountryID = clsCountries.FindByName(cbCountries.Text).CountryID;
+            _Countries = await clsCountries.FindByName(cbCountries.Text);
+            int CountryID = _Countries.CountryID;
 
             _Person.FirstName = txtFirstName.Text;
             _Person.LastName = txtLastName.Text;
@@ -155,7 +162,7 @@ namespace Gymnasium.People_Forms
             else
                 _Person.ImagePath = "";
 
-            if (_Person.Save())
+            if (await _Person.Save())
             {
                 MessageBox.Show("Data Saved Successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -199,7 +206,7 @@ namespace Gymnasium.People_Forms
             };
         }
 
-        private void txtNationalNo_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void txtNationalNo_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (string.IsNullOrEmpty(txtNationalNo.Text.Trim()))
             {
@@ -213,7 +220,7 @@ namespace Gymnasium.People_Forms
             }
 
             //Make sure the national number is not used by another person
-            if (txtNationalNo.Text.Trim() != _Person.NationalNo && clsPeople.ExistsByNationalNo(txtNationalNo.Text.Trim()))
+            if (txtNationalNo.Text.Trim() != _Person.NationalNo && await clsPeople.ExistsByNationalNo(txtNationalNo.Text.Trim()))
             {
                 e.Cancel = true;
                 errorProvider1.SetError(txtNationalNo, "National Number is used for another person!");

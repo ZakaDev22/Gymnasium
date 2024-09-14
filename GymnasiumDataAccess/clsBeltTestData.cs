@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsBeltTestData
     {
         // Create a new belt test
-        public static int AddNewBeltTest(int memberID, int rankID, bool result, DateTime date, int testedByInstructorID, int paymentID)
+        // Create a new belt test
+        public static async Task<int> AddNewBeltTestAsync(int memberID, int rankID, bool result, DateTime date, int testedByInstructorID, int paymentID)
         {
             try
             {
@@ -24,7 +26,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
                         connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        return Convert.ToInt32(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -36,7 +38,7 @@ namespace GymnasiumDataAccess
         }
 
         // Read all belt tests
-        public static DataTable GetAllBeltTests()
+        public static async Task<DataTable> GetAllBeltTestsAsync()
         {
             DataTable dataTable = new DataTable();
             try
@@ -48,7 +50,7 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
 
                         connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -64,10 +66,10 @@ namespace GymnasiumDataAccess
         }
 
         // New method to get paged belt tests
-        public static DataTable GetPagedBeltTests(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable, int)> GetPagedBeltTestsAsync(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -86,7 +88,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.Add(totalParam);
 
                         connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -101,13 +103,13 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
         // Read belt test by TestID
-        public static bool GetBeltTestInfoByID(int testID, ref int memberID, ref int rankID, ref bool result, ref DateTime date, ref int testedByInstructorID, ref int paymentID)
+        public static async Task<DataTable> GetBeltTestInfoByIDAsync(int testID)
         {
-            bool isSuccess = false;
+            DataTable dataTable = new DataTable();
 
             try
             {
@@ -119,18 +121,11 @@ namespace GymnasiumDataAccess
                     command.Parameters.AddWithValue("@TestID", testID);
 
                     connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
+                        if (reader.HasRows)
                         {
-                            memberID = (int)reader["MemberID"];
-                            rankID = (int)reader["RankID"];
-                            result = (bool)reader["Result"];
-                            date = (DateTime)reader["Date"];
-                            testedByInstructorID = (int)reader["TestedByInstructorID"];
-                            paymentID = (int)reader["PaymentID"];
-
-                            isSuccess = true;
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -140,13 +135,13 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dataTable;
         }
 
         // Update an existing belt test
-        public static bool UpdateBeltTest(int testID, int memberID, int rankID, bool result, DateTime date, int testedByInstructorID, int paymentID)
+        public static async Task<bool> UpdateBeltTestAsync(int testID, int memberID, int rankID, bool result, DateTime date, int testedByInstructorID, int paymentID)
         {
-            short rowsAffected = 0;
+            int rowsAffected = 0;
 
             try
             {
@@ -165,8 +160,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
                         connection.Open();
-
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -179,9 +173,9 @@ namespace GymnasiumDataAccess
         }
 
         // Delete a belt test by TestID
-        public static bool DeleteBeltTest(int testID)
+        public static async Task<bool> DeleteBeltTestAsync(int testID)
         {
-            short rowsAffected = 0;
+            int rowsAffected = 0;
 
             try
             {
@@ -193,7 +187,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@TestID", testID);
 
                         connection.Open();
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -206,7 +200,7 @@ namespace GymnasiumDataAccess
         }
 
         // Check if belt test exists by TestID
-        public static bool IsBeltTestExistByID(int testID)
+        public static async Task<bool> IsBeltTestExistByIDAsync(int testID)
         {
             try
             {
@@ -218,7 +212,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@TestID", testID);
 
                         connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }

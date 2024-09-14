@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 
 namespace GymnasiumDataAccess
 {
     public class clsSubscriptionPeriodsData
     {
-        public static int AddNewPeriod(DateTime startDate, DateTime endDate, decimal fees, bool paid, int memberID, int paymentID)
+
+
+        public static async Task<int> AddNewPeriod(DateTime startDate, DateTime endDate, decimal fees, bool paid, int memberID, int paymentID)
         {
-            int PeriodID = -1;
+            int periodID = -1;
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -26,9 +29,9 @@ namespace GymnasiumDataAccess
                         SqlParameter returnParameter = command.Parameters.Add("@NewPeriodID", SqlDbType.Int);
                         returnParameter.Direction = ParameterDirection.Output;
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                        PeriodID = (int)returnParameter.Value;
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
+                        periodID = (int)returnParameter.Value;
                     }
                 }
             }
@@ -37,11 +40,10 @@ namespace GymnasiumDataAccess
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-            return PeriodID;
+            return periodID;
         }
 
-
-        public static DataTable GetAllPeriods()
+        public static async Task<DataTable> GetAllPeriods()
         {
             DataTable dataTable = new DataTable();
             try
@@ -52,8 +54,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -69,7 +71,7 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static DataTable GetAllExpiredSubscriptions()
+        public static async Task<DataTable> GetAllExpiredSubscriptions()
         {
             DataTable dataTable = new DataTable();
             try
@@ -80,8 +82,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -97,7 +99,7 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static DataTable GetAllMemberPeriodsByMemberID(int MemberID)
+        public static async Task<DataTable> GetAllMemberPeriodsByMemberID(int MemberID)
         {
             DataTable dataTable = new DataTable();
             try
@@ -110,9 +112,9 @@ namespace GymnasiumDataAccess
 
                         command.Parameters.AddWithValue("@MemberID", MemberID);
 
-                        connection.Open();
+                        await connection.OpenAsync();
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -130,10 +132,10 @@ namespace GymnasiumDataAccess
 
 
         // New method to get paged subscription periods
-        public static DataTable GetPagedSubscriptionPeriods(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedSubscriptionPeriods(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -151,8 +153,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -167,11 +169,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
-        public static bool GetPeriodInfoByID(int periodID, ref DateTime startDate, ref DateTime endDate, ref decimal fees, ref bool paid, ref int memberID, ref int paymentID)
+        public static async Task<DataTable> GetPeriodInfoByID(int periodID)
         {
+            DataTable dt = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -181,23 +184,14 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PeriodID", periodID);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                startDate = (DateTime)reader["StartDate"];
-                                endDate = (DateTime)reader["EndDate"];
-                                fees = (decimal)reader["Fees"];
-                                paid = (bool)reader["Paid"];
-                                memberID = (int)reader["MemberID"];
-                                paymentID = (int)reader["PaymentID"];
-                                return true;
+                                dt.Load(reader);
                             }
-                            else
-                            {
-                                return false;
-                            }
+
                         }
                     }
                 }
@@ -207,10 +201,10 @@ namespace GymnasiumDataAccess
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-            return false;
+            return dt;
         }
 
-        public static bool UpdatePeriod(int periodID, DateTime startDate, DateTime endDate, decimal fees, bool paid, int memberID, int paymentID)
+        public static async Task<bool> UpdatePeriod(int periodID, DateTime startDate, DateTime endDate, decimal fees, bool paid, int memberID, int paymentID)
         {
             try
             {
@@ -227,8 +221,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -237,11 +231,12 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
+
         }
 
-        public static bool DeletePeriod(int periodID)
+        public static async Task<bool> DeletePeriod(int periodID)
         {
             try
             {
@@ -252,8 +247,8 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PeriodID", periodID);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -268,7 +263,7 @@ namespace GymnasiumDataAccess
 
         }
 
-        public static bool SetPeriodInActive(int periodID)
+        public static async Task<bool> SetPeriodInActive(int periodID)
         {
             try
             {
@@ -279,8 +274,8 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PeriodID", periodID);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -289,13 +284,14 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
 
         }
 
-        public static bool IsPeriodExistByID(int periodID)
+        public static async Task<bool> IsPeriodExistByID(int periodID)
         {
             try
             {
@@ -306,8 +302,8 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PeriodID", periodID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -315,9 +311,10 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return false;
+
         }
     }
 }

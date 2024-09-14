@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -68,26 +69,26 @@ namespace GymnasiumLogicLayer
 
         // change this methods to User Methods ...
 
-        private bool _AddNewUser()
+        private async Task<bool> _AddNewUser()
         {
-            this.UserID = clsUsersData.AddNewUser(this.PersonID,
+            this.UserID = await clsUsersData.AddNewUser(this.PersonID,
                                                  this.UserName, this.Password, this.IsActive, this.Permissions);
             return (this.UserID != -1);
         }
 
-        private bool _UpdateUser()
+        private async Task<bool> _UpdateUser()
         {
-            return clsUsersData.UpdateUser(this.UserID, this.PersonID,
+            return await clsUsersData.UpdateUser(this.UserID, this.PersonID,
                                                  this.UserName, this.Password, this.IsActive, this.Permissions);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
 
-                    if (_AddNewUser())
+                    if (await _AddNewUser())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -99,7 +100,7 @@ namespace GymnasiumLogicLayer
 
                 case enMode.Update:
 
-                    return _UpdateUser();
+                    return await _UpdateUser();
 
 
             }
@@ -107,111 +108,113 @@ namespace GymnasiumLogicLayer
             return false;
         }
 
-        public static clsUsers FindByID(int UserID)
+        public static async Task<clsUsers> FindByID(int UserID)
         {
-            int personID = -1;
-            string UserName = string.Empty;
-            string Password = string.Empty;
-            bool IsActive = false;
-            int permissions = 0;
+            DataTable dt = await clsUsersData.GetUserInfoByUserID(UserID);
 
+            if (dt.Rows.Count == 0)
+                return null;
 
-            bool isfound = clsUsersData.GetUserInfoByUserID(UserID, ref personID, ref UserName,
-                      ref Password, ref IsActive, ref permissions);
-
-            if (isfound)
-            {
-                return new clsUsers(UserID, personID, UserName, Password, IsActive, permissions);
-            }
             else
             {
-                return null;
+                DataRow dr = dt.Rows[0];
+
+                return new clsUsers(Convert.ToInt32(dr["UserID"]),
+                                    Convert.ToInt32(dr["PersonID"]),
+                                    Convert.ToString(dr["UserName"]),
+                                    Convert.ToString(dr["Password"]),
+                                    Convert.ToBoolean(dr["IsActive"]),
+                                    Convert.ToInt32(dr["Permissions"]));
             }
         }
 
 
-        public static clsUsers FindUserByPersonID(int PersonID)
+        public static async Task<clsUsers> FindUserByPersonID(int PersonID)
         {
-            int UserID = -1;
-            string UserName = string.Empty;
-            string Password = string.Empty;
-            bool IsActive = false;
-            int permissions = 0;
+            DataTable dt = await clsUsersData.GetUserInfoByPersonID(PersonID);
 
+            if (dt.Rows.Count == 0)
+                return null;
 
-            bool isfound = clsUsersData.GetUserInfoByPersonID(PersonID, ref UserID, ref UserName,
-                      ref Password, ref IsActive, ref permissions);
-
-            if (isfound)
-            {
-                return new clsUsers(UserID, PersonID, UserName, Password, IsActive, permissions);
-            }
             else
             {
+                DataRow dr = dt.Rows[0];
+
+                return new clsUsers(Convert.ToInt32(dr["UserID"]),
+                                    Convert.ToInt32(dr["PersonID"]),
+                                    Convert.ToString(dr["UserName"]),
+                                    Convert.ToString(dr["Password"]),
+                                    Convert.ToBoolean(dr["IsActive"]),
+                                    Convert.ToInt32(dr["Permissions"]));
+            }
+        }
+
+
+        public static async Task<bool> Delete(int UserID)
+        {
+            return await clsUsersData.DeleteUser(UserID);
+        }
+
+        public static async Task<bool> ExistsByID(int UserID)
+        {
+            return await clsUsersData.IsUserExistByUserID(UserID);
+        }
+
+        public static async Task<bool> ExistsByUserName(string UserName)
+        {
+            return await clsUsersData.ExistsByUserName(UserName);
+        }
+
+
+        public static async Task<clsUsers> IsUserExiste(string UserName, string Password)
+        {
+            DataTable dt = await clsUsersData.IsUserExist(UserName, Password);
+
+            if (dt.Rows.Count == 0)
                 return null;
-            }
-        }
 
-
-        public static bool Delete(int UserID)
-        {
-            return clsUsersData.DeleteUser(UserID);
-        }
-
-        public static bool ExistsByID(int UserID)
-        {
-            return clsUsersData.IsUserExistByUserID(UserID);
-        }
-
-        public static bool ExistsByUserName(string UserName)
-        {
-            return clsUsersData.ExistsByUserName(UserName);
-        }
-
-
-        public static clsUsers IsUserExiste(string UserName, string Password)
-        {
-            int userID = -1, PersonID = -1;
-            bool isActived = false;
-            int permissions = 0;
-
-            if (clsUsersData.IsUserExist(UserName, Password, ref userID, ref PersonID, ref isActived, ref permissions))
-            {
-                return new clsUsers(userID, PersonID, UserName, Password, isActived, permissions);
-            }
             else
-                return null;
+            {
+                DataRow dr = dt.Rows[0];
+
+                return new clsUsers(Convert.ToInt32(dr["UserID"]),
+                                    Convert.ToInt32(dr["PersonID"]),
+                                    Convert.ToString(dr["UserName"]),
+                                    Convert.ToString(dr["Password"]),
+                                    Convert.ToBoolean(dr["IsActive"]),
+                                    Convert.ToInt32(dr["Permissions"]));
+            }
         }
 
-        public static bool ExistsByPersonID(int PersonID)
+        public static async Task<bool> ExistsByPersonID(int PersonID)
         {
-            return clsUsersData.IsUserExistByPersonID(PersonID);
+            return await clsUsersData.IsUserExistByPersonID(PersonID);
         }
 
         /// <summary>
         /// Retrieves all users from the database.
         /// </summary>
         /// <returns>A DataTable containing all users.</returns>
-        public static DataTable GetAllUsers()
+        public static async Task<DataTable> GetAllUsers()
         {
-            return clsUsersData.GetAllUsers();
+            return await clsUsersData.GetAllUsers();
         }
 
         // New method to get paged users
-        public static DataTable GetPagedUsers(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTab, int totalCount)> GetPagedUsers(int pageNumber, int pageSize)
         {
-            return clsUsersData.GetPagedUsers(pageNumber, pageSize, out totalCount);
+            return await clsUsersData.GetPagedUsers(pageNumber, pageSize);
         }
 
-        public static bool SetUserAsActiveOrInactive(int UserID, bool ActiveOrNot)
+        public static async Task<bool> SetUserAsActiveOrInactive(int UserID, bool ActiveOrNot)
         {
-            return clsUsersData.SetUserAsActiveOrInactive(UserID, ActiveOrNot);
+            return await clsUsersData.SetUserAsActiveOrInactive(UserID, ActiveOrNot);
         }
 
         // New method to check if member is active
-        public static bool IsUserActive(int UserID)
+        public static async Task<bool> IsUserActive(int UserID)
         {
-            return clsUsersData.IsUserActive(UserID);
+            return await clsUsersData.IsUserActive(UserID);
         }
     }
 }

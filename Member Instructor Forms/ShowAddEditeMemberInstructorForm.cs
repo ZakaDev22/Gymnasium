@@ -60,7 +60,7 @@ namespace Gymnasium.Member_Instructor_Forms
 
 
 
-        private void btnSave_Click(object sender, System.EventArgs e)
+        private async void btnSave_Click(object sender, System.EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -69,19 +69,19 @@ namespace Gymnasium.Member_Instructor_Forms
                 return;
             }
 
-            if (!clsMembers.IsMemberExistsByID(Convert.ToInt32(txtMemberID.Text)))
+            if (!await clsMembers.IsMemberExistsByID(Convert.ToInt32(txtMemberID.Text)))
             {
                 MessageBox.Show("No Member with ID = " + txtMemberID.Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (!clsInstructors.ExistsByID(Convert.ToInt32(txtInstructo.Text)))
+            if (!await clsInstructors.ExistsByID(Convert.ToInt32(txtInstructo.Text)))
             {
                 MessageBox.Show("No Instructor with ID = " + txtInstructo.Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (clsMemberInstructor.ExistsByID(Convert.ToInt32(txtInstructo.Text), Convert.ToInt32(txtMemberID.Text)))
+            if (await clsMemberInstructor.ExistsByID(Convert.ToInt32(txtInstructo.Text), Convert.ToInt32(txtMemberID.Text)))
             {
                 MessageBox.Show("This Assignment  With Member ID = " + txtMemberID.Text + " And " + "Instructor ID = " + txtInstructo.Text + " Already Exists", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -90,7 +90,7 @@ namespace Gymnasium.Member_Instructor_Forms
             MembersInstructors.MemberID = Convert.ToInt32(txtMemberID.Text);
             MembersInstructors.InstructorID = Convert.ToInt32(txtInstructo.Text);
 
-            if (MembersInstructors.Save())
+            if (await MembersInstructors.Save())
             {
                 MessageBox.Show("Saved Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnSave.Enabled = false;
@@ -103,7 +103,7 @@ namespace Gymnasium.Member_Instructor_Forms
             }
         }
 
-        private void ShowAddEditeMemberInstructorForm_Load(object sender, EventArgs e)
+        private async void ShowAddEditeMemberInstructorForm_Load(object sender, EventArgs e)
         {
             if (_Mode == enAddEdite.Addnew)
             {
@@ -113,7 +113,7 @@ namespace Gymnasium.Member_Instructor_Forms
                 return;
             }
 
-            MembersInstructors = clsMemberInstructor.FindByID(this._instructorID, this._MemberID);
+            MembersInstructors = await clsMemberInstructor.FindByID(this._instructorID, this._MemberID);
 
             if (MembersInstructors == null)
             {

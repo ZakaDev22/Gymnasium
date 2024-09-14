@@ -9,14 +9,24 @@ namespace Gymnasium.People_Forms
         {
             InitializeComponent();
 
-            ctrlPersonInfoCard1.LoadPersonInfo(PersonID);
+            _LoadPersonInfoByPersonID(PersonID);
         }
 
         public ShowPersonDetailsForm(string NationalNo)
         {
             InitializeComponent();
 
-            ctrlPersonInfoCard1.LoadPersonInfo(NationalNo);
+            _LoadPersonInfoByNationaNo(NationalNo);
+        }
+
+        private async void _LoadPersonInfoByPersonID(int PersonID)
+        {
+            await ctrlPersonInfoCard1.LoadPersonInfo(PersonID);
+        }
+
+        private async void _LoadPersonInfoByNationaNo(string NationalNo)
+        {
+            await ctrlPersonInfoCard1.LoadPersonInfo(NationalNo);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

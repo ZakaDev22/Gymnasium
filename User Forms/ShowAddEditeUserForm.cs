@@ -31,7 +31,7 @@ namespace Gymnasium.User_Forms
             _UserID = UserID;
         }
 
-        private void btnPersonInfoNext_Click(object sender, EventArgs e)
+        private async void btnPersonInfoNext_Click(object sender, EventArgs e)
         {
 
             if (_Mode == enMode.Update)
@@ -46,7 +46,7 @@ namespace Gymnasium.User_Forms
             if (ctrlPersonInfoCardWithFilter1.PersonID != -1)
             {
 
-                if (clsUsers.ExistsByID(ctrlPersonInfoCardWithFilter1.PersonID))
+                if (await clsUsers.ExistsByID(ctrlPersonInfoCardWithFilter1.PersonID))
                 {
 
                     MessageBox.Show("Selected Person already has a user, choose another one.", "Select another Person", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -75,7 +75,7 @@ namespace Gymnasium.User_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
 
             if (!this.ValidateChildren())
@@ -101,7 +101,7 @@ namespace Gymnasium.User_Forms
             }
 
 
-            if (_User.Save())
+            if (await _User.Save())
             {
                 lblUserID.Text = _User.UserID.ToString();
                 //change form mode to update.
@@ -148,10 +148,10 @@ namespace Gymnasium.User_Forms
 
         }
 
-        private void _LoadData()
+        private async void _LoadData()
         {
 
-            _User = clsUsers.FindByID(_UserID);
+            _User = await clsUsers.FindByID(_UserID);
             ctrlPersonInfoCardWithFilter1.FilterEnabled = false;
 
             if (_User == null)
@@ -246,7 +246,7 @@ namespace Gymnasium.User_Forms
                 _LoadData();
         }
 
-        private void txtUserName_Validating(object sender, CancelEventArgs e)
+        private async void txtUserName_Validating(object sender, CancelEventArgs e)
         {
             if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
             {
@@ -263,7 +263,7 @@ namespace Gymnasium.User_Forms
             if (_Mode == enMode.AddNew)
             {
 
-                if (clsUsers.ExistsByUserName(txtUserName.Text.Trim()))
+                if (await clsUsers.ExistsByUserName(txtUserName.Text.Trim()))
                 {
                     e.Cancel = true;
                     errorProvider1.SetError(txtUserName, "username is used by another user");
@@ -278,7 +278,7 @@ namespace Gymnasium.User_Forms
                 //incase update make sure not to use anothers user name
                 if (_User.UserName != txtUserName.Text.Trim())
                 {
-                    if (clsUsers.ExistsByUserName(txtUserName.Text.Trim()))
+                    if (await clsUsers.ExistsByUserName(txtUserName.Text.Trim()))
                     {
                         e.Cancel = true;
                         errorProvider1.SetError(txtUserName, "username is used by another user");

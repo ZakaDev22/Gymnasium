@@ -19,9 +19,9 @@ namespace Gymnasium.User_Forms
         }
 
 
-        private void ShowCHangeUserPasswordForm_Load(object sender, EventArgs e)
+        private async void ShowCHangeUserPasswordForm_Load(object sender, EventArgs e)
         {
-            _User = clsUsers.FindByID(UserID);
+            _User = await clsUsers.FindByID(UserID);
 
             if (_User != null)
             {
@@ -88,7 +88,7 @@ namespace Gymnasium.User_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -101,7 +101,7 @@ namespace Gymnasium.User_Forms
             if (_User.Password != txtNewPassword.Text)
                 _User.Password = clsUtil.ComputeHash(txtNewPassword.Text);
 
-            if (_User.Save())
+            if (await _User.Save())
             {
                 MessageBox.Show("Password Changed Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

@@ -1,6 +1,7 @@
 ﻿using GymnasiumDataAccess;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -43,97 +44,107 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewPeriod()
+        private async Task<bool> _AddNewPeriod()
         {
-            this.PeriodID = clsSubscriptionPeriodsData.AddNewPeriod(this.StartDate, this.EndDate, this.Fees, this.Paid, this.MemberID, this.PaymentID);
+            this.PeriodID = await clsSubscriptionPeriodsData.AddNewPeriod(this.StartDate, this.EndDate, this.Fees, this.Paid, this.MemberID, this.PaymentID);
             return (this.PeriodID != -1);
         }
 
-        private bool _UpdatePeriod()
+        private async Task<bool> _UpdatePeriod()
         {
-            return clsSubscriptionPeriodsData.UpdatePeriod(this.PeriodID, this.StartDate, this.EndDate, this.Fees, this.Paid, this.MemberID, this.PaymentID);
+            return await clsSubscriptionPeriodsData.UpdatePeriod(this.PeriodID, this.StartDate, this.EndDate, this.Fees, this.Paid, this.MemberID, this.PaymentID);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            switch (_Mode)
+            try
             {
-                case enMode.AddNew:
-                    if (_AddNewPeriod())
-                    {
-                        _Mode = enMode.Update;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                switch (_Mode)
+                {
+                    case enMode.AddNew:
+                        if (await _AddNewPeriod())
+                        {
+                            _Mode = enMode.Update;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
 
-                case enMode.Update:
-                    return _UpdatePeriod();
+                    case enMode.Update:
+                        return await _UpdatePeriod();
+                }
             }
+            catch (Exception ex)
+            {
+                // Log exception or handle it as needed
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
+            }
+
             return false;
         }
 
         // New method to get period
-        public static clsSubscriptionPeriods FindByID(int periodID)
+        public static async Task<clsSubscriptionPeriods> FindByID(int periodID)
         {
-            DateTime startDate = DateTime.MinValue;
-            DateTime endDate = DateTime.MinValue;
-            decimal fees = 0;
-            bool paid = false;
-            int memberID = -1;
-            int paymentID = -1;
+            DataTable dt = await clsSubscriptionPeriodsData.GetPeriodInfoByID(periodID);
 
-            bool isFound = clsSubscriptionPeriodsData.GetPeriodInfoByID(periodID, ref startDate, ref endDate, ref fees, ref paid, ref memberID, ref paymentID);
-
-            if (isFound)
-            {
-                return new clsSubscriptionPeriods(periodID, startDate, endDate, fees, paid, memberID, paymentID);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow Row = dt.Rows[0];
+
+                return new clsSubscriptionPeriods(Convert.ToInt32(Row["PeriodID"]),
+                                                  Convert.ToDateTime(Row["StartDate"]),
+                                                  Convert.ToDateTime(Row["EndDate"]),
+                                                  Convert.ToDecimal(Row["Fees"]),
+                                                  Convert.ToBoolean(Row["Paid"]),
+                                                  Convert.ToInt32(Row["MemberID"]),
+                                                  Convert.ToInt32(Row["PaymentID"]));
             }
+
         }
 
         // New method to delete period
-        public static bool Delete(int periodID)
+        public static async Task<bool> Delete(int periodID)
         {
-            return clsSubscriptionPeriodsData.DeletePeriod(periodID);
+            return await clsSubscriptionPeriodsData.DeletePeriod(periodID);
         }
 
         // New method to check if period exists
-        public static bool ExistsByID(int periodID)
+        public static async Task<bool> ExistsByID(int periodID)
         {
-            return clsSubscriptionPeriodsData.IsPeriodExistByID(periodID);
+            return await clsSubscriptionPeriodsData.IsPeriodExistByID(periodID);
         }
 
         // New method to get all subscription periods
-        public static DataTable GetAllPeriods()
+        public static async Task<DataTable> GetAllPeriods()
         {
-            return clsSubscriptionPeriodsData.GetAllPeriods();
+            return await clsSubscriptionPeriodsData.GetAllPeriods();
         }
 
-        public static DataTable GetAllExpiredSubscriptions()
+        public static async Task<DataTable> GetAllExpiredSubscriptions()
         {
-            return clsSubscriptionPeriodsData.GetAllExpiredSubscriptions();
+            return await clsSubscriptionPeriodsData.GetAllExpiredSubscriptions();
         }
 
         // New method to get paged subscription periods
-        public static DataTable GetPagedSubscriptionPeriods(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedSubscriptionPeriods(int pageNumber, int pageSize)
         {
-            return clsSubscriptionPeriodsData.GetPagedSubscriptionPeriods(pageNumber, pageSize, out totalCount);
+            return await clsSubscriptionPeriodsData.GetPagedSubscriptionPeriods(pageNumber, pageSize);
         }
 
-        public static bool SetPeriodInActive(int PeriodID)
+        public static async Task<bool> SetPeriodInActive(int PeriodID)
         {
-            return clsSubscriptionPeriodsData.SetPeriodInActive(PeriodID);
+            return await clsSubscriptionPeriodsData.SetPeriodInActive(PeriodID);
         }
 
-        public static DataTable GetAllMemberPeriodsByMemberID(int MemberID)
+        public static async Task<DataTable> GetAllMemberPeriodsByMemberID(int MemberID)
         {
-            return clsSubscriptionPeriodsData.GetAllMemberPeriodsByMemberID(MemberID);
+            return await clsSubscriptionPeriodsData.GetAllMemberPeriodsByMemberID(MemberID);
         }
     }
 }

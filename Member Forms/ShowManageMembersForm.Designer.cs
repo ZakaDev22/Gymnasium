@@ -41,25 +41,25 @@
             this.rbAll = new System.Windows.Forms.RadioButton();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.memberPersonDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.addMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.SetMemberToBlackList = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.SetMemberToActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SetMemberToInActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.showMemberPeriodsHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.txtFilterValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnLeft = new System.Windows.Forms.Button();
             this.btnRight = new System.Windows.Forms.Button();
             this.btnAddMember = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.memberPersonDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteMemberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SetMemberToBlackList = new System.Windows.Forms.ToolStripMenuItem();
-            this.SetMemberToActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SetMemberToInActiveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showMemberPeriodsHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -91,7 +91,7 @@
             this.btnPageNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPageNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.btnPageNumber.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPageNumber.Location = new System.Drawing.Point(333, 412);
+            this.btnPageNumber.Location = new System.Drawing.Point(333, 434);
             this.btnPageNumber.Name = "btnPageNumber";
             this.btnPageNumber.Size = new System.Drawing.Size(67, 44);
             this.btnPageNumber.TabIndex = 131;
@@ -103,7 +103,7 @@
             this.lbRecords.AutoSize = true;
             this.lbRecords.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbRecords.ForeColor = System.Drawing.Color.Red;
-            this.lbRecords.Location = new System.Drawing.Point(116, 419);
+            this.lbRecords.Location = new System.Drawing.Point(116, 441);
             this.lbRecords.Name = "lbRecords";
             this.lbRecords.Size = new System.Drawing.Size(29, 20);
             this.lbRecords.TabIndex = 128;
@@ -113,7 +113,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(14, 419);
+            this.label2.Location = new System.Drawing.Point(14, 441);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(96, 20);
             this.label2.TabIndex = 127;
@@ -216,7 +216,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(14, 176);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(745, 230);
+            this.dataGridView1.Size = new System.Drawing.Size(745, 252);
             this.dataGridView1.TabIndex = 119;
             // 
             // contextMenuStrip1
@@ -240,20 +240,89 @@
             this.contextMenuStrip1.Size = new System.Drawing.Size(301, 284);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
+            // memberPersonDetailsToolStripMenuItem
+            // 
+            this.memberPersonDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
+            this.memberPersonDetailsToolStripMenuItem.Name = "memberPersonDetailsToolStripMenuItem";
+            this.memberPersonDetailsToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.memberPersonDetailsToolStripMenuItem.Text = "Member Person Details";
+            this.memberPersonDetailsToolStripMenuItem.Click += new System.EventHandler(this.memberPersonDetailsToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(297, 6);
+            // 
+            // addMemberToolStripMenuItem
+            // 
+            this.addMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.add__1_;
+            this.addMemberToolStripMenuItem.Name = "addMemberToolStripMenuItem";
+            this.addMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.addMemberToolStripMenuItem.Text = "Add Member";
+            this.addMemberToolStripMenuItem.Click += new System.EventHandler(this.addMemberToolStripMenuItem_Click);
+            // 
+            // updateMemberToolStripMenuItem
+            // 
+            this.updateMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.update;
+            this.updateMemberToolStripMenuItem.Name = "updateMemberToolStripMenuItem";
+            this.updateMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.updateMemberToolStripMenuItem.Text = "Update Member";
+            this.updateMemberToolStripMenuItem.Click += new System.EventHandler(this.updateMemberToolStripMenuItem_Click);
+            // 
+            // deleteMemberToolStripMenuItem
+            // 
+            this.deleteMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Delete;
+            this.deleteMemberToolStripMenuItem.Name = "deleteMemberToolStripMenuItem";
+            this.deleteMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.deleteMemberToolStripMenuItem.Text = "Delete Member";
+            this.deleteMemberToolStripMenuItem.Click += new System.EventHandler(this.deleteMemberToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(297, 6);
             // 
+            // SetMemberToBlackList
+            // 
+            this.SetMemberToBlackList.Image = global::Gymnasium.Properties.Resources.on_off;
+            this.SetMemberToBlackList.Name = "SetMemberToBlackList";
+            this.SetMemberToBlackList.Size = new System.Drawing.Size(300, 32);
+            this.SetMemberToBlackList.Text = "Set Member To Black List";
+            this.SetMemberToBlackList.Click += new System.EventHandler(this.toolStripMenuItem3_Click_1);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(297, 6);
+            // 
+            // SetMemberToActiveMenuItem
+            // 
+            this.SetMemberToActiveMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
+            this.SetMemberToActiveMenuItem.Name = "SetMemberToActiveMenuItem";
+            this.SetMemberToActiveMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.SetMemberToActiveMenuItem.Text = "Set Member To Active";
+            this.SetMemberToActiveMenuItem.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            // 
+            // SetMemberToInActiveMenuItem
+            // 
+            this.SetMemberToInActiveMenuItem.Image = global::Gymnasium.Properties.Resources.Saki_NuoveXT_2_Actions_stop_32;
+            this.SetMemberToInActiveMenuItem.Name = "SetMemberToInActiveMenuItem";
+            this.SetMemberToInActiveMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.SetMemberToInActiveMenuItem.Text = "Set Member To InActive";
+            this.SetMemberToInActiveMenuItem.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(297, 6);
+            // 
+            // showMemberPeriodsHistoryToolStripMenuItem
+            // 
+            this.showMemberPeriodsHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
+            this.showMemberPeriodsHistoryToolStripMenuItem.Name = "showMemberPeriodsHistoryToolStripMenuItem";
+            this.showMemberPeriodsHistoryToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
+            this.showMemberPeriodsHistoryToolStripMenuItem.Text = "Show Member Periods History";
+            this.showMemberPeriodsHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberPeriodsHistoryToolStripMenuItem_Click);
             // 
             // cbFilterBy
             // 
@@ -296,11 +365,6 @@
             this.label1.TabIndex = 116;
             this.label1.Text = "Filter By:";
             // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(297, 6);
-            // 
             // btnLeft
             // 
             this.btnLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
@@ -311,7 +375,7 @@
             this.btnLeft.FlatAppearance.BorderSize = 0;
             this.btnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLeft.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLeft.Location = new System.Drawing.Point(260, 412);
+            this.btnLeft.Location = new System.Drawing.Point(260, 434);
             this.btnLeft.Name = "btnLeft";
             this.btnLeft.Size = new System.Drawing.Size(67, 44);
             this.btnLeft.TabIndex = 130;
@@ -328,7 +392,7 @@
             this.btnRight.FlatAppearance.BorderSize = 0;
             this.btnRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRight.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRight.Location = new System.Drawing.Point(406, 413);
+            this.btnRight.Location = new System.Drawing.Point(406, 435);
             this.btnRight.Name = "btnRight";
             this.btnRight.Size = new System.Drawing.Size(67, 44);
             this.btnRight.TabIndex = 129;
@@ -360,7 +424,7 @@
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::Gymnasium.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnClose.Location = new System.Drawing.Point(624, 412);
+            this.btnClose.Location = new System.Drawing.Point(624, 434);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(135, 36);
             this.btnClose.TabIndex = 126;
@@ -368,75 +432,11 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // memberPersonDetailsToolStripMenuItem
-            // 
-            this.memberPersonDetailsToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.information;
-            this.memberPersonDetailsToolStripMenuItem.Name = "memberPersonDetailsToolStripMenuItem";
-            this.memberPersonDetailsToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.memberPersonDetailsToolStripMenuItem.Text = "Member Person Details";
-            this.memberPersonDetailsToolStripMenuItem.Click += new System.EventHandler(this.memberPersonDetailsToolStripMenuItem_Click);
-            // 
-            // addMemberToolStripMenuItem
-            // 
-            this.addMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.add__1_;
-            this.addMemberToolStripMenuItem.Name = "addMemberToolStripMenuItem";
-            this.addMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.addMemberToolStripMenuItem.Text = "Add Member";
-            this.addMemberToolStripMenuItem.Click += new System.EventHandler(this.addMemberToolStripMenuItem_Click);
-            // 
-            // updateMemberToolStripMenuItem
-            // 
-            this.updateMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.update;
-            this.updateMemberToolStripMenuItem.Name = "updateMemberToolStripMenuItem";
-            this.updateMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.updateMemberToolStripMenuItem.Text = "Update Member";
-            this.updateMemberToolStripMenuItem.Click += new System.EventHandler(this.updateMemberToolStripMenuItem_Click);
-            // 
-            // deleteMemberToolStripMenuItem
-            // 
-            this.deleteMemberToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.Delete;
-            this.deleteMemberToolStripMenuItem.Name = "deleteMemberToolStripMenuItem";
-            this.deleteMemberToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.deleteMemberToolStripMenuItem.Text = "Delete Member";
-            this.deleteMemberToolStripMenuItem.Click += new System.EventHandler(this.deleteMemberToolStripMenuItem_Click);
-            // 
-            // SetMemberToBlackList
-            // 
-            this.SetMemberToBlackList.Image = global::Gymnasium.Properties.Resources.on_off;
-            this.SetMemberToBlackList.Name = "SetMemberToBlackList";
-            this.SetMemberToBlackList.Size = new System.Drawing.Size(300, 32);
-            this.SetMemberToBlackList.Text = "Set Member To Black List";
-            this.SetMemberToBlackList.Click += new System.EventHandler(this.toolStripMenuItem3_Click_1);
-            // 
-            // SetMemberToActiveMenuItem
-            // 
-            this.SetMemberToActiveMenuItem.Image = global::Gymnasium.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_checkbox_checked_32;
-            this.SetMemberToActiveMenuItem.Name = "SetMemberToActiveMenuItem";
-            this.SetMemberToActiveMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.SetMemberToActiveMenuItem.Text = "Set Member To Active";
-            this.SetMemberToActiveMenuItem.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
-            // 
-            // SetMemberToInActiveMenuItem
-            // 
-            this.SetMemberToInActiveMenuItem.Image = global::Gymnasium.Properties.Resources.Saki_NuoveXT_2_Actions_stop_32;
-            this.SetMemberToInActiveMenuItem.Name = "SetMemberToInActiveMenuItem";
-            this.SetMemberToInActiveMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.SetMemberToInActiveMenuItem.Text = "Set Member To InActive";
-            this.SetMemberToInActiveMenuItem.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
-            // 
-            // showMemberPeriodsHistoryToolStripMenuItem
-            // 
-            this.showMemberPeriodsHistoryToolStripMenuItem.Image = global::Gymnasium.Properties.Resources.history;
-            this.showMemberPeriodsHistoryToolStripMenuItem.Name = "showMemberPeriodsHistoryToolStripMenuItem";
-            this.showMemberPeriodsHistoryToolStripMenuItem.Size = new System.Drawing.Size(300, 32);
-            this.showMemberPeriodsHistoryToolStripMenuItem.Text = "Show Member Periods History";
-            this.showMemberPeriodsHistoryToolStripMenuItem.Click += new System.EventHandler(this.showMemberPeriodsHistoryToolStripMenuItem_Click);
-            // 
             // ShowManageMembersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(775, 460);
+            this.ClientSize = new System.Drawing.Size(775, 481);
             this.Controls.Add(this.cbIsActive);
             this.Controls.Add(this.btnPageNumber);
             this.Controls.Add(this.btnLeft);
