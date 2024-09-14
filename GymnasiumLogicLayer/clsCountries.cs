@@ -1,5 +1,7 @@
 ﻿using GymnasiumDataAccess;
+using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -33,23 +35,23 @@ namespace GymnasiumLogicLayer
             _Mode = enMode.Update;
         }
 
-        private bool _AddNewCountry()
+        private async Task<bool> _AddNewCountry()
         {
-            this.CountryID = clsCountriesData.AddNewCountry(this.CountryName, this.ISO3, this.ISO2);
+            this.CountryID = await clsCountriesData.AddNewCountryAsync(this.CountryName, this.ISO3, this.ISO2);
             return (this.CountryID != -1);
         }
 
-        private bool _UpdateCountry()
+        private async Task<bool> _UpdateCountry()
         {
-            return clsCountriesData.UpdateCountry(this.CountryID, this.CountryName, this.ISO3, this.ISO2);
+            return await clsCountriesData.UpdateCountryAsync(this.CountryID, this.CountryName, this.ISO3, this.ISO2);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsunc()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewCountry())
+                    if (await _AddNewCountry())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -60,61 +62,59 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateCountry();
+                    return await _UpdateCountry();
             }
             return false;
         }
 
-        public static clsCountries FindByID(int countryID)
+        public static async Task<clsCountries> FindByID(int countryID)
         {
-            string countryName = string.Empty;
-            string iso3 = string.Empty;
-            string iso2 = string.Empty;
+            DataTable dt = await clsCountriesData.GetCountryInfoByIDAsync(countryID);
 
-            bool isFound = clsCountriesData.GetCountryInfoByID(countryID, ref countryName, ref iso3, ref iso2);
-
-            if (isFound)
-            {
-                return new clsCountries(countryID, countryName, iso3, iso2);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow row = dt.Rows[0];
+
+                return new clsCountries(Convert.ToInt32(row["CountryID"]),
+                                        Convert.ToString(row["CountryName"]),
+                                        Convert.ToString(row["ISO3"]),
+                                        Convert.ToString(row["ISO2"]));
             }
         }
 
-        public static clsCountries FindByName(string countryName)
+        public static async Task<clsCountries> FindByName(string countryName)
         {
-            int countryID = -1;
-            string iso3 = string.Empty;
-            string iso2 = string.Empty;
+            DataTable dt = await clsCountriesData.GetCountryInfoByNameAsync(countryName);
 
-            bool isFound = clsCountriesData.GetCountryInfoByName(countryName, ref countryID, ref iso3, ref iso2);
-
-            if (isFound)
-            {
-                return new clsCountries(countryID, countryName, iso3, iso2);
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow row = dt.Rows[0];
+
+                return new clsCountries(Convert.ToInt32(row["CountryID"]),
+                                        Convert.ToString(row["CountryName"]),
+                                        Convert.ToString(row["ISO3"]),
+                                        Convert.ToString(row["ISO2"]));
             }
         }
 
 
-        public static bool Delete(int countryID)
+        public static async Task<bool> DeleteAsync(int countryID)
         {
-            return clsCountriesData.DeleteCountry(countryID);
+            return await clsCountriesData.DeleteCountryAsync(countryID);
         }
 
-        public static bool ExistsByID(int countryID)
+        public static async Task<bool> ExistsByIDAsync(int countryID)
         {
-            return clsCountriesData.IsCountryExistByID(countryID);
+            return await clsCountriesData.IsCountryExistByIDAsync(countryID);
         }
 
-        public static DataTable GetAllCountries()
+        public static async Task<DataTable> GetAllCountries()
         {
-            return clsCountriesData.GetAllCountries();
+            return await clsCountriesData.GetAllCountriesAsync();
         }
     }
 }

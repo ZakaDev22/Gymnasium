@@ -155,8 +155,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                             {

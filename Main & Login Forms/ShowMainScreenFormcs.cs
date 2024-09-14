@@ -14,7 +14,6 @@ using Gymnasium.User_Forms;
 using GymnasiumLogicLayer;
 using System;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -43,11 +42,11 @@ namespace Gymnasium
             var SubPeriodstask = await clsSubscriptionPeriods.GetAllPeriods(); // done
             var userstask = await clsUsers.GetAllUsers(); // done
             var paymentstask = await clsPayments.GetAllPayments(); // done
+            var Sportstask = await clsSports.GetAllSports();
+            var Instructorstask = await clsInstructors.GetAllInstructors();
+            var MembersInstructortask = await clsMemberInstructor.GetAllAssignments();
+            var BeltTesttask = await clsBeltTest.GetAllBeltTests();
 
-            var MembersInstructortask = Task.Run(() => clsMemberInstructor.GetAllAssignments().Rows.Count.ToString());
-            var BeltTesttask = Task.Run(() => clsBeltTest.GetAllBeltTests().Rows.Count.ToString());
-            var Sportstask = Task.Run(() => clsSports.GetAllSports().Rows.Count.ToString());
-            var Instructorstask = Task.Run(() => clsInstructors.GetAllInstructors().Rows.Count.ToString());
 
 
             lbPeople.Text = PeopleTask.Rows.Count.ToString();
@@ -55,11 +54,10 @@ namespace Gymnasium
             lbSubPeriods.Text = SubPeriodstask.Rows.Count.ToString();
             lbUsers.Text = userstask.Rows.Count.ToString();
             lbPayments.Text = paymentstask.Rows.Count.ToString();
-
-            lbMembersInstructors.Text = MembersInstructortask.Result;
-            lbBeltTests.Text = BeltTesttask.Result;
-            lbSports.Text = Sportstask.Result;
-            lbInstructors.Text = Instructorstask.Result;
+            lbSports.Text = Sportstask.Rows.Count.ToString();
+            lbInstructors.Text = Instructorstask.Rows.Count.ToString();
+            lbMembersInstructors.Text = MembersInstructortask.Rows.Count.ToString();
+            lbBeltTests.Text = BeltTesttask.Rows.Count.ToString();
         }
 
         private void button2_Click(object sender, EventArgs e)

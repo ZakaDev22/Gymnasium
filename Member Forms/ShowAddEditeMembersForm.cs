@@ -3,6 +3,7 @@ using Gymnasium.Payments_Forms;
 using GymnasiumLogicLayer;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gymnasium.Member_Forms
@@ -16,6 +17,8 @@ namespace Gymnasium.Member_Forms
         private int _PaymentID = -1;
 
         private float SportFees = 0;
+
+        private clsSports _Sport;
 
         public ShowAddEditeMembersForm()
         {
@@ -56,24 +59,26 @@ namespace Gymnasium.Member_Forms
 
             _Member.PersonID = ctrlPersonInfoCardWithFilter1.PersonID;
 
-            // Check If The Input EmergencyContact ID Is A Valid One Or Not <<<--===================
             _Member.EmergencyContactID = Convert.ToInt32(txtEmergencyContact.Text);
 
             _Member.IsActive = chkIsActive.Checked;
 
-            // find the new bug is her
-            _Member.SportID = clsSports.FindByName(cbSports.Text).SportID;
+            clsSports _Sport = await clsSports.FindByName(cbSports.Text);
+            _Member.SportID = _Sport.SportID;
+            // _Member.SportID = await clsSports.FindByName(cbSports.Text).SportID;
 
             _Member.JoinDate = DateTime.Now;
 
             if (await _Member.Save())
             {
-                MessageBox.Show("Success, saving member Was DOne Successfully. \n Now Add Payment For The New Member", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Success, Updating member Information Was Done Successfully. \n ", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 lblMemberID.Text = _Member.MemberID.ToString();
 
                 if (_Mode == enMode.AddNew)
                 {
+                    MessageBox.Show("Success, saving member Was D0ne Successfully. \n Now Add Payment For The New Member", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     AddEditePaymentForm frm = new AddEditePaymentForm(_Member.MemberID, SportFees);
                     frm.DataBack += PaymentDataBack;
                     frm.ShowDialog();
@@ -92,9 +97,9 @@ namespace Gymnasium.Member_Forms
 
 
 
-        private void _FillSportComboBoxWithData()
+        private async Task _FillSportComboBoxWithData()
         {
-            DataTable dt = clsSports.GetAllSports();
+            DataTable dt = await clsSports.GetAllSports();
 
             foreach (DataRow row in dt.Rows)
             {
@@ -102,23 +107,29 @@ namespace Gymnasium.Member_Forms
             }
         }
 
+        private async void ChangeSportsSelectedIndexes(int selectedIndex)
+        {
+            cbSports.SelectedIndex = selectedIndex;
+            clsSports _sport = await clsSports.FindByName(cbSports.Text);
+            SportFees = _sport.Fees;
+            lbSportFees.Text = SportFees.ToString();
+        }
 
         private async void ShowAddEditeForm_Load(object sender, EventArgs e)
         {
-            _FillSportComboBoxWithData();
-            cbSports.SelectedIndex = 2;
-            SportFees = clsSports.FindByName(cbSports.Text).Fees;
-            lbSportFees.Text = SportFees.ToString();
+            await _FillSportComboBoxWithData();
+
 
             if (_Mode == enMode.AddNew)
             {
+                ChangeSportsSelectedIndexes(2);
                 _Member = new clsMembers();
                 ctrlPersonInfoCardWithFilter1.FilterEnabled = true;
                 return;
             }
 
             _Member = await clsMembers.GetMemberByID(MemberID);
-            await _Member.FillPersonANdSportInformationAsync();
+            await _Member.LoadPersonInfoAsync(_Member.PersonID);
 
             if (_Member == null)
             {
@@ -127,6 +138,7 @@ namespace Gymnasium.Member_Forms
                 return;
             }
 
+            btnSave.Enabled = true;
             // Load Member Person Info And Set The Filter To False To Not CHange The Person Of The Memeber
             ctrlPersonInfoCardWithFilter1.LoadPersonInfo(_Member.PersonID);
             ctrlPersonInfoCardWithFilter1.FilterEnabled = false;
@@ -134,15 +146,16 @@ namespace Gymnasium.Member_Forms
             lblMemberID.Text = _Member.MemberID.ToString();
             txtEmergencyContact.Text = _Member.EmergencyContactID.ToString();
 
-            cbSports.FindString(_Member._SportInfo.SportName);
+            // Send The Selected Sport ID - 1 Because Combobox Index Starts At 0 And Sports ID Starts At 1
+            ChangeSportsSelectedIndexes(_Member._SportInfo.SportID - 1);
 
-            // lbPaymentID.Text = clsPayments.FindByMemberID(_Member.MemberID).PaymentID.ToString() ?? "0";
+            //   cbSports.FindString(_Member._SportInfo.SportName);
 
             chkIsActive.Checked = _Member.IsActive;
 
         }
 
-        private void txtEmergencyContact_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void txtEmergencyContact_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
             if (string.IsNullOrEmpty(txtEmergencyContact.Text))
@@ -153,7 +166,7 @@ namespace Gymnasium.Member_Forms
             }
             else
             {
-                if (!clsEmergencyContacts.ExistsByID(Convert.ToInt32(txtEmergencyContact.Text)))
+                if (!await clsEmergencyContacts.ExistsByID(Convert.ToInt32(txtEmergencyContact.Text)))
                 {
                     errorProvider1.SetError(txtEmergencyContact, "Emergency Contact IS Not exists Add One First");
                     e.Cancel = true;
@@ -173,14 +186,14 @@ namespace Gymnasium.Member_Forms
         {
             if (PaymentID != -1)
             {
-                btnSave.Enabled = false;
+                //  btnSave.Enabled = false;
+                // txtEmergencyContact.Enabled = false;
 
                 lbPaumentID2.Visible = true;
                 pcPaymentID.Visible = true;
                 lbPaymentID.Visible = true;
-
                 ctrlPersonInfoCardWithFilter1.FilterEnabled = false;
-                txtEmergencyContact.Enabled = false;
+
                 _PaymentID = PaymentID;
                 lbPaymentID.Text = PaymentID.ToString();
 
@@ -188,9 +201,10 @@ namespace Gymnasium.Member_Forms
 
         }
 
-        private void cbSports_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cbSports_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SportFees = clsSports.FindByName(cbSports.Text).Fees;
+            _Sport = await clsSports.FindByName(cbSports.Text);
+            SportFees = _Sport.Fees;
             lbSportFees.Text = SportFees.ToString();
         }
 

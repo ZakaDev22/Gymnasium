@@ -22,13 +22,15 @@ namespace Gymnasium.Instructors_Forms
         private DataTable dt;
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsInstructors.GetPagedInstructors(currentPage, pageSize, out totalRecords);
+                var tuple = await clsInstructors.GetPagedInstructors(currentPage, pageSize);
+                totalRecords = tuple.totalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -36,7 +38,7 @@ namespace Gymnasium.Instructors_Forms
             else
             {
                 // Load all data
-                dt = clsInstructors.GetAllInstructors();
+                dt = await clsInstructors.GetAllInstructors();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }
@@ -268,19 +270,19 @@ namespace Gymnasium.Instructors_Forms
 
         private void updateInstructorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowAddEditeInstructorForm frm = new ShowAddEditeInstructorForm();
+            ShowAddEditeInstructorForm frm = new ShowAddEditeInstructorForm((int)dataGridView1.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
             LoadPagedData();
         }
 
-        private void deleteInstructorToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deleteInstructorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int InstructorID = (int)dataGridView1.CurrentRow.Cells[0].Value;
 
             if (MessageBox.Show("Are You Sure You Want To Delete This Instructor ??", "Info", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
 
-                if (clsInstructors.Delete(InstructorID))
+                if (await clsInstructors.Delete(InstructorID))
                 {
                     MessageBox.Show($"Success, Instructor With ID {InstructorID} Was Deleted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadPagedData();

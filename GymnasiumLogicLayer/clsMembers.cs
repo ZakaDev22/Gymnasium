@@ -17,10 +17,15 @@ namespace GymnasiumLogicLayer
         public DateTime JoinDate { get; set; }
         public bool IsActive { get; set; }
 
+        /// <summary>
+        /// if You Want To Use Person Info Directly You Can Use This Property After You Call The Load Person Info Method
+        /// </summary>
         public Task<clsPeople> _PersonInfo;
 
+        /// <summary>
+        /// if You Want To Use Person Info Directly You Can Use This Property After You Call The Load Sport Info Method
+        /// </summary>
         public clsSports _SportInfo;
-        // public Task<clsSports> _SportInfo;
 
         // Empty constructor
         public clsMembers()
@@ -38,16 +43,20 @@ namespace GymnasiumLogicLayer
             JoinDate = joinDate;
             IsActive = isActive;
 
-
-
+            LoadSportInfoAsync(sportID);
+            _PersonInfo = LoadPersonInfoAsync(PersonID);
 
             Mode = enMode.Update;
         }
 
-        public async Task FillPersonANdSportInformationAsync()
+        public async Task<clsPeople> LoadPersonInfoAsync(int personID)
         {
-            _PersonInfo = clsPeople.FindByID(this.PersonID);
-            _SportInfo = clsSports.FindByID(this.SportID);
+            return await clsPeople.FindByID(personID);
+        }
+
+        public async void LoadSportInfoAsync(int SportID)
+        {
+            _SportInfo = await clsSports.FindByID(SportID);
         }
 
         // Data Access Methods

@@ -59,11 +59,17 @@ namespace GymnasiumLogicLayer
             ImagePath = imagePath;
             CountryID = countryID;
 
-            _CountryInfo = clsCountries.FindByID(countryID);
+            LoadCountryInfo(countryID);
 
             Mode = enMode.Update;
 
         }
+
+        private async void LoadCountryInfo(int CountryID)
+        {
+            _CountryInfo = await clsCountries.FindByID(CountryID);
+        }
+
 
         // New method to add
         private async Task<bool> _AddNewPerson()

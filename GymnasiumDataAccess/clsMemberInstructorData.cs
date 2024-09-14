@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 
 namespace GymnasiumDataAccess
 {
     public class clsMemberInstructorData
     {
-        public static bool AddNewAssignment(int instructorID, int memberID, DateTime assignDate)
+        public static async Task<bool> AddNewAssignment(int instructorID, int memberID, DateTime assignDate)
         {
             try
             {
@@ -20,8 +21,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
                         command.Parameters.AddWithValue("@AssignDate", assignDate);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -29,11 +30,12 @@ namespace GymnasiumDataAccess
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
         }
 
-        public static DataTable GetAllAssignments()
+        public static async Task<DataTable> GetAllAssignments()
         {
             DataTable dataTable = new DataTable();
             try
@@ -43,9 +45,8 @@ namespace GymnasiumDataAccess
                     using (SqlCommand command = new SqlCommand("sp_MemberInstructor_GetAllAssignments", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -56,16 +57,15 @@ namespace GymnasiumDataAccess
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
             return dataTable;
         }
 
-        // New method to get paged members instructors
-        public static DataTable GetPagedMembersInstructors(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedMembersInstructors(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -83,8 +83,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -99,11 +99,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
-        public static bool GetAssignmentInfoByID(int instructorID, int memberID, ref DateTime assignDate)
+        public static async Task<DataTable> GetAssignmentInfoByID(int instructorID, int memberID)
         {
+            DataTable dt = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -114,18 +115,11 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@InstructorID", instructorID);
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
-                            {
-                                assignDate = (DateTime)reader["AssignDate"];
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                            if (reader.HasRows)
+                                dt.Load(reader);
                         }
                     }
                 }
@@ -133,11 +127,12 @@ namespace GymnasiumDataAccess
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
+            return dt;
         }
 
-        public static bool UpdateAssignment(int instructorID, int memberID, DateTime assignDate)
+        public static async Task<bool> UpdateAssignment(int instructorID, int memberID, DateTime assignDate)
         {
             try
             {
@@ -150,8 +145,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
                         command.Parameters.AddWithValue("@AssignDate", assignDate);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -159,11 +154,12 @@ namespace GymnasiumDataAccess
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
         }
 
-        public static bool DeleteAssignment(int instructorID, int memberID)
+        public static async Task<bool> DeleteAssignment(int instructorID, int memberID)
         {
             try
             {
@@ -175,8 +171,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@InstructorID", instructorID);
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
@@ -184,11 +180,12 @@ namespace GymnasiumDataAccess
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
         }
 
-        public static bool IsAssignmentExistByID(int instructorID, int memberID)
+        public static async Task<bool> IsAssignmentExistByID(int instructorID, int memberID)
         {
             try
             {
@@ -200,15 +197,16 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@InstructorID", instructorID);
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 // Handle exception
-                throw ex;
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
         }
     }

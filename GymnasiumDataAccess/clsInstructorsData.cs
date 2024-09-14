@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsInstructorsData
     {
         // Method to check if instructor exists by ID
-        public static bool InstructorExists(int instructorID)
+        // Check if instructor exists by ID
+        public static async Task<bool> InstructorExists(int instructorID)
         {
-            bool exists = false;
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
@@ -18,30 +19,31 @@ namespace GymnasiumDataAccess
 
                 command.Parameters.AddWithValue("@InstructorID", instructorID);
 
-                SqlParameter returnParam = new SqlParameter();
-                returnParam.Direction = ParameterDirection.ReturnValue;
+                SqlParameter returnParam = new SqlParameter
+                {
+                    Direction = ParameterDirection.ReturnValue
+                };
                 command.Parameters.Add(returnParam);
 
                 try
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                     int result = (int)returnParam.Value;
-                    exists = (result == 1);
+                    return (result == 1);
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    return false;
                 }
             }
 
-            return exists;
+
         }
 
-        // Add other methods for Add, Update, Delete, GetAll, GetByID similarly
-
-        public static int AddNewInstructor(int personID, string qualification, string specialization, DateTime hireDate, decimal salary, bool isActive)
+        // Add new instructor
+        public static async Task<int> AddNewInstructor(int personID, string qualification, string specialization, DateTime hireDate, decimal salary, bool isActive)
         {
             int instructorID = -1;
 
@@ -62,13 +64,12 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                     instructorID = (int)returnParam.Value;
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
@@ -76,9 +77,8 @@ namespace GymnasiumDataAccess
             return instructorID;
         }
 
-        // Add Update, Delete, GetByID, GetAll methods here similarly
-
-        public static bool UpdateInstructor(int instructorID, int personID, string qualification, string specialization, DateTime hireDate, decimal salary, bool isActive)
+        // Update instructor
+        public static async Task<bool> UpdateInstructor(int instructorID, int personID, string qualification, string specialization, DateTime hireDate, decimal salary, bool isActive)
         {
             int rowsAffected = 0;
 
@@ -97,12 +97,11 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
@@ -110,7 +109,8 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static bool DeleteInstructor(int instructorID)
+        // Delete instructor
+        public static async Task<bool> DeleteInstructor(int instructorID)
         {
             int rowsAffected = 0;
 
@@ -123,12 +123,11 @@ namespace GymnasiumDataAccess
 
                 try
                 {
-                    connection.Open();
-                    rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    rowsAffected = await command.ExecuteNonQueryAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
@@ -136,7 +135,8 @@ namespace GymnasiumDataAccess
             return rowsAffected > 0;
         }
 
-        public static DataTable GetAllInstructors()
+        // Get all instructors
+        public static async Task<DataTable> GetAllInstructors()
         {
             DataTable dataTable = new DataTable();
 
@@ -148,8 +148,8 @@ namespace GymnasiumDataAccess
 
                     try
                     {
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                             {
@@ -159,7 +159,6 @@ namespace GymnasiumDataAccess
                     }
                     catch (Exception ex)
                     {
-                        // Handle exception
                         clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                     }
                 }
@@ -168,9 +167,10 @@ namespace GymnasiumDataAccess
             return dataTable;
         }
 
-        public static bool GetInstructorInfoByID(int instructorID, ref int personID, ref string qualification, ref string specialization, ref DateTime hireDate, ref decimal salary, ref bool isActive)
+        // Get instructor by ID
+        public static async Task<DataTable> GetInstructorInfoByID(int instructorID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
@@ -181,57 +181,47 @@ namespace GymnasiumDataAccess
 
                     try
                     {
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
-                            {
-                                personID = Convert.ToInt32(reader["PersonID"]);
-                                qualification = reader["Qualification"].ToString();
-                                specialization = reader["Specialization"].ToString();
-                                hireDate = Convert.ToDateTime(reader["HireDate"]);
-                                salary = Convert.ToDecimal(reader["Salary"]);
-                                isActive = Convert.ToBoolean(reader["IsActive"]);
-
-                                isSuccess = true;
-                            }
+                            if (reader.HasRows)
+                                dt.Load(reader);
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Handle exception
                         clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                     }
                 }
             }
 
-            return isSuccess;
+            return dt;
         }
 
-        // New method to get paged instructors
-        public static DataTable GetPagedInstructors(int pageNumber, int pageSize, out int totalCount)
+        // Get paged instructors
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedInstructors(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
-            try
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
-                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                using (SqlCommand command = new SqlCommand("sp_Instructors_GetPagedInstructors", connection))
                 {
-                    using (SqlCommand command = new SqlCommand("sp_Instructors_GetPagedInstructors", connection))
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    SqlParameter totalParam = new SqlParameter("@TotalCount", SqlDbType.Int)
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@PageNumber", pageNumber);
-                        command.Parameters.AddWithValue("@PageSize", pageSize);
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(totalParam);
 
-                        SqlParameter totalParam = new SqlParameter("@TotalCount", SqlDbType.Int)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalParam);
-
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                    try
+                    {
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -239,14 +229,14 @@ namespace GymnasiumDataAccess
 
                         totalCount = (int)totalParam.Value;
                     }
+                    catch (Exception ex)
+                    {
+                        clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
-            }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
     }

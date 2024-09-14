@@ -75,9 +75,9 @@ namespace Gymnasium.People_Forms
 
         }
 
-        private void _FillPersonInfo()
+        private async void _FillPersonInfo()
         {
-            Task.Run(() => _LoadPersonImage());
+            _LoadPersonImage();
 
             llEditPersonInfo.Enabled = true;
             _PersonID = _Person.PersonID;
@@ -88,7 +88,8 @@ namespace Gymnasium.People_Forms
             lblEmail.Text = _Person.Email;
             lblPhone.Text = _Person.Phone;
             lblDateOfBirth.Text = _Person.DateOfBirth.ToShortDateString();
-            lblCountry.Text = clsCountries.FindByID(_Person.CountryID).CountryName;
+            clsCountries _Country = await clsCountries.FindByID(_Person.CountryID);
+            lblCountry.Text = _Country.CountryName;
             lblAddress.Text = _Person.Address;
         }
 

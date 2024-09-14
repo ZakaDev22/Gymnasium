@@ -356,7 +356,7 @@ namespace Gymnasium.Member_Forms
                         "Tap Ok To Go To Payment Form", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     clsMembers _Member = await clsMembers.GetMemberByID(MemberID);
-                    await _Member.FillPersonANdSportInformationAsync();
+                    await _Member.LoadPersonInfoAsync(_Member.PersonID);
                     AddEditePaymentForm frm = new AddEditePaymentForm(MemberID, _Member._SportInfo.Fees);
                     frm.ShowDialog();
 

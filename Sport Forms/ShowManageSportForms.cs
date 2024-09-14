@@ -9,17 +9,18 @@ namespace Gymnasium.Sport_Forms
     {
         public ShowManageSportForms()
         {
-            InitializeComponent();
             LoadPagedData();
+            InitializeComponent();
+
         }
 
         private DataTable dt;
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
 
-            dt = clsSports.GetAllSports();
+            dt = await clsSports.GetAllSports();
             dataGridView1.DataSource = dt;
 
             if (dataGridView1.Rows.Count > 0)

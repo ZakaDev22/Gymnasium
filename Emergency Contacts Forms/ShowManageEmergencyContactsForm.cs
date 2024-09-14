@@ -23,13 +23,15 @@ namespace Gymnasium.Emergency_Contacts_Forms
         private DataTable dt;
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsEmergencyContacts.GetPagedEmergencyContacts(currentPage, pageSize, out totalRecords);
+                var tuplet = await clsEmergencyContacts.GetPagedEmergencyContacts(currentPage, pageSize);
+                totalRecords = tuplet.totalCount;
+                dt = tuplet.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -37,7 +39,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             else
             {
                 // Load all data
-                dt = clsEmergencyContacts.GetAllEmergencyContacts();
+                dt = await clsEmergencyContacts.GetAllEmergencyContacts();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }

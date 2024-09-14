@@ -35,7 +35,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             _Mode = enMode.Update;
         }
 
-        private void txtPersonID_Validating(object sender, CancelEventArgs e)
+        private async void txtPersonID_Validating(object sender, CancelEventArgs e)
         {
             if (string.IsNullOrEmpty(txtPersonID.Text))
             {
@@ -47,7 +47,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             {
                 if (_Mode == enMode.AddNew)
                 {
-                    if (clsEmergencyContacts.ExistsByIDPersonID(Convert.ToInt32(txtPersonID.Text.Trim())))
+                    if (await clsEmergencyContacts.ExistsByPersonID(Convert.ToInt32(txtPersonID.Text.Trim())))
                     {
                         errorProvider1.SetError(txtPersonID, "Person ID already exists!");
                         txtPersonID.Focus();
@@ -139,7 +139,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
             {
@@ -153,7 +153,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             _EmergencyContact.Phone = txtPhone.Text;
             _EmergencyContact.Email = txtEmail.Text;
 
-            if (_EmergencyContact.Save())
+            if (await _EmergencyContact.Save())
             {
 
                 if (_Mode == enMode.AddNew)
@@ -172,7 +172,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
             }
         }
 
-        private void AddEditeEmergencyContactForm_Load(object sender, EventArgs e)
+        private async void AddEditeEmergencyContactForm_Load(object sender, EventArgs e)
         {
             if (_Mode == enMode.AddNew)
             {
@@ -181,7 +181,7 @@ namespace Gymnasium.Emergency_Contacts_Forms
                 return;
             }
 
-            _EmergencyContact = clsEmergencyContacts.FindByID(_emergencyContactID);
+            _EmergencyContact = await clsEmergencyContacts.FindByID(_emergencyContactID);
 
             if (_EmergencyContact == null)
             {

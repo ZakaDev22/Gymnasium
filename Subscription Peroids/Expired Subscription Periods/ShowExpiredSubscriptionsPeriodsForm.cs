@@ -269,7 +269,7 @@ namespace Gymnasium.Subscription_Peroids.Expired_Subscriptions
             // Get The Sport Fees That The Member Should Pay
             var Member = await clsMembers.GetMemberByID(MemberID);
 
-            await Member.FillPersonANdSportInformationAsync();
+            await Member.LoadPersonInfoAsync(Member.PersonID);
 
             float Fess = Member._SportInfo.Fees;
 

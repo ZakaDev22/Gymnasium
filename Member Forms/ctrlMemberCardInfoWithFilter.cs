@@ -102,7 +102,8 @@ namespace Gymnasium.Member_Forms
 
             await ctrlPersonInfoCard1.LoadPersonInfo(_Member.PersonID);
 
-            lbSportName.Text = clsSports.FindByID(_Member.SportID).SportName;
+            clsSports _SportInfo = await clsSports.FindByID(_Member.SportID);
+            lbSportName.Text = _SportInfo.SportName;
             lbMemberID.Text = _Member.MemberID.ToString();
             lbEmergencyContact.Text = _Member.EmergencyContactID.ToString();
             lbJoinDate.Text = _Member.JoinDate.ToShortDateString();

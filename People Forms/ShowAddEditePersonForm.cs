@@ -16,6 +16,7 @@ namespace Gymnasium.People_Forms
         private int _PersonID = -1;
 
         clsPeople _Person;
+        clsCountries _Countries;
 
         // Declare a delegate
         public delegate void DataBackEventHandler(object sender, int PersonID);
@@ -39,9 +40,9 @@ namespace Gymnasium.People_Forms
 
 
 
-        private void _FillCountriesInComboBox()
+        private async void _FillCountriesInComboBox()
         {
-            DataTable CountryTable = clsCountries.GetAllCountries();
+            DataTable CountryTable = await clsCountries.GetAllCountries();
 
             foreach (DataRow Row in CountryTable.Rows)
             {
@@ -79,6 +80,11 @@ namespace Gymnasium.People_Forms
                 return;
             }
 
+            FillPersonInformation(_Person);
+        }
+
+        private void FillPersonInformation(clsPeople Person)
+        {
             lbAddEditePerson.Text = $"Edite Person With ID {_Person.PersonID} :-)";
             lbPersonID.Text = _PersonID.ToString();
 
@@ -136,7 +142,8 @@ namespace Gymnasium.People_Forms
                 return;
             }
 
-            int CountryID = clsCountries.FindByName(cbCountries.Text).CountryID;
+            _Countries = await clsCountries.FindByName(cbCountries.Text);
+            int CountryID = _Countries.CountryID;
 
             _Person.FirstName = txtFirstName.Text;
             _Person.LastName = txtLastName.Text;

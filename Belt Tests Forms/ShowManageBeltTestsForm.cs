@@ -21,13 +21,15 @@ namespace Gymnasium.Belt_Tests_Forms
         private DataTable dt;
 
 
-        private void LoadPagedData()
+        private async void LoadPagedData()
         {
             // Load the paged data into the data grid view
             if (rbByPages.Checked)
             {
                 // Load the paged data
-                dt = clsBeltTest.GetPagedBeltTests(currentPage, pageSize, out totalRecords);
+                var tuple = await clsBeltTest.GetPagedBeltTests(currentPage, pageSize);
+                totalRecords = tuple.TotalCount;
+                dt = tuple.dataTable;
                 dataGridView1.DataSource = dt;
                 UpdatePaginationButtons();
                 lbRecords.Text = dataGridView1.RowCount.ToString();
@@ -35,7 +37,7 @@ namespace Gymnasium.Belt_Tests_Forms
             else
             {
                 // Load all data
-                dt = clsBeltTest.GetAllBeltTests();
+                dt = await clsBeltTest.GetAllBeltTests();
                 dataGridView1.DataSource = dt;
                 lbRecords.Text = dataGridView1.RowCount.ToString();
             }

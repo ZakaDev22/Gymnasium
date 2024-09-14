@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsBeltRankData
     {
         // Add new Belt Rank
-        public static int AddNewBeltRank(string rankName, decimal testFees)
+        public static async Task<int> AddNewBeltRank(string rankName, decimal testFees)
         {
             try
             {
@@ -19,20 +20,21 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@RankName", rankName);
                         command.Parameters.AddWithValue("@TestFees", testFees);
 
-                        connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        var result = await command.ExecuteScalarAsync();
+                        return Convert.ToInt32(result);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 return -1;
             }
         }
 
         // Get all Belt Ranks
-        public static DataTable GetAllBeltRanks()
+        public static async Task<DataTable> GetAllBeltRanks()
         {
             DataTable dataTable = new DataTable();
             try
@@ -43,8 +45,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -54,16 +56,16 @@ namespace GymnasiumDataAccess
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
             return dataTable;
         }
 
         // New method to get paged belt ranks
-        public static DataTable GetPagedBeltRanks(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable DataTable, int totalCount)> GetPagedBeltRanksAsync(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -81,8 +83,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -97,12 +99,13 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
 
         // Get Belt Rank by ID
-        public static bool GetBeltRankByID(int rankID, ref string rankName, ref decimal testFees)
+        public static async Task<DataTable> GetBeltRankByID(int rankID)
         {
+            DataTable dt = new DataTable();
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -112,29 +115,25 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@RankID", rankID);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
-                            {
-                                rankName = reader["RankName"].ToString();
-                                testFees = Convert.ToDecimal(reader["TestFees"]);
-                                return true;
-                            }
+                            if (reader.HasRows)
+                                dt.Load(reader);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-            return false;
+            return dt;
+
         }
 
-
         // Update Belt Rank
-        public static bool UpdateBeltRank(int rankID, string rankName, decimal testFees)
+        public static async Task<bool> UpdateBeltRank(int rankID, string rankName, decimal testFees)
         {
             try
             {
@@ -147,21 +146,21 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@RankName", rankName);
                         command.Parameters.AddWithValue("@TestFees", testFees);
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 return false;
             }
         }
 
         // Delete Belt Rank
-        public static bool DeleteBeltRank(int rankID)
+        public static async Task<bool> DeleteBeltRank(int rankID)
         {
             try
             {
@@ -172,21 +171,21 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@RankID", rankID);
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 return false;
             }
         }
 
         // Check if Belt Rank Exists by ID
-        public static bool IsBeltRankExistByID(int rankID)
+        public static async Task<bool> IsBeltRankExistByID(int rankID)
         {
             try
             {
@@ -197,14 +196,15 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@RankID", rankID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        var result = await command.ExecuteScalarAsync();
+                        return Convert.ToBoolean(result);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
                 return false;
             }
         }

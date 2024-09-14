@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 
 namespace GymnasiumDataAccess
 {
     public class clsSportsData
     {
-        public static int AddNewSport(string sportName, string description, float Fess)
+        public static async Task<int> AddNewSport(string sportName, string description, float Fess)
         {
             try
             {
@@ -21,8 +22,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Description", description);
                         command.Parameters.AddWithValue("@Fees", Fess);
 
-                        connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToInt32(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -30,12 +31,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return -1;
             }
 
-            return -1;
+
         }
 
-        public static DataTable GetAllSports()
+        public static async Task<DataTable> GetAllSports()
         {
             DataTable dataTable = new DataTable();
             try
@@ -46,8 +48,8 @@ namespace GymnasiumDataAccess
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -57,17 +59,16 @@ namespace GymnasiumDataAccess
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
             return dataTable;
         }
 
         // New method to get paged sports
-        public static DataTable GetPagedSports(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedSports(int pageNumber, int pageSize)
         {
-            DataTable dataTable = new DataTable();
-            totalCount = 0;
+            DataTable dt = new DataTable();
+            int totalCount = 0;
 
             try
             {
@@ -85,11 +86,11 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
-                                dataTable.Load(reader);
+                                dt.Load(reader);
                         }
 
                         totalCount = (int)totalParam.Value;
@@ -101,12 +102,12 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dt, totalCount);
         }
 
-        public static bool GetSportInfoByID(int sportID, ref string sportName, ref string description, ref float fees)
+        public static async Task<DataTable> GetSportInfoByID(int sportID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -117,15 +118,12 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@SportID", sportID);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                sportName = (string)reader["SportName"];
-                                description = (string)reader["Description"];
-                                fees = Convert.ToSingle(reader["Fees"]);
-                                isSuccess = true;
+                                dt.Load(reader);
                             }
                         }
                     }
@@ -136,12 +134,12 @@ namespace GymnasiumDataAccess
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-            return isSuccess;
+            return dt;
         }
 
-        public static bool FindByName(string sportName, ref int sportID, ref string description, ref float fees)
+        public static async Task<DataTable> FindByName(string sportName)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -154,15 +152,12 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@SportName", sportName);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                sportID = Convert.ToInt32(reader["SportID"]);
-                                description = (string)reader["Description"];
-                                fees = Convert.ToSingle(reader["Fees"]);
-                                isSuccess = true;
+                                dt.Load(reader);
                             }
                         }
                     }
@@ -173,16 +168,14 @@ namespace GymnasiumDataAccess
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
-            return isSuccess;
+            return dt;
         }
-
-        public static bool UpdateSport(int sportID, string sportName, string description, float fees)
+        public static async Task<bool> UpdateSport(int sportID, string sportName, string description, float fees)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
-                    // Update This Procedure If You Want To Update Fees
                     using (SqlCommand command = new SqlCommand("sp_Sports_UpdateSport", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -191,21 +184,20 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Description", description);
                         command.Parameters.AddWithValue("@Fees", fees);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
         }
 
-        public static bool DeleteSport(int sportID)
+        public static async Task<bool> DeleteSport(int sportID)
         {
             try
             {
@@ -216,21 +208,20 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@SportID", sportID);
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-            return false;
         }
 
-        public static bool IsSportExistByID(int sportID)
+        public static async Task<bool> IsSportExistByID(int sportID)
         {
             try
             {
@@ -241,18 +232,16 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@SportID", sportID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-
-            return false;
         }
     }
 }

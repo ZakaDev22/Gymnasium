@@ -1,5 +1,7 @@
 ﻿using GymnasiumDataAccess;
+using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace GymnasiumLogicLayer
 {
@@ -31,23 +33,23 @@ namespace GymnasiumLogicLayer
             _Mode |= enMode.Update;
         }
 
-        private bool _AddNewBeltRank()
+        private async Task<bool> _AddNewBeltRankAsync()
         {
-            this.RankID = clsBeltRankData.AddNewBeltRank(this.RankName, this.TestFees);
+            this.RankID = await clsBeltRankData.AddNewBeltRank(this.RankName, this.TestFees);
             return (this.RankID != -1);
         }
 
-        private bool _UpdateBeltRank()
+        private async Task<bool> _UpdateBeltRankAsync()
         {
-            return clsBeltRankData.UpdateBeltRank(this.RankID, this.RankName, this.TestFees);
+            return await clsBeltRankData.UpdateBeltRank(this.RankID, this.RankName, this.TestFees);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (_Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewBeltRank())
+                    if (await _AddNewBeltRankAsync())
                     {
                         _Mode = enMode.Update;
                         return true;
@@ -58,53 +60,46 @@ namespace GymnasiumLogicLayer
                     }
 
                 case enMode.Update:
-                    return _UpdateBeltRank();
+                    return await _UpdateBeltRankAsync();
             }
             return false;
         }
 
-        public static clsBeltRanks FindByID(int rankID)
+        public static async Task<clsBeltRanks> FindByIDAsync(int rankID)
         {
-            string rankName = string.Empty;
-            decimal testFees = 0m;
+            DataTable dt = await clsBeltRankData.GetBeltRankByID(rankID);
 
-            bool isFound = clsBeltRankData.GetBeltRankByID(rankID, ref rankName, ref testFees);
-
-            if (isFound)
-            {
-                return new clsBeltRanks
-                {
-                    RankID = rankID,
-                    RankName = rankName,
-                    TestFees = testFees
-                };
-            }
+            if (dt.Rows.Count == 0)
+                return null;
             else
             {
-                return null;
+                DataRow row = dt.Rows[0];
+
+                return new clsBeltRanks(Convert.ToInt32(row["RankID"]),
+                                        Convert.ToString(row["RankName"]),
+                                        Convert.ToDecimal(row["TestFees"]));
             }
         }
 
-
-        public static bool Delete(int rankID)
+        public static async Task<bool> DeleteByIDAsync(int rankID)
         {
-            return clsBeltRankData.DeleteBeltRank(rankID);
+            return await clsBeltRankData.DeleteBeltRank(rankID);
         }
 
-        public static bool ExistsByID(int rankID)
+        public static async Task<bool> ExistsByIDAsync(int rankID)
         {
-            return clsBeltRankData.IsBeltRankExistByID(rankID);
+            return await clsBeltRankData.IsBeltRankExistByID(rankID);
         }
 
-        public static DataTable GetAllBeltRanks()
+        public static async Task<DataTable> GetAllBeltRanks()
         {
-            return clsBeltRankData.GetAllBeltRanks();
+            return await clsBeltRankData.GetAllBeltRanks();
         }
 
         // New method to get paged belt ranks
-        public static DataTable GetPagedBeltRanks(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedBeltRanks(int pageNumber, int pageSize)
         {
-            return clsBeltRankData.GetPagedBeltRanks(pageNumber, pageSize, out totalCount);
+            return await clsBeltRankData.GetPagedBeltRanksAsync(pageNumber, pageSize);
         }
     }
 }

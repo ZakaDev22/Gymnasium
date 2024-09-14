@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace GymnasiumDataAccess
 {
     public class clsEmergencyContactsData
     {
-        public static int AddNewEmergencyContact(int personID, string name, string relationship, string phone, string email)
+        public static async Task<int> AddNewEmergencyContact(int personID, string name, string relationship, string phone, string email)
         {
             try
             {
@@ -21,8 +22,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Phone", phone);
                         command.Parameters.AddWithValue("@Email", email);
 
-                        connection.Open();
-                        return Convert.ToInt32(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToInt32(await command.ExecuteScalarAsync());
                     }
                 }
             }
@@ -32,8 +33,7 @@ namespace GymnasiumDataAccess
                 return -1;
             }
         }
-
-        public static DataTable GetAllEmergencyContacts()
+        public static async Task<DataTable> GetAllEmergencyContacts()
         {
             DataTable dataTable = new DataTable();
             try
@@ -43,8 +43,8 @@ namespace GymnasiumDataAccess
                     using (SqlCommand command = new SqlCommand("sp_EmergencyContacts_GetAllEmergencyContacts", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -60,10 +60,10 @@ namespace GymnasiumDataAccess
         }
 
         // New method to get paged emergency contacts
-        public static DataTable GetPagedEmergencyContacts(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedEmergencyContacts(int pageNumber, int pageSize)
         {
             DataTable dataTable = new DataTable();
-            totalCount = 0;
+            int totalCount = 0;
 
             try
             {
@@ -81,8 +81,8 @@ namespace GymnasiumDataAccess
                         };
                         command.Parameters.Add(totalParam);
 
-                        connection.Open();
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (reader.HasRows)
                                 dataTable.Load(reader);
@@ -97,12 +97,11 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return dataTable;
+            return (dataTable, totalCount);
         }
-
-        public static bool GetEmergencyContactInfoByID(int emergencyContactID, ref int personID, ref string name, ref string relationship, ref string phone, ref string email)
+        public static async Task<DataTable> GetEmergencyContactInfoByID(int emergencyContactID)
         {
-            bool isSuccess = false;
+            DataTable dt = new DataTable();
 
             try
             {
@@ -112,19 +111,11 @@ namespace GymnasiumDataAccess
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
 
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.Read())
-                        {
-                            personID = (int)reader["PersonID"];
-                            name = (string)reader["Name"];
-                            relationship = (string)reader["Relationship"];
-                            phone = (string)reader["Phone"];
-                            email = (string)reader["Email"];
-
-                            isSuccess = true;
-                        }
+                        if (reader.HasRows)
+                            dt.Load(reader);
                     }
                 }
             }
@@ -133,13 +124,11 @@ namespace GymnasiumDataAccess
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
             }
 
-            return isSuccess;
+            return dt;
         }
 
-        public static bool UpdateEmergencyContact(int emergencyContactID, int personID, string name, string relationship, string phone, string email)
+        public static async Task<bool> UpdateEmergencyContact(int emergencyContactID, int personID, string name, string relationship, string phone, string email)
         {
-            short rowsAffected = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -154,23 +143,20 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Phone", phone);
                         command.Parameters.AddWithValue("@Email", email);
 
-                        connection.Open();
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-
-            return rowsAffected > 0;
         }
-
-        public static bool DeleteEmergencyContact(int emergencyContactID)
+        public static async Task<bool> DeleteEmergencyContact(int emergencyContactID)
         {
-            short rowsAffected = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -180,20 +166,20 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
 
-                        connection.Open();
-                        rowsAffected = (short)command.ExecuteNonQuery();
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-
-            return rowsAffected > 0;
         }
 
-        public static bool IsEmergencyContactExistByID(int emergencyContactID)
+        public static async Task<bool> IsEmergencyContactExistByID(int emergencyContactID)
         {
             try
             {
@@ -204,20 +190,19 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@EmergencyContactID", emergencyContactID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-
-            return false;
         }
 
-        public static bool IsEmergencyContactExistByPersonID(int PersonID)
+        public static async Task<bool> IsEmergencyContactExistByPersonID(int personID)
         {
             try
             {
@@ -226,19 +211,18 @@ namespace GymnasiumDataAccess
                     using (SqlCommand command = new SqlCommand("sp_EmergencyContacts_IsEmergencyContactExistByPersonID", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@PersonID", PersonID);
+                        command.Parameters.AddWithValue("@PersonID", personID);
 
-                        connection.Open();
-                        return Convert.ToBoolean(command.ExecuteScalar());
+                        await connection.OpenAsync();
+                        return Convert.ToBoolean(await command.ExecuteScalarAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
-
-            return false;
         }
     }
 }

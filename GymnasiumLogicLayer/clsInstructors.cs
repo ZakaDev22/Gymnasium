@@ -36,7 +36,6 @@ namespace GymnasiumLogicLayer
             IsActive = isActive;
 
             _PersonInfo = LoadPersonInfoAsync(PersonID);
-
             Mode = enMode.Update;
         }
 
@@ -46,23 +45,23 @@ namespace GymnasiumLogicLayer
             return await clsPeople.FindByID(personID);
         }
 
-        private bool _AddNewInstructor()
+        private async Task<bool> _AddNewInstructor()
         {
-            this.InstructorID = clsInstructorsData.AddNewInstructor(this.PersonID, this.Qualification, this.Specialization, this.HireDate, this.Salary, this.IsActive);
+            this.InstructorID = await clsInstructorsData.AddNewInstructor(this.PersonID, this.Qualification, this.Specialization, this.HireDate, this.Salary, this.IsActive);
             return (this.InstructorID != -1);
         }
 
-        private bool _UpdateInstructor()
+        private async Task<bool> _UpdateInstructor()
         {
-            return clsInstructorsData.UpdateInstructor(this.InstructorID, this.PersonID, this.Qualification, this.Specialization, this.HireDate, this.Salary, this.IsActive);
+            return await clsInstructorsData.UpdateInstructor(this.InstructorID, this.PersonID, this.Qualification, this.Specialization, this.HireDate, this.Salary, this.IsActive);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewInstructor())
+                    if (await _AddNewInstructor())
                     {
                         Mode = enMode.Update;
                         return true;
@@ -72,51 +71,45 @@ namespace GymnasiumLogicLayer
                         return false;
                     }
                 case enMode.Update:
-                    return _UpdateInstructor();
+                    return await _UpdateInstructor();
             }
             return false;
         }
 
-        public static clsInstructors FindByID(int instructorID)
+        public static async Task<clsInstructors> FindByID(int instructorID)
         {
-            int personID = 0;
-            string qualification = string.Empty;
-            string specialization = string.Empty;
-            DateTime hireDate = DateTime.Now;
-            decimal salary = 0;
-            bool isActive = false;
+            DataTable dt = await clsInstructorsData.GetInstructorInfoByID(instructorID);
+            if (dt.Rows.Count == 0) return null;
 
-            bool isFound = clsInstructorsData.GetInstructorInfoByID(instructorID, ref personID, ref qualification, ref specialization, ref hireDate, ref salary, ref isActive);
-
-            if (isFound)
-            {
-                return new clsInstructors(instructorID, personID, qualification, specialization, hireDate, salary, isActive);
-            }
-            else
-            {
-                return null;
-            }
+            DataRow dr = dt.Rows[0];
+            return new clsInstructors(Convert.ToInt32(dr["InstructorID"]),
+                                      Convert.ToInt32(dr["PersonID"]),
+                                      Convert.ToString(dr["Qualification"]),
+                                      Convert.ToString(dr["Specialization"]),
+                                      Convert.ToDateTime(dr["HireDate"]),
+                                      Convert.ToDecimal(dr["Salary"]),
+                                      Convert.ToBoolean(dr["IsActive"]));
         }
 
-        public static bool Delete(int instructorID)
+        public static async Task<bool> Delete(int instructorID)
         {
-            return clsInstructorsData.DeleteInstructor(instructorID);
+            return await clsInstructorsData.DeleteInstructor(instructorID);
         }
 
-        public static bool ExistsByID(int instructorID)
+        public static async Task<bool> ExistsByID(int instructorID)
         {
-            return clsInstructorsData.InstructorExists(instructorID);
+            return await clsInstructorsData.InstructorExists(instructorID);
         }
 
-        public static DataTable GetAllInstructors()
+        public static async Task<DataTable> GetAllInstructors()
         {
-            return clsInstructorsData.GetAllInstructors();
+            return await clsInstructorsData.GetAllInstructors();
         }
 
         // New method to get paged instructors
-        public static DataTable GetPagedInstructors(int pageNumber, int pageSize, out int totalCount)
+        public static async Task<(DataTable dataTable, int totalCount)> GetPagedInstructors(int pageNumber, int pageSize)
         {
-            return clsInstructorsData.GetPagedInstructors(pageNumber, pageSize, out totalCount);
+            return await clsInstructorsData.GetPagedInstructors(pageNumber, pageSize);
         }
     }
 }
