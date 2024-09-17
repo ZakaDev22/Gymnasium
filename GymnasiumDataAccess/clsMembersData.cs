@@ -31,7 +31,7 @@ namespace GymnasiumDataAccess
 
                         await connection.OpenAsync();
                         await command.ExecuteNonQueryAsync();
-                        memberID = (int)returnParam.Value;
+                        memberID = returnParam.Value == DBNull.Value ? 0 : (int)returnParam.Value;
                     }
                 }
             }
@@ -47,7 +47,6 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> UpdateMember(int memberID, int personID, int sportID, int emergencyContactID, DateTime joinDate, bool isActive)
         {
-            int rowsAffected = 0;
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -64,9 +63,8 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@IsActive", isActive);
 
                         await connection.OpenAsync();
-                        rowsAffected = await command.ExecuteNonQueryAsync();// command.ExecuteNonQueryAsync().Result;
+                        return await command.ExecuteNonQueryAsync() > 0;// command.ExecuteNonQueryAsync().Result;
 
-                        return rowsAffected > 0;
                     }
                 }
             }
@@ -97,11 +95,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-
-                            if (reader.HasRows)
-                            {
-                                dt.Load(reader);
-                            }
+                            dt.Load(reader);
                         }
 
                     }
@@ -134,10 +128,7 @@ namespace GymnasiumDataAccess
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
 
-                        if (reader.HasRows)
-                        {
-                            dt.Load(reader);
-                        }
+                        dt.Load(reader);
                     }
                 }
                 catch (Exception ex)
@@ -154,7 +145,6 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> DeleteMember(int memberID)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -166,22 +156,19 @@ namespace GymnasiumDataAccess
                     command.Parameters.AddWithValue("@MemberID", memberID);
 
                     await connection.OpenAsync();
-                    rowsAffected = await command.ExecuteNonQueryAsync();
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
             }
             catch (Exception ex)
             {
-
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         public static async Task<bool> SetMemberToInDeleted(int memberID)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -194,23 +181,20 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
                         await connection.OpenAsync();
-                        rowsAffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
-
-                // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         public static async Task<bool> SetMemberAsActiveOrInactive(int memberID, bool isActiveOrNot)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -225,7 +209,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Result", isActiveOrNot);
 
                         await connection.OpenAsync();
-                        rowsAffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -233,14 +217,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         public static async Task<bool> IsMemberActive(int memberID)
         {
-
 
             try
             {
@@ -273,13 +256,11 @@ namespace GymnasiumDataAccess
 
         }
 
-        // Checks if a member exists by the provided PersonID.
-        // 
-        // Parameters:
-        // PersonID: The unique identifier of the person.
-        //
-        // Returns:
-        //   True if the member exists, otherwise false.
+        /// <summary>
+        /// Checks if a member exists by the provided PersonID.
+        /// </summary>
+        /// <param name="memberID"></param>
+        /// <returns></returns> false.
         public static async Task<bool> IsMemberExistsByID(int memberID)
         {
 
@@ -316,17 +297,14 @@ namespace GymnasiumDataAccess
         }
 
 
-        // Checks if a member exists by the provided PersonID.
+        /// <summary>
+        /// Checks if a member exists by the provided PersonID.
+        /// </summary>
+        /// <param name="PersonID"></param>
+        /// <returns></returns>
         // 
-        // Parameters:
-        // PersonID: The unique identifier of the person.
-        //
-        // Returns:
-        //   True if the member exists, otherwise false.
         public static async Task<bool> IsMemberExistsByPersonID(int PersonID)
         {
-            bool isExist = false;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -373,11 +351,8 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
+                            dataTable.Load(reader);
 
-                            if (reader.HasRows)
-                            {
-                                dataTable.Load(reader);
-                            }
                         }
                     }
                 }
@@ -407,8 +382,7 @@ namespace GymnasiumDataAccess
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
 
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -438,8 +412,7 @@ namespace GymnasiumDataAccess
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
 
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -479,11 +452,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -520,11 +492,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -560,11 +531,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -578,8 +548,6 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> SetMemberInBlackList(int memberID, bool IsExeste)
         {
-            int rowsAffected = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -592,7 +560,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@IsExist", IsExeste);
 
                         await connection.OpenAsync();
-                        rowsAffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -600,14 +568,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         public static async Task<bool> SetMemberToNormalList(int memberID)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -620,7 +587,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
                         await connection.OpenAsync();
-                        rowsAffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -628,15 +595,13 @@ namespace GymnasiumDataAccess
             {
                 // Handle exception
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         public static async Task<bool> IsMemberInBlackList(int memberID)
         {
-
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
@@ -720,8 +685,7 @@ namespace GymnasiumDataAccess
                     {
                         dataTable = new DataTable();
 
-                        if (reader.HasRows)
-                            dataTable.Load(reader);
+                        dataTable.Load(reader);
                     }
                 }
 
@@ -756,11 +720,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }

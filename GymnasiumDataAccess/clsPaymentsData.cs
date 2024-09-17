@@ -54,8 +54,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -91,11 +90,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -124,10 +122,8 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                            {
-                                dt.Load(reader);
-                            }
+
+                            dt.Load(reader);
                         }
                     }
                 }
@@ -158,10 +154,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                            {
-                                dt.Load(reader);
-                            }
+                            dt.Load(reader);
                         }
                     }
                 }
@@ -191,8 +184,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@MemberID", memberID);
 
                         await connection.OpenAsync();
-                        await command.ExecuteNonQueryAsync();
-                        return true;
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -217,8 +209,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@PaymentID", paymentID);
 
                         await connection.OpenAsync();
-                        await command.ExecuteNonQueryAsync();
-                        return true;
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -271,10 +262,7 @@ namespace GymnasiumDataAccess
                         await cnn.OpenAsync();
                         using (SqlDataReader da = await cmd.ExecuteReaderAsync())
                         {
-                            if (da.HasRows)
-                            {
-                                dt.Load(da);
-                            }
+                            dt.Load(da);
                         }
                     }
                 }

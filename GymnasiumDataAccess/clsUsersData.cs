@@ -52,8 +52,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -91,11 +90,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -126,8 +124,7 @@ namespace GymnasiumDataAccess
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.HasRows)
-                            dt.Load(reader);
+                        dt.Load(reader);
                     }
 
                 }
@@ -157,8 +154,7 @@ namespace GymnasiumDataAccess
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.HasRows)
-                            dt.Load(reader);
+                        dt.Load(reader);
                     }
 
                 }
@@ -193,8 +189,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@Permissions", permissions);
 
                         await connection.OpenAsync();
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -209,7 +204,6 @@ namespace GymnasiumDataAccess
         // Delete a user by UserID
         public static async Task<bool> DeleteUser(int userID)
         {
-            int RowEffected = 0;
 
             try
             {
@@ -221,17 +215,16 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@UserID", userID);
 
                         await connection.OpenAsync();
-                        RowEffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-
-            return RowEffected > 0;
         }
 
         // Check if user exists by UserID
@@ -271,15 +264,6 @@ namespace GymnasiumDataAccess
                 using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
 
-
-                    // i use The Old Pattern In This Example Cuz The Stored Procedure is not working Right Now Fix It Latter !!!
-
-                    //string query = @"SELECT UserID, PersonID, IsActive, Permissions
-                    //                        FROM Users
-                    //                         WHERE UserName = @UserName AND Password = @Password";
-
-                    // "sp_Users_IsUserExistByUserNameAndPassword"
-
                     using (SqlCommand command = new SqlCommand("sp_Users_IsUserExistByUserNameAndPassword", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -290,11 +274,8 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader Reader = await command.ExecuteReaderAsync())
                         {
-                            if (Reader.HasRows)
-                            {
-                                dt.Load(Reader);
-                            }
 
+                            dt.Load(Reader);
                         }
                     }
                 }
@@ -398,7 +379,6 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> SetUserAsActiveOrInactive(int UserID, bool isActiveOrNot)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -412,8 +392,7 @@ namespace GymnasiumDataAccess
                     command.Parameters.AddWithValue("@Result", isActiveOrNot);
 
                     await connection.OpenAsync();
-                    rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
             }
             catch (Exception ex)

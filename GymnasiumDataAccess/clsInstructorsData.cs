@@ -29,8 +29,7 @@ namespace GymnasiumDataAccess
                 {
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
-                    int result = (int)returnParam.Value;
-                    return (result == 1);
+                    return (int)returnParam.Value == 1;
                 }
                 catch (Exception ex)
                 {
@@ -66,7 +65,7 @@ namespace GymnasiumDataAccess
                 {
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
-                    instructorID = (int)returnParam.Value;
+                    instructorID = returnParam.Value == DBNull.Value ? -1 : (int)returnParam.Value;
                 }
                 catch (Exception ex)
                 {
@@ -98,15 +97,15 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    rowsAffected = await command.ExecuteNonQueryAsync();
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
                 catch (Exception ex)
                 {
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    return false;
                 }
             }
 
-            return rowsAffected > 0;
         }
 
         // Delete instructor
@@ -124,15 +123,15 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    rowsAffected = await command.ExecuteNonQueryAsync();
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
                 catch (Exception ex)
                 {
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    return false;
                 }
             }
 
-            return rowsAffected > 0;
         }
 
         // Get all instructors
@@ -151,10 +150,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                            {
-                                dataTable.Load(reader);
-                            }
+                            dataTable.Load(reader);
                         }
                     }
                     catch (Exception ex)
@@ -184,8 +180,7 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dt.Load(reader);
+                            dt.Load(reader);
                         }
                     }
                     catch (Exception ex)
@@ -223,11 +218,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                     catch (Exception ex)
                     {
