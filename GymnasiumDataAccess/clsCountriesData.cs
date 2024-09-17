@@ -49,8 +49,7 @@ namespace GymnasiumDataAccess
                         connection.Open();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -78,10 +77,9 @@ namespace GymnasiumDataAccess
                         connection.Open();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                            {
-                                dataTable.Load(reader);
-                            }
+
+                            dataTable.Load(reader);
+
                         }
                     }
                 }
@@ -107,13 +105,11 @@ namespace GymnasiumDataAccess
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@countryName", countryName);
 
-                        connection.Open();
+                        await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                            {
-                                dataTable.Load(reader);
-                            }
+
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -142,8 +138,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@ISO2", iso2);
 
                         connection.Open();
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -167,8 +162,7 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@CountryID", countryID);
 
                         connection.Open();
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }

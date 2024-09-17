@@ -80,15 +80,15 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    rowsAffected = await command.ExecuteNonQueryAsync();
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
                 catch (Exception ex)
                 {
                     clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                    return false;
                 }
             }
 
-            return rowsAffected > 0;
         }
 
         // finish the people methos to accept the async await concepts
@@ -112,10 +112,7 @@ namespace GymnasiumDataAccess
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
 
-                            if (reader.HasRows)
-                            {
-                                dt.Load(reader);
-                            }
+                            dt.Load(reader);
                         }
 
                     }
@@ -145,14 +142,10 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         dt.Load(reader);
                     }
-
-                    reader.Close();
                 }
                 catch (Exception ex)
                 {
@@ -168,9 +161,6 @@ namespace GymnasiumDataAccess
 
         public static async Task<bool> DeletePerson(int PersonID)
         {
-            // Implement logic to delete person from the database
-
-            int rowsAffected = 0;
 
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
@@ -182,7 +172,7 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    return (rowsAffected = await command.ExecuteNonQueryAsync()) > 0;
+                    return await command.ExecuteNonQueryAsync() > 0;
                 }
                 catch (Exception ex)
                 {
@@ -287,12 +277,12 @@ namespace GymnasiumDataAccess
                 try
                 {
                     await connection.OpenAsync();
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         dataTable.Load(reader);
                     }
+
+
                 }
                 catch (Exception ex)
                 {
@@ -330,11 +320,10 @@ namespace GymnasiumDataAccess
                         await connection.OpenAsync();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }

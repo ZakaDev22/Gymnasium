@@ -52,8 +52,7 @@ namespace GymnasiumDataAccess
                         connection.Open();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -90,11 +89,10 @@ namespace GymnasiumDataAccess
                         connection.Open();
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            if (reader.HasRows)
-                                dataTable.Load(reader);
+                            dataTable.Load(reader);
                         }
 
-                        totalCount = (int)totalParam.Value;
+                        totalCount = totalParam.Value == DBNull.Value ? 0 : (int)totalParam.Value;
                     }
                 }
             }
@@ -123,10 +121,9 @@ namespace GymnasiumDataAccess
                     connection.Open();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (reader.HasRows)
-                        {
-                            dataTable.Load(reader);
-                        }
+
+                        dataTable.Load(reader);
+
                     }
                 }
             }
@@ -175,7 +172,6 @@ namespace GymnasiumDataAccess
         // Delete a belt test by TestID
         public static async Task<bool> DeleteBeltTestAsync(int testID)
         {
-            int rowsAffected = 0;
 
             try
             {
@@ -187,16 +183,16 @@ namespace GymnasiumDataAccess
                         command.Parameters.AddWithValue("@TestID", testID);
 
                         connection.Open();
-                        rowsAffected = await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
                 clsGlobalForDataAccess.LogExseptionsToLogerViewr(ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                return false;
             }
 
-            return rowsAffected > 0;
         }
 
         // Check if belt test exists by TestID
