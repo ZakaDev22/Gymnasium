@@ -69,7 +69,7 @@ namespace Gymnasium
 
         private void btnPeople_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 1))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.People))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -86,7 +86,7 @@ namespace Gymnasium
 
         private void btnUsers_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 2))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.Users))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -103,7 +103,7 @@ namespace Gymnasium
 
         private void btnMembers_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 4))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.Members))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -120,7 +120,7 @@ namespace Gymnasium
 
         private void btnSports_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 8))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.Sports))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -137,7 +137,7 @@ namespace Gymnasium
 
         private void btnMemberInstructor_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 16))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.MemberInstructor))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -154,7 +154,7 @@ namespace Gymnasium
 
         private void btnSubPeriods_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 32))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.SubscriptionPeriods))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -171,7 +171,7 @@ namespace Gymnasium
 
         private void btnPayments_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 64))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.Payments))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -188,7 +188,7 @@ namespace Gymnasium
 
         private void btnEmergencyContact_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 128))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.EmergencyContacts))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -205,7 +205,7 @@ namespace Gymnasium
 
         private void btnbeltRanks_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 256))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.BeltRank))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -222,7 +222,7 @@ namespace Gymnasium
 
         private void btnBeltTest_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 512))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.BeltTests))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -284,7 +284,7 @@ namespace Gymnasium
 
         private void btnInstructors_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 1024))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.Instructors))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -301,7 +301,7 @@ namespace Gymnasium
 
         private void btnExpiredSubscriptions_Click(object sender, EventArgs e)
         {
-            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, 2048))
+            if (!clsValidation.IsUserHaveThisPermission(clsGlobal._CurrentUser.Permissions, (int)clsUsers.enPermissions.ExpiredSubscriptions))
             {
                 MessageBox.Show("You don't have permission to access this Future Action,\n Please Contact Your Administrator !",
                                                                 "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

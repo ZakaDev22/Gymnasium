@@ -39,17 +39,35 @@ namespace Gymnasium.User_Forms
 
         private void txtCurrentPassword_Validating(object sender, CancelEventArgs e)
         {
-            if (clsUtil.ComputeHash(txtCurrentPassword.Text) != _User.Password)
+            if (txtCurrentPassword.Text.Length != 64)
             {
-                e.Cancel = true;
-                txtCurrentPassword.Focus();
-                errorProvider1.SetError(txtCurrentPassword, "You Have To Set The Current Password ❓");
+                if (clsUtil.ComputeHash(txtCurrentPassword.Text) != _User.Password)
+                {
+                    e.Cancel = true;
+                    txtCurrentPassword.Focus();
+                    errorProvider1.SetError(txtCurrentPassword, "You Have To Set The Current Password ❓");
+                }
+                else
+                {
+                    e.Cancel = false;
+                    errorProvider1.SetError(txtCurrentPassword, "");
+                }
             }
             else
             {
-                e.Cancel = false;
-                errorProvider1.SetError(txtCurrentPassword, "");
+                if (txtCurrentPassword.Text != _User.Password)
+                {
+                    e.Cancel = true;
+                    txtCurrentPassword.Focus();
+                    errorProvider1.SetError(txtCurrentPassword, "You Have To Set The Current Password ❓");
+                }
+                else
+                {
+                    e.Cancel = false;
+                    errorProvider1.SetError(txtCurrentPassword, "");
+                }
             }
+
         }
 
         private void txtNewPassword_Validating(object sender, CancelEventArgs e)

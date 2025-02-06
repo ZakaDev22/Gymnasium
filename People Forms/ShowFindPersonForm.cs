@@ -25,9 +25,5 @@ namespace Gymnasium.People_Forms
             this.Close();
         }
 
-        private void ctrlPersonInfoCardWithFilter1_OnPersonSelected(int obj)
-        {
-
-        }
     }
 }
