@@ -46,7 +46,7 @@ namespace Gymnasium.User_Forms
             if (ctrlPersonInfoCardWithFilter1.PersonID != -1)
             {
 
-                if (await clsUsers.ExistsByID(ctrlPersonInfoCardWithFilter1.PersonID))
+                if (await clsUsers.ExistsByPersonID(ctrlPersonInfoCardWithFilter1.PersonID))
                 {
 
                     MessageBox.Show("Selected Person already has a user, choose another one.", "Select another Person", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -117,27 +117,20 @@ namespace Gymnasium.User_Forms
 
         private void _ResetDefualtValues()
         {
-            //this will initialize the reset the default values
+            lblTitle.Text = _Mode == enMode.AddNew ? "Add New User" : "Update User";
+            this.Text = lblTitle.Text;
+
+            _User = _Mode == enMode.AddNew ? new clsUsers() : _User;
 
             if (_Mode == enMode.AddNew)
             {
-                lblTitle.Text = "Add New User";
-                this.Text = "Add New User";
-                _User = new clsUsers();
-
                 tpLoginInfo.Enabled = false;
-
                 ctrlPersonInfoCardWithFilter1.FilterFocus();
             }
             else
             {
-                lblTitle.Text = "Update User";
-                this.Text = "Update User";
-
                 tpLoginInfo.Enabled = true;
                 btnSave.Enabled = true;
-
-
             }
 
             txtUserName.Text = "";
@@ -323,7 +316,8 @@ namespace Gymnasium.User_Forms
         {
             if (chkAll.Checked)
             {
-                _Permissions = 4095;
+                //_Permissions = 4095;
+                _Permissions = (int)clsUsers.enPermissions.All;
 
                 chkPeople.Checked = true;
                 chkUsers.Checked = true;
